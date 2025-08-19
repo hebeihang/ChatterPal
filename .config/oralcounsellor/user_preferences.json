@@ -1,0 +1,34 @@
+{
+  "chat": {
+    "input_mode": "text",
+    "auto_play_response": true,
+    "show_history": false,
+    "voice_settings": {
+      "auto_record": false,
+      "recording_timeout": 30
+    }
+  },
+  "ui": {
+    "theme": "default",
+    "language": "zh-CN",
+    "compact_mode": false
+  },
+  "audio": {
+    "playback_speed": 1.0,
+    "volume": 0.8,
+    "auto_play": true
+  },
+  "topic": {
+    "difficulty": "intermediate",
+    "preferred_categories": [],
+    "auto_generate": false
+  },
+  "session": {
+    "auto_save": true,
+    "max_history": 50
+  },
+  "last_updated": "2025-08-18T19:23:21.744357",
+  "test": {
+    "convenience": "test_value"
+  }
+}

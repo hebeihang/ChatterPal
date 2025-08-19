@@ -1,0 +1,174 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "oralcounsellor"
+version = "0.1.0"
+description = "AI-powered English pronunciation practice system"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "OralCounsellor Team"}
+]
+requires-python = ">=3.12"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Education",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+]
+dependencies = [
+    "myprosody>=20",
+    "numpy>=1.21.0,<2.3.0",
+    "numba>=0.56.0",
+    "gradio>=4.0.0",
+    "openai-whisper>=20231117",
+    "librosa>=0.10.0",
+    "soundfile>=0.12.0",
+    "scipy>=1.9.0",
+    "scikit-learn>=1.1.0",
+    "praat-parselmouth>=0.4.0",
+    "speechrecognition>=3.10.0",
+    "pyaudio>=0.2.11",
+    "requests>=2.28.0",
+
+    "matplotlib>=3.10.5",
+    "seaborn>=0.13.2",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "edge-tts>=6.0.0",
+    "pyyaml>=6.0.0",
+    # 增强聊天模块新增依赖
+    "openai>=1.0.0",
+    "aiofiles>=23.0.0",
+    "cachetools>=5.0.0",
+    "asyncio-throttle>=1.0.0",
+    "python-multipart>=0.0.6",
+    "websockets>=11.0.0",
+    "dashscope>=1.14.0",  # 阿里云 CosyVoice SDK
+    "uvloop>=0.17.0; sys_platform != 'win32'",
+    "dataclasses-json>=0.6.0",
+    "typing-extensions>=4.5.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+]
+
+[project.scripts]
+oralcounsellor = "oralcounsellor.web.app:main"
+oralcounsellor-setup = "scripts.setup:main"
+oralcounsellor-run = "scripts.run:main"
+
+[project.urls]
+Homepage = "https://github.com/oralcounsellor/oralcounsellor"
+Repository = "https://github.com/oralcounsellor/oralcounsellor"
+Issues = "https://github.com/oralcounsellor/oralcounsellor/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/oralcounsellor"]
+
+[tool.black]
+line-length = 88
+target-version = ['py312']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["oralcounsellor"]
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "myprosody.*",
+    "parselmouth.*",
+    "speech_recognition.*",
+    "dashscope.*",
+    "edge_tts.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--cov=src/oralcounsellor",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-fail-under=80",
+]
+
+[tool.coverage.run]
+source = ["src/oralcounsellor"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "flake8>=7.3.0",
+    "isort>=6.0.1",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+    "pytest-cov>=6.2.1",
+]
