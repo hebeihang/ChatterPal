@@ -491,11 +491,9 @@ pytest --cov=chatterpal --cov-report=html
 ### 核心贡献者
 感谢所有为项目做出贡献的开发者：
 
-- [@Liyulingyue](https://github.com/Liyulingyue/) - 项目架构设计
-- [@mrcangye](https://github.com/mrcangye/) - 语音处理模块
-- [@ccsuzzh](https://github.com/ccsuzzh/) - AI服务集成
-- [@gouzil](https://github.com/gouzil/) - 前端界面开发
-- [@Tomoko-hjf](https://github.com/Tomoko-hjf/) - 测试和文档
+- [@Liyulingyue](https://github.com/Liyulingyue/) - 思路学习
+- [@likebeans](https://github.com/likebeans/) - 整体开发
+
 
 ### 技术支持
 - **OpenAI**: Whisper语音识别技术
