@@ -1,4 +1,4 @@
-"""
+﻿"""
 核心功能测试 - 只测试可以正常工作的核心功能
 跳过需要外部依赖的测试
 """
@@ -12,16 +12,16 @@ from unittest.mock import Mock, patch
 def test_core_modules_import():
     """测试核心模块可以导入"""
     try:
-        from oralcounsellor.core.asr.base import ASRBase
-        from oralcounsellor.core.tts.base import TTSBase
-        from oralcounsellor.core.llm.base import LLMBase
-        from oralcounsellor.core.assessment.base import AssessmentBase
-        from oralcounsellor.services.chat import ChatService
-        from oralcounsellor.services.evaluation import EvaluationService
-        from oralcounsellor.services.correction import CorrectionService
-        from oralcounsellor.config.settings import Settings
+        from chatterpal.core.asr.base import ASRBase
+        from chatterpal.core.tts.base import TTSBase
+        from chatterpal.core.llm.base import LLMBase
+        from chatterpal.core.assessment.base import AssessmentBase
+        from chatterpal.services.chat import ChatService
+        from chatterpal.services.evaluation import EvaluationService
+        from chatterpal.services.correction import CorrectionService
+        from chatterpal.config.settings import Settings
         
-        print("✓ 所有核心模块导入成功")
+        print("所有核心模块导入成)
         assert True
     except Exception as e:
         pytest.fail(f"核心模块导入失败: {e}")
@@ -33,10 +33,10 @@ def test_app_can_be_imported():
         # 设置测试环境变量
         os.environ['ALIBABA_API_KEY'] = 'test_key'
         
-        from oralcounsellor.web.app import create_app
+        from chatterpal.web.app import create_app
         app = create_app()
         assert app is not None
-        print("✓ 应用导入和创建成功")
+        print("应用导入和创建成)
         
         # 清理环境变量
         if 'ALIBABA_API_KEY' in os.environ:
@@ -48,7 +48,7 @@ def test_app_can_be_imported():
 def test_chat_service_basic():
     """测试聊天服务基本功能"""
     try:
-        from oralcounsellor.services.chat import ChatService
+        from chatterpal.services.chat import ChatService
         from unittest.mock import Mock
         
         # 创建模拟组件
@@ -75,15 +75,15 @@ def test_chat_service_basic():
         assert response_text == "Hi there!"
         assert session_id is not None
         
-        print("✓ 聊天服务基本功能正常")
+        print("聊天服务基本功能正常")
     except Exception as e:
         pytest.fail(f"聊天服务测试失败: {e}")
 
 def test_evaluation_service_basic():
     """测试评估服务基本功能"""
     try:
-        from oralcounsellor.services.evaluation import EvaluationService
-        from oralcounsellor.core.assessment.base import AssessmentResult
+        from chatterpal.services.evaluation import EvaluationService
+        from chatterpal.core.assessment.base import AssessmentResult
         from unittest.mock import Mock
         
         # 创建模拟组件
@@ -107,14 +107,14 @@ def test_evaluation_service_basic():
         assert isinstance(result, AssessmentResult)
         assert result.overall_score >= 0
         
-        print("✓ 评估服务基本功能正常")
+        print("评估服务基本功能正常")
     except Exception as e:
         pytest.fail(f"评估服务测试失败: {e}")
 
 def test_correction_service_basic():
     """测试纠错服务基本功能"""
     try:
-        from oralcounsellor.services.correction import CorrectionService
+        from chatterpal.services.correction import CorrectionService
         from unittest.mock import Mock
         
         # 创建模拟组件
@@ -132,36 +132,36 @@ def test_correction_service_basic():
         assert isinstance(result, dict)
         assert "overall_score" in result
         
-        print("✓ 纠错服务基本功能正常")
+        print("纠错服务基本功能正常")
     except Exception as e:
         pytest.fail(f"纠错服务测试失败: {e}")
 
 def test_configuration_system():
-    """测试配置系统"""
+    """测试配置值系统"""
     try:
-        from oralcounsellor.config.settings import Settings
+        from chatterpal.config.settings import Settings
         
         settings = Settings()
         
-        # 验证基本配置属性
+        # 验证基本配置属
         assert hasattr(settings, 'audio_sample_rate')
         assert hasattr(settings, 'whisper_model')
         assert hasattr(settings, 'asr_provider')
         assert hasattr(settings, 'tts_provider')
         assert hasattr(settings, 'llm_provider')
         
-        # 验证配置值
+        # 验证配置
         assert settings.audio_sample_rate > 0
         assert settings.whisper_model in ["tiny", "base", "small", "medium", "large"]
         
-        print("✓ 配置系统正常工作")
+        print("配置系统正常工作")
     except Exception as e:
         pytest.fail(f"配置系统测试失败: {e}")
 
 def test_asr_base_functionality():
     """测试ASR基础功能"""
     try:
-        from oralcounsellor.core.asr.base import ASRBase
+        from chatterpal.core.asr.base import ASRBase
         
         class TestASR(ASRBase):
             def recognize(self, audio_data, **kwargs):
@@ -179,14 +179,14 @@ def test_asr_base_functionality():
         # 测试连接测试
         assert asr.test_connection() is True
         
-        print("✓ ASR基础功能正常")
+        print("ASR基础功能正常")
     except Exception as e:
         pytest.fail(f"ASR基础功能测试失败: {e}")
 
 def test_tts_base_functionality():
     """测试TTS基础功能"""
     try:
-        from oralcounsellor.core.tts.base import TTSBase
+        from chatterpal.core.tts.base import TTSBase
         
         class TestTTS(TTSBase):
             def synthesize(self, text, **kwargs):
@@ -207,14 +207,14 @@ def test_tts_base_functionality():
         assert tts.validate_text("Hello world") is True
         assert tts.validate_text("") is False
         
-        print("✓ TTS基础功能正常")
+        print("TTS基础功能正常")
     except Exception as e:
         pytest.fail(f"TTS基础功能测试失败: {e}")
 
 def test_llm_base_functionality():
     """测试LLM基础功能"""
     try:
-        from oralcounsellor.core.llm.base import LLMBase
+        from chatterpal.core.llm.base import LLMBase
         
         class TestLLM(LLMBase):
             def chat(self, messages, **kwargs):
@@ -230,24 +230,24 @@ def test_llm_base_functionality():
         response = llm.chat("你好")
         assert response == "回复: 你好"
         
-        print("✓ LLM基础功能正常")
+        print("LLM基础功能正常")
     except Exception as e:
         pytest.fail(f"LLM基础功能测试失败: {e}")
 
 def test_end_to_end_workflow():
-    """测试端到端工作流程"""
+    """测试端到端工作流程""
     try:
-        from oralcounsellor.services.chat import ChatService
-        from oralcounsellor.services.evaluation import EvaluationService
-        from oralcounsellor.services.correction import CorrectionService
-        from oralcounsellor.core.assessment.base import AssessmentResult
+        from chatterpal.services.chat import ChatService
+        from chatterpal.services.evaluation import EvaluationService
+        from chatterpal.services.correction import CorrectionService
+        from chatterpal.core.assessment.base import AssessmentResult
         from unittest.mock import Mock
         
         # 创建模拟组件
         mock_asr = Mock()
-        mock_asr.recognize.return_value = "Hello, how are you?"
-        mock_asr.recognize_file.return_value = "Hello, how are you?"
-        mock_asr.recognize_gradio_audio.return_value = "Hello, how are you?"
+        mock_asr.recognize.return_value = "Hello, how are you"
+        mock_asr.recognize_file.return_value = "Hello, how are you"
+        mock_asr.recognize_gradio_audio.return_value = "Hello, how are you"
         
         mock_tts = Mock()
         mock_tts.synthesize.return_value = b"response audio"
@@ -267,19 +267,27 @@ def test_end_to_end_workflow():
         
         # 2. 用户录音评估
         eval_result = eval_service.evaluate_pronunciation(
-            b"audio data", "Hello, how are you?"
+            b"audio data", "Hello, how are you"
         )
         assert isinstance(eval_result, AssessmentResult)
         
         # 3. 获取纠错建议
         correction_result = correction_service.quick_correction(
-            b"audio data", "Hello, how are you?"
+            b"audio data", "Hello, how are you"
         )
         assert isinstance(correction_result, dict)
         
-        print("✓ 端到端工作流程正常")
+        print("端到端工作流程正)
     except Exception as e:
-        pytest.fail(f"端到端工作流程测试失败: {e}")
+        pytest.fail(f"端到端工作流程测试失败 {e}")
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "-s"])
+
+
+
+
+
+
+
+

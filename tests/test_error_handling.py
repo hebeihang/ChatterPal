@@ -1,6 +1,6 @@
-"""
+﻿"""
 错误处理功能测试
-测试语音输入、语音输出和主题生成的错误处理机制
+测试语音输入、语音输出和主题生成的错误处理机
 """
 
 import pytest
@@ -8,18 +8,18 @@ import numpy as np
 from unittest.mock import Mock, patch, MagicMock
 from typing import Dict, Any
 
-from src.oralcounsellor.core.errors import (
+from chatterpal.core.errors import (
     ErrorHandler, ChatModuleError, AudioInputError, SpeechRecognitionError,
     SpeechSynthesisError, TopicGenerationError, ErrorSeverity, ErrorCategory
 )
-from src.oralcounsellor.core.asr.base import ASRBase, ASRResult, ConfidenceLevel
-from src.oralcounsellor.services.chat import ChatService
-from src.oralcounsellor.services.topic_generator import TopicGenerator
-from src.oralcounsellor.utils.audio import AudioProcessor, AudioValidationResult, AudioQualityLevel
+from chatterpal.core.asr.base import ASRBase, ASRResult, ConfidenceLevel
+from chatterpal.services.chat import ChatService
+from chatterpal.services.topic_generator import TopicGenerator
+from chatterpal.utils.audio import AudioProcessor, AudioValidationResult, AudioQualityLevel
 
 
 class TestErrorHandler:
-    """测试错误处理器"""
+    """测试错误处理""
     
     def setup_method(self):
         """设置测试环境"""
@@ -114,7 +114,7 @@ class TestErrorHandler:
     
     def test_handle_asr_error(self):
         """测试ASR错误处理"""
-        # 测试无语音识别结果
+        # 测试无语音识别结
         no_speech_result = ASRResult(
             text=None,
             confidence=0.0,
@@ -127,7 +127,7 @@ class TestErrorHandler:
         assert isinstance(error, SpeechRecognitionError)
         assert error.error_info.code == "ASR_NO_SPEECH"
         
-        # 测试置信度过低
+        # 测试置信度过
         low_confidence_result = ASRResult(
             text="hello",
             confidence=0.2,
@@ -166,7 +166,7 @@ class TestErrorHandler:
         assert error is None
     
     def test_format_user_error_message(self):
-        """测试格式化用户错误消息"""
+        """测试格式化用户错误消""
         error = self.error_handler.create_error("AUDIO_TOO_SHORT", duration=0.5)
         formatted = self.error_handler.format_user_error_message(error)
         
@@ -179,7 +179,7 @@ class TestErrorHandler:
 
 
 class MockASR(ASRBase):
-    """模拟ASR类用于测试"""
+    """模拟ASR类用于测""
     
     def __init__(self, config=None):
         super().__init__(config)
@@ -221,7 +221,7 @@ class MockASR(ASRBase):
 
 
 class MockTTS:
-    """模拟TTS类用于测试"""
+    """模拟TTS类用于测""
     
     def __init__(self):
         self.should_fail = False
@@ -237,7 +237,7 @@ class MockTTS:
 
 
 class MockLLM:
-    """模拟LLM类用于测试"""
+    """模拟LLM类用于测""
     
     def __init__(self):
         self.should_fail = False
@@ -256,7 +256,7 @@ class TestASRErrorHandling:
         self.asr = MockASR()
     
     def test_recognize_with_error_handling_success(self):
-        """测试成功的语音识别"""
+        """测试成功的语音识""
         audio_data = np.random.random(16000).astype(np.float32) * 0.5  # 1秒的音频
         result = self.asr.recognize_with_error_handling(audio_data)
         
@@ -265,7 +265,7 @@ class TestASRErrorHandling:
     
     def test_recognize_with_error_handling_retry(self):
         """测试重试机制"""
-        # 设置前两次失败，第三次成功
+        # 设置前两次失败,第三次成
         call_count = 0
         original_recognize_enhanced = self.asr.recognize_enhanced
         
@@ -286,8 +286,8 @@ class TestASRErrorHandling:
     
     def test_recognize_with_error_handling_audio_too_short(self):
         """测试音频过短错误"""
-        # 创建过短的音频数据
-        short_audio = np.random.random(100).astype(np.float32) * 0.5  # 很短的音频
+        # 创建过短的音频数
+        short_audio = np.random.random(100).astype(np.float32) * 0.5  # 很短的音
         
         with pytest.raises(AudioInputError) as exc_info:
             self.asr.recognize_with_error_handling(short_audio)
@@ -305,7 +305,7 @@ class TestASRErrorHandling:
         assert exc_info.value.error_info.code == "ASR_LOW_CONFIDENCE"
     
     def test_recognize_with_error_handling_no_speech(self):
-        """测试无语音错误"""
+        """测试无语音错""
         self.asr.return_empty = True
         audio_data = np.random.random(16000).astype(np.float32) * 0.5
         
@@ -330,7 +330,7 @@ class TestChatServiceErrorHandling:
         )
     
     def test_chat_with_audio_success(self):
-        """测试成功的语音对话"""
+        """测试成功的语音对""
         audio_data = np.random.random(16000).astype(np.float32) * 0.5
         
         response_text, response_audio, session_id = self.chat_service.chat_with_audio(audio_data)
@@ -340,7 +340,7 @@ class TestChatServiceErrorHandling:
         assert session_id is not None
     
     def test_chat_with_audio_asr_failure(self):
-        """测试ASR失败的处理"""
+        """测试ASR失败的处""
         self.asr.should_fail = True
         audio_data = np.random.random(16000).astype(np.float32) * 0.5
         
@@ -348,30 +348,30 @@ class TestChatServiceErrorHandling:
             self.chat_service.chat_with_audio(audio_data, max_retries=1)
     
     def test_chat_with_audio_tts_failure(self):
-        """测试TTS失败的处理"""
+        """测试TTS失败的处""
         self.tts.should_fail = True
         audio_data = np.random.random(16000).astype(np.float32) * 0.5
         
-        # TTS失败不应该阻止对话
+        # TTS失败不应该阻止对
         response_text, response_audio, session_id = self.chat_service.chat_with_audio(audio_data)
         
         assert response_text == "Test response"
-        assert response_audio is None  # TTS失败，音频为None
+        assert response_audio is None  # TTS失败,音频为None
         assert session_id is not None
     
     def test_process_chat_error_handling(self):
-        """测试process_chat的错误处理"""
-        # 测试空文本输入
+        """测试process_chat的错误处""
+        # 测试空文本输
         result = self.chat_service.process_chat(text_input="", use_text_input=True)
         audio_output, chat_history = result
         
         # 应该返回错误信息
         assert len(chat_history) > 0
         error_message = chat_history[0][1]
-        assert any(keyword in error_message for keyword in ["错误", "失败", "不支持", "损坏", "重新"])
+        assert any(keyword in error_message for keyword in ["错误", "失败", "不支, "损坏", "重新"])
     
     def test_process_chat_audio_error_handling(self):
-        """测试process_chat的音频错误处理"""
+        """测试process_chat的音频错误处""
         # 测试音频输入错误
         self.asr.should_fail = True
         short_audio = np.random.random(100).astype(np.float32) * 0.5
@@ -379,14 +379,14 @@ class TestChatServiceErrorHandling:
         result = self.chat_service.process_chat(audio=short_audio, use_text_input=False)
         audio_output, chat_history = result
         
-        # 应该返回用户友好的错误信息
+        # 应该返回用户友好的错误信
         assert len(chat_history) > 0
         error_message = chat_history[0][1]
         assert any(keyword in error_message for keyword in ["录音", "音频", "语音", "重试"])
 
 
 class TestTopicGeneratorErrorHandling:
-    """测试主题生成器错误处理"""
+    """测试主题生成器错误处""
     
     def setup_method(self):
         """设置测试环境"""
@@ -401,13 +401,13 @@ class TestTopicGeneratorErrorHandling:
     
     def test_generate_random_topic_with_fallback(self):
         """测试带备用方案的主题生成"""
-        # 即使出现错误，也应该返回备用主题
+        # 即使出现错误,也应该返回备用主题
         topic = self.topic_generator.generate_random_topic_with_fallback("invalid_difficulty")
         assert isinstance(topic, str)
         assert len(topic) > 0
     
     def test_generate_contextual_topic_llm_failure(self):
-        """测试LLM失败时的上下文主题生成"""
+        """测试LLM失败时的上下文主题生""
         self.llm.should_fail = True
         
         chat_history = [
@@ -415,7 +415,7 @@ class TestTopicGeneratorErrorHandling:
             {"role": "assistant", "content": "Hi there!"}
         ]
         
-        # 即使LLM失败，也应该回退到随机主题
+        # 即使LLM失败,也应该回退到随机主
         topic = self.topic_generator.generate_contextual_topic(chat_history)
         assert isinstance(topic, str)
         assert len(topic) > 0
@@ -442,11 +442,11 @@ class TestIntegratedErrorHandling:
         )
     
     def test_end_to_end_error_recovery(self):
-        """测试端到端错误恢复"""
+        """测试端到端错误恢""
         # 创建会话
         session_id = self.chat_service.create_session()
         
-        # 第一次对话成功
+        # 第一次对话成
         audio_data = np.random.random(16000).astype(np.float32) * 0.5
         result1 = self.chat_service.process_chat(
             audio=audio_data, 
@@ -456,7 +456,7 @@ class TestIntegratedErrorHandling:
         audio_output1, chat_history1 = result1
         assert len(chat_history1) > 0
         
-        # 第二次对话ASR失败，但系统应该优雅处理
+        # 第二次对话ASR失败,但系统应该优雅处理
         self.asr.should_fail = True
         result2 = self.chat_service.process_chat(
             audio=audio_data, 
@@ -465,10 +465,10 @@ class TestIntegratedErrorHandling:
         )
         audio_output2, chat_history2 = result2
         
-        # 应该有错误信息，但不会崩溃
+        # 应该有错误信息,但不会崩
         assert len(chat_history2) >= len(chat_history1)
         
-        # 第三次切换到文本输入，应该正常工作
+        # 第三次切换到文本输入,应该正常工
         self.asr.should_fail = False  # 重置ASR
         result3 = self.chat_service.process_chat(
             text_input="Hello again", 
@@ -495,14 +495,14 @@ class TestIntegratedErrorHandling:
         self.llm.should_fail = True
         topic2 = self.chat_service.generate_topic(session_id)
         
-        # 即使LLM失败，也应该返回备用主题
+        # 即使LLM失败,也应该返回备用主题
         assert isinstance(topic2, str)
         assert len(topic2) > 0
     
-    @patch('src.oralcounsellor.core.errors.error_handler.log_error')
+    @patch('chatterpal.core.errors.error_handler.log_error')
     def test_error_logging(self, mock_log_error):
         """测试错误日志记录"""
-        # 触发一个错误
+        # 触发一个错
         self.asr.should_fail = True
         audio_data = np.random.random(16000).astype(np.float32) * 0.5
         
@@ -511,9 +511,17 @@ class TestIntegratedErrorHandling:
         except:
             pass
         
-        # 验证错误被记录
+        # 验证错误被记
         assert mock_log_error.called
 
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+
+
+
+
+
+

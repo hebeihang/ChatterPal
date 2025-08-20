@@ -1,22 +1,22 @@
-"""
+﻿"""
 主题生成器与聊天服务集成测试
 """
 
 import pytest
 from unittest.mock import Mock, patch
-from src.oralcounsellor.services.chat import ChatService
-from src.oralcounsellor.services.topic_generator import TopicGenerator, TopicGenerationError
-from src.oralcounsellor.core.llm.base import LLMBase
+from chatterpal.services.chat import ChatService
+from chatterpal.services.topic_generator import TopicGenerator, TopicGenerationError
+from chatterpal.core.llm.base import LLMBase
 
 
 class TestTopicIntegration:
-    """测试主题生成器与聊天服务的集成"""
+    """测试主题生成器与聊天服务的集""
 
     @pytest.fixture
     def mock_llm(self):
         """创建模拟的LLM实例"""
         llm = Mock(spec=LLMBase)
-        llm.chat.return_value = "What's your favorite hobby and why do you enjoy it?"
+        llm.chat.return_value = "What's your favorite hobby and why do you enjoy it"
         llm.test_connection.return_value = True
         return llm
 
@@ -42,7 +42,7 @@ class TestTopicIntegration:
         topic = chat_service.generate_topic()
         assert isinstance(topic, str)
         assert len(topic) > 0
-        assert topic.endswith('?') or any(word in topic.lower() for word in ['tell me', 'describe'])
+        assert topic.endswith('') or any(word in topic.lower() for word in ['tell me', 'describe'])
 
     def test_generate_topic_with_difficulty(self, chat_service):
         """测试指定难度级别生成主题"""
@@ -63,13 +63,13 @@ class TestTopicIntegration:
         assert len(hobby_topic) > 0
 
     def test_generate_contextual_topic(self, chat_service, mock_llm):
-        """测试基于上下文生成主题"""
-        # 创建会话并添加一些对话历史
+        """测试基于上下文生成主""
+        # 创建会话并添加一些对话历
         session_id = chat_service.create_session()
         chat_service.chat_with_text("I love playing guitar", session_id)
         chat_service.chat_with_text("That's great! Music is wonderful.", session_id)
 
-        # 生成上下文相关主题
+        # 生成上下文相关主
         topic = chat_service.generate_topic(session_id=session_id)
         assert isinstance(topic, str)
         assert len(topic) > 0
@@ -78,14 +78,14 @@ class TestTopicIntegration:
         assert mock_llm.chat.called
 
     def test_set_topic_for_session(self, chat_service):
-        """测试为会话设置主题"""
+        """测试为会话设置主""
         session_id = chat_service.create_session()
         topic = "Let's talk about your favorite movies."
         
         success = chat_service.set_topic_for_session(session_id, topic)
         assert success is True
 
-        # 验证主题被正确设置
+        # 验证主题被正确设
         current_topic = chat_service.get_current_topic(session_id)
         assert current_topic == topic
 
@@ -110,10 +110,10 @@ class TestTopicIntegration:
         chat_service.generate_topic(session_id=session_id)
         assert chat_service.get_current_topic(session_id) is not None
 
-        # 清除上下文
+        # 清除上下
         chat_service.clear_context(session_id)
         
-        # 主题应该被清除
+        # 主题应该被清
         assert chat_service.get_current_topic(session_id) is None
 
     def test_get_topic_suggestions(self, chat_service):
@@ -127,8 +127,8 @@ class TestTopicIntegration:
             assert len(suggestion) > 0
 
     def test_add_custom_topic(self, chat_service):
-        """测试添加自定义主题"""
-        custom_topic = "What's your opinion on artificial intelligence?"
+        """测试添加自定义主""
+        custom_topic = "What's your opinion on artificial intelligence"
         success = chat_service.add_custom_topic(custom_topic, "tech")
         assert success is True
 
@@ -145,11 +145,11 @@ class TestTopicIntegration:
         assert "topics_by_category" in stats
 
     def test_process_chat_with_topic_context(self, chat_service):
-        """测试带主题上下文的聊天处理"""
+        """测试带主题上下文的聊天处""
         session_id = chat_service.create_session()
         topic = "Tell me about your favorite book."
         
-        # 使用主题上下文处理聊天
+        # 使用主题上下文处理聊
         result = chat_service.process_chat(
             text_input="I love reading science fiction novels.",
             session_id=session_id,
@@ -161,7 +161,7 @@ class TestTopicIntegration:
         assert isinstance(audio_output, tuple)
         assert isinstance(chat_history, list)
         
-        # 验证主题被设置
+        # 验证主题被设
         current_topic = chat_service.get_current_topic(session_id)
         assert current_topic == topic
 
@@ -170,7 +170,7 @@ class TestTopicIntegration:
         # 模拟LLM调用失败
         mock_llm.chat.side_effect = Exception("LLM调用失败")
         
-        # 应该回退到默认主题
+        # 应该回退到默认主
         topic = chat_service.generate_topic()
         assert isinstance(topic, str)
         assert len(topic) > 0
@@ -185,14 +185,14 @@ class TestTopicIntegration:
         assert isinstance(status["topic_statistics"], dict)
 
     def test_topic_context_enhancement(self, chat_service):
-        """测试主题上下文增强功能"""
+        """测试主题上下文增强功""
         session_id = chat_service.create_session()
-        topic = "What's your favorite way to exercise?"
+        topic = "What's your favorite way to exercise"
         
         # 设置主题
         chat_service.set_topic_for_session(session_id, topic)
         
-        # 进行对话（应该在早期对话中增强回复）
+        # 进行对话(应该在早期对话中增强回复)
         result = chat_service.process_chat(
             text_input="I like walking in the park.",
             session_id=session_id
@@ -218,10 +218,10 @@ class TestTopicIntegration:
 
     def test_topic_generator_fallback_without_llm(self):
         """测试没有LLM时的主题生成器回退机制"""
-        # 创建没有LLM的聊天服务
+        # 创建没有LLM的聊天服
         chat_service = ChatService()
         
-        # 应该仍然能够生成主题（使用默认主题）
+        # 应该仍然能够生成主题(使用默认主题)
         topic = chat_service.generate_topic()
         assert isinstance(topic, str)
         assert len(topic) > 0
@@ -239,3 +239,11 @@ class TestTopicIntegration:
         topic = chat_service.generate_topic(category=category)
         assert isinstance(topic, str)
         assert len(topic) > 0
+
+
+
+
+
+
+
+

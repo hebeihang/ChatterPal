@@ -3,13 +3,13 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "oralcounsellor"
+name = "chatterpal"
 version = "0.1.0"
 description = "AI-powered English pronunciation practice system"
 readme = "README.md"
 license = {file = "LICENSE"}
 authors = [
-    {name = "OralCounsellor Team"}
+    {name = "ChatterPal Team"}
 ]
 requires-python = ">=3.12"
 classifiers = [
@@ -69,17 +69,17 @@ dev = [
 ]
 
 [project.scripts]
-oralcounsellor = "oralcounsellor.web.app:main"
-oralcounsellor-setup = "scripts.setup:main"
-oralcounsellor-run = "scripts.run:main"
+chatterpal = "chatterpal.web.app:main"
+chatterpal-setup = "scripts.setup:main"
+chatterpal-run = "scripts.run:main"
 
 [project.urls]
-Homepage = "https://github.com/oralcounsellor/oralcounsellor"
-Repository = "https://github.com/oralcounsellor/oralcounsellor"
-Issues = "https://github.com/oralcounsellor/oralcounsellor/issues"
+Homepage = "https://github.com/chatterpal/chatterpal"
+Repository = "https://github.com/chatterpal/chatterpal"
+Issues = "https://github.com/chatterpal/chatterpal/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/oralcounsellor"]
+packages = ["src/chatterpal"]
 
 [tool.black]
 line-length = 88
@@ -103,7 +103,7 @@ extend-exclude = '''
 profile = "black"
 multi_line_output = 3
 line_length = 88
-known_first_party = ["oralcounsellor"]
+known_first_party = ["chatterpal"]
 
 [tool.mypy]
 python_version = "3.12"
@@ -136,14 +136,14 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = [
-    "--cov=src/oralcounsellor",
+    "--cov=src/chatterpal",
     "--cov-report=term-missing",
     "--cov-report=html",
     "--cov-fail-under=80",
 ]
 
 [tool.coverage.run]
-source = ["src/oralcounsellor"]
+source = ["src/chatterpal"]
 omit = [
     "*/tests/*",
     "*/test_*",

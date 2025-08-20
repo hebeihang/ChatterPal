@@ -1,5 +1,5 @@
-"""
-Pytest configuration and shared fixtures for OralCounsellor tests.
+﻿"""
+Pytest configuration and shared fixtures for ChatterPal tests.
 """
 
 import pytest
@@ -141,7 +141,7 @@ def mock_llm():
 @pytest.fixture
 def mock_assessment():
     """Create a mock Assessment instance."""
-    from oralcounsellor.core.assessment.base import AssessmentResult, ProsodyFeatures, WordAnalysis, PhonemeAnalysis
+    from chatterpal.core.assessment.base import AssessmentResult, ProsodyFeatures, WordAnalysis, PhonemeAnalysis
     
     mock = Mock()
     
@@ -172,8 +172,8 @@ def mock_assessment():
                 description="Correctly pronounced"
             )
         ],
-        recognized_text="Hello, how are you today?",
-        target_text="Hello, how are you today?",
+        recognized_text="Hello, how are you today",
+        target_text="Hello, how are you today",
         feedback="Good pronunciation overall",
         suggestions=["Continue practicing", "Work on intonation"]
     )
@@ -193,17 +193,17 @@ def sample_conversation_history():
     """Create sample conversation history for testing."""
     return [
         {"role": "system", "content": "You are a helpful English teacher."},
-        {"role": "user", "content": "Hello, how are you?"},
-        {"role": "assistant", "content": "I'm doing well, thank you! How can I help you practice English today?"},
+        {"role": "user", "content": "Hello, how are you"},
+        {"role": "assistant", "content": "I'm doing well, thank you! How can I help you practice English today"},
         {"role": "user", "content": "I want to practice pronunciation."},
-        {"role": "assistant", "content": "Great! Let's start with some basic words. Can you say 'hello' for me?"}
+        {"role": "assistant", "content": "Great! Let's start with some basic words. Can you say 'hello' for me"}
     ]
 
 
 @pytest.fixture
 def sample_assessment_result():
     """Create a sample assessment result for testing."""
-    from oralcounsellor.core.assessment.base import AssessmentResult, ProsodyFeatures, WordAnalysis, PhonemeAnalysis
+    from chatterpal.core.assessment.base import AssessmentResult, ProsodyFeatures, WordAnalysis, PhonemeAnalysis
     
     return AssessmentResult(
         overall_score=0.75,
@@ -290,3 +290,11 @@ def pytest_collection_modifyitems(config, items):
         # Mark slow tests
         if "slow" in item.name or "integration" in item.name:
             item.add_marker(pytest.mark.slow)
+
+
+
+
+
+
+
+

@@ -1,5 +1,4 @@
-"""
-对话历史管理功能的测试
+﻿"""对话历史管理功能的测试
 测试历史记录显示、分页、清除等功能
 """
 
@@ -7,20 +6,20 @@ import pytest
 import tempfile
 from unittest.mock import Mock, MagicMock, patch
 
-from src.oralcounsellor.web.components.chat_tab import ChatTab
-from src.oralcounsellor.services.chat import ChatService
-from src.oralcounsellor.utils.preferences import UserPreferences
+from chatterpal.web.components.chat_tab import ChatTab
+from chatterpal.services.chat import ChatService
+from chatterpal.utils.preferences import UserPreferences
 
 
 class TestHistoryManagement:
-    """历史记录管理测试类"""
+    """历史记录管理测试"""
     
     def setup_method(self):
         """测试前设置"""
         # 创建临时目录用于偏好设置
         self.temp_dir = tempfile.mkdtemp()
         
-        # 创建模拟的 ChatService
+        # 创建模拟ChatService
         self.mock_chat_service = Mock(spec=ChatService)
         self.mock_chat_service.create_session.return_value = "test_session_id"
         self.mock_chat_service.generate_topic.return_value = "测试对话主题"
@@ -32,16 +31,16 @@ class TestHistoryManagement:
         self.sample_history = [
             {"role": "user", "content": "Hello"},
             {"role": "assistant", "content": "Hi there!"},
-            {"role": "user", "content": "How are you?"},
+            {"role": "user", "content": "How are you"},
             {"role": "assistant", "content": "I'm doing well, thank you!"},
-            {"role": "user", "content": "What's the weather like?"},
+            {"role": "user", "content": "What's the weather like"},
             {"role": "assistant", "content": "I don't have access to current weather data."},
         ]
         
         self.mock_chat_service.get_conversation_history.return_value = self.sample_history
         
-        # 使用临时目录创建偏好管理器
-        with patch('src.oralcounsellor.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
+        # 使用临时目录创建偏好管理
+        with patch('chatterpal.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
             self.preferences = UserPreferences(config_dir=self.temp_dir)
             mock_get_prefs.return_value = self.preferences
             
@@ -71,7 +70,7 @@ class TestHistoryManagement:
     def test_clear_history_with_confirmation(self):
         """测试清除历史记录功能"""
         # 模拟有历史记录的情况
-        current_history = [["Hello", "Hi there!"], ["How are you?", "I'm doing well!"]]
+        current_history = [["Hello", "Hi there!"], ["How are you", "I'm doing well!"]]
         
         # 执行清除操作
         result = self.chat_tab._clear_history_with_confirmation(current_history)
@@ -80,11 +79,11 @@ class TestHistoryManagement:
         # 验证结果
         assert history == []  # 历史记录被清空
         assert "已清除所有对话" in status_update["value"]
-        assert "第 1 页，共 1 页" in page_update["value"]
+        assert "1 页,1 条" in page_update["value"]
         assert prev_btn_update["interactive"] is False
         assert next_btn_update["interactive"] is False
         
-        # 验证服务方法被调用
+        # 验证服务方法被调
         self.mock_chat_service.clear_conversation_history.assert_called_once_with("test_session_id")
         
         # 验证历史状态被重置
@@ -119,8 +118,8 @@ class TestHistoryManagement:
         history, page_update, prev_btn_update, next_btn_update = result
         
         # 验证分页结果
-        assert len(history) <= 2  # 每页最多2条消息
-        assert "第 2 页" in page_update["value"]
+        assert len(history) <= 2  # 每页最多条消息
+        assert "2 页" in page_update["value"]
         assert prev_btn_update["interactive"] is True  # 上一页按钮可用
         
         # 验证历史状态更新
@@ -139,11 +138,11 @@ class TestHistoryManagement:
         history, page_update, prev_btn_update, next_btn_update = result
         
         # 验证分页结果
-        assert "第 1 页" in page_update["value"]
-        assert prev_btn_update["interactive"] is False  # 上一页按钮不可用（已在第一页）
-        assert next_btn_update["interactive"] is True   # 下一页按钮可用
+        assert "1 " in page_update["value"]
+        assert prev_btn_update["interactive"] is False  # 上一页按钮不可用(已在第一页)
+        assert next_btn_update["interactive"] is True   # 下一页按钮可
         
-        # 验证历史状态更新
+        # 验证历史状态更
         assert self.chat_tab.history_state["current_page"] == 1
     
     def test_navigate_history_page_boundaries(self):
@@ -154,14 +153,14 @@ class TestHistoryManagement:
         result = self.chat_tab._navigate_history_page(-1, [])
         _, page_update, prev_btn_update, _ = result
         
-        # 应该保持在第一页
+        # 应该保持在第一
         assert self.chat_tab.history_state["current_page"] == 1
         assert prev_btn_update["interactive"] is False
         
         # 测试超出最大页数的导航
         self.chat_tab.history_state["messages_per_page"] = 10  # 设置大的页面大小
         
-        result = self.chat_tab._navigate_history_page(10, [])  # 尝试跳转很多页
+        result = self.chat_tab._navigate_history_page(10, [])  # 尝试跳转很多
         
         # 应该限制在最大页数内
         total_pages = self.chat_tab.history_state["total_pages"]
@@ -224,11 +223,11 @@ class TestHistoryManagement:
     def test_update_history_status_with_messages(self):
         """测试有消息时的状态更新"""
         # 测试完整显示
-        current_display = [["Hello", "Hi"], ["How are you?", "Good"]]
+        current_display = [["Hello", "Hi"], ["How are you", "Good"]]
         
         status = self.chat_tab._update_history_status(current_display)
-        # 由于当前显示2条，总共6条，所以应该显示部分信息
-        assert ("显示 2/6 条对话" in status) or ("共 6 条对话" in status)
+        # 由于当前显示2条,总共6条,所以应该显示部分信息
+        assert ("显示 2/6 条对话" in status) or ("6 条对话" in status)
         
         # 测试部分显示
         partial_display = [["Hello", "Hi"]]
@@ -245,12 +244,12 @@ class TestHistoryManagement:
         assert "状态获取失败" in status
     
     def test_history_pagination_formatting(self):
-        """测试历史记录分页格式化"""
+        """测试历史记录分页格式"""
         # 设置小的页面大小以测试分页
         self.chat_tab.history_state["messages_per_page"] = 2
         
         # 导航到第一页
-        result = self.chat_tab._navigate_history_page(0, [])  # 0表示不改变页面，只格式化当前页
+        result = self.chat_tab._navigate_history_page(0, [])  # 0表示不改变页面,只格式化当前页
         history, page_update, _, _ = result
         
         # 验证格式化结果
@@ -269,14 +268,14 @@ class TestHistoryManagement:
         # 导航到下一页
         self.chat_tab._navigate_history_page(1, [])
         
-        # 验证状态已更新（考虑到边界限制）
+        # 验证状态已更新(考虑到边界限制)
         new_page = self.chat_tab.history_state["current_page"]
-        assert new_page >= original_page  # 页面应该增加或保持不变（如果已在最后一页）
+        assert new_page >= original_page  # 页面应该增加或保持不变(如果已在最后一页)
         
         # 再次导航
         self.chat_tab._navigate_history_page(1, [])
         
-        # 验证状态继续更新（考虑到边界限制）
+        # 验证状态继续更新(考虑到边界限制)
         final_page = self.chat_tab.history_state["current_page"]
         assert final_page >= new_page  # 页面应该增加或保持不变
 
@@ -301,7 +300,7 @@ class TestHistoryManagementIntegration:
         # 设置初始偏好
         preferences.set_show_history(True)
         
-        with patch('src.oralcounsellor.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
+        with patch('chatterpal.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
             mock_get_prefs.return_value = preferences
             chat_tab = ChatTab(self.mock_chat_service)
             
@@ -333,15 +332,14 @@ class TestHistoryManagementIntegration:
         
         preferences = UserPreferences(config_dir=self.temp_dir)
         
-        with patch('src.oralcounsellor.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
+        with patch('chatterpal.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
             mock_get_prefs.return_value = preferences
             chat_tab = ChatTab(self.mock_chat_service)
             chat_tab.current_session_id = "test_session"
             
             # 测试获取历史状态
             status = chat_tab._update_history_status([])
-            # 由于当前显示0条，总共4条，所以应该显示部分信息
-            assert ("显示 0/4 条对话" in status) or ("共 4 条对话" in status)
+            assert ("显示 0/4 条对话" in status) or ("4 条对话" in status)
             
             # 测试清除历史
             result = chat_tab._clear_history_with_confirmation([])
@@ -349,6 +347,9 @@ class TestHistoryManagementIntegration:
             
             assert history == []
             assert "已清除所有对话" in status_update["value"]
+            assert "1 页,1 条" in page_update["value"]
+            assert prev_btn_update["interactive"] is False
+            assert next_btn_update["interactive"] is False
             
             # 验证服务方法被调用
             self.mock_chat_service.clear_conversation_history.assert_called_once_with("test_session")
@@ -356,3 +357,12 @@ class TestHistoryManagementIntegration:
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+
+
+
+
+
+
+
+

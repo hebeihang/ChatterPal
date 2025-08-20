@@ -7,13 +7,13 @@ import pytest
 import time
 from unittest.mock import Mock, patch, MagicMock
 
-from src.oralcounsellor.core.tts.base import TTSBase, TTSResult, TTSError
-from src.oralcounsellor.core.errors import error_handler, SpeechSynthesisError
-from src.oralcounsellor.services.chat import ChatService
+from chatterpal.core.tts.base import TTSBase, TTSResult, TTSError
+from chatterpal.core.errors import error_handler, SpeechSynthesisError
+from chatterpal.services.chat import ChatService
 
 
 class MockTTSWithErrorHandling(TTSBase):
-    """支持错误处理的模拟TTS类"""
+    """支持错误处理的模拟TTS"""
     
     def __init__(self, config=None):
         super().__init__(config)
@@ -51,7 +51,7 @@ class MockTTSWithErrorHandling(TTSBase):
 
 
 class MockTTSBasic(TTSBase):
-    """基本的模拟TTS类（不支持增强错误处理）"""
+    """基本的模拟TTS类(不支持增强错误处理)"""
     
     def __init__(self, config=None):
         super().__init__(config)
@@ -78,18 +78,18 @@ class TestTTSErrorHandling:
         })
     
     def test_synthesize_with_error_handling_success(self):
-        """测试成功的语音合成"""
+        """测试成功的语音合"""
         result = self.tts.synthesize_with_error_handling("Hello world")
         
         assert isinstance(result, TTSResult)
         assert result.text == "Hello world"
         assert result.audio_data == b"fake audio data for: Hello world"
         assert result.cached is False
-        assert result.synthesis_time >= 0  # 允许为0，因为模拟执行很快
+        assert result.synthesis_time >= 0  # 允许,因为模拟执行很
     
     def test_synthesize_with_error_handling_retry(self):
         """测试重试机制"""
-        # 设置前两次失败，第三次成功
+        # 设置前两次失败,第三次成
         self.tts.should_fail = True
         self.tts.fail_count = 2
         
@@ -97,7 +97,7 @@ class TestTTSErrorHandling:
         
         assert isinstance(result, TTSResult)
         assert result.text == "Test retry"
-        assert self.tts.call_count == 3  # 验证重试了3次
+        assert self.tts.call_count == 3  # 验证重试
     
     def test_synthesize_with_error_handling_invalid_text(self):
         """测试无效文本错误"""
@@ -130,7 +130,7 @@ class TestTTSErrorHandling:
         with pytest.raises(SpeechSynthesisError):
             self.tts.synthesize_with_error_handling("Test all fail", max_retries=3)
         
-        assert self.tts.call_count == 3  # 验证重试了3次
+        assert self.tts.call_count == 3  # 验证重试
     
     def test_cache_functionality(self):
         """测试缓存功能"""
@@ -138,7 +138,7 @@ class TestTTSErrorHandling:
         result1 = self.tts.synthesize_with_error_handling("Cache test")
         assert result1.cached is False
         
-        # 第二次合成相同文本，应该从缓存获取
+        # 第二次合成相同文本,应该从缓存获取
         result2 = self.tts.synthesize_with_error_handling("Cache test")
         assert result2.cached is True
         assert result2.audio_data == result1.audio_data
@@ -148,7 +148,7 @@ class TestTTSErrorHandling:
     
     def test_cache_with_different_params(self):
         """测试不同参数的缓存"""
-        # 相同文本，不同参数
+        # 相同文本,不同参数
         result1 = self.tts.synthesize_with_error_handling("Param test", voice="voice1")
         result2 = self.tts.synthesize_with_error_handling("Param test", voice="voice2")
         
@@ -159,7 +159,7 @@ class TestTTSErrorHandling:
     
     def test_text_cleaning(self):
         """测试文本清理功能"""
-        dirty_text = "Hello!!! @#$%^&*() World???"
+        dirty_text = "Hello!!! @#$%^&*() World秒秒"
         cleaned = self.tts.clean_text_for_tts(dirty_text)
         
         # 验证特殊字符被清理
@@ -169,34 +169,34 @@ class TestTTSErrorHandling:
     
     def test_audio_duration_estimation(self):
         """测试音频时长估算"""
-        # 创建简单的音频数据（32000字节 = 1秒的16位16kHz音频）
+        # 创建简单的音频数据2000字节 = 1秒的166kHz音频
         audio_data = b'\x00' * 32000
         
         duration = self.tts._estimate_audio_duration(audio_data)
-        assert 0.9 < duration < 1.1  # 大约1秒
+        assert 0.9 < duration < 1.1  # 大约1
     
     def test_cache_eviction(self):
         """测试缓存清理"""
         # 设置小的缓存限制
         self.tts.cache_size_limit = 2
         
-        # 添加3个缓存条目
+        # 添加3个缓存条
         self.tts.synthesize_with_error_handling("Text 1")
         self.tts.synthesize_with_error_handling("Text 2")
         self.tts.synthesize_with_error_handling("Text 3")
         
-        # 验证缓存大小不超过限制
+        # 验证缓存大小不超过限
         cache_stats = self.tts.get_cache_stats()
         assert cache_stats["entries"] <= 2
     
     def test_play_audio_with_error_handling(self):
         """测试音频播放错误处理"""
-        # 测试空音频数据 - 应该捕获异常并返回False
+        # 测试空音频数- 应该捕获异常并返回False
         try:
             success = self.tts.play_audio_with_error_handling(b"")
             assert success is False
         except Exception:
-            # 如果抛出异常也是可以接受的
+            # 如果抛出异常也是可以接受
             pass
         
         # 测试None音频数据
@@ -204,21 +204,21 @@ class TestTTSErrorHandling:
             success = self.tts.play_audio_with_error_handling(None)
             assert success is False
         except Exception:
-            # 如果抛出异常也是可以接受的
+            # 如果抛出异常也是可以接受
             pass
         
-        # 测试有效音频数据（可能失败，取决于系统环境）
+        # 测试有效音频数据(可能失败,取决于系统环境)
         audio_data = b"fake audio data"
         try:
             success = self.tts.play_audio_with_error_handling(audio_data)
-            # 不验证结果，因为播放可能在测试环境中失败
+            # 不验证结果,因为播放可能在测试环境中失败
         except Exception:
             # 播放失败在测试环境中是正常的
             pass
 
 
 class TestChatServiceTTSIntegration:
-    """测试ChatService与TTS的集成"""
+    """测试ChatService与TTS的集""
     
     def setup_method(self):
         """设置测试环境"""
@@ -231,7 +231,7 @@ class TestChatServiceTTSIntegration:
         """测试ChatService使用增强TTS"""
         chat_service = ChatService(tts=self.tts_enhanced, llm=self.llm)
         
-        # 测试成功的语音合成
+        # 测试成功的语音合
         audio_data = chat_service._synthesize_with_error_handling("Hello")
         assert audio_data is not None
         assert b"Hello" in audio_data
@@ -240,7 +240,7 @@ class TestChatServiceTTSIntegration:
         """测试ChatService使用基本TTS"""
         chat_service = ChatService(tts=self.tts_basic, llm=self.llm)
         
-        # 测试成功的语音合成
+        # 测试成功的语音合
         audio_data = chat_service._synthesize_with_error_handling("Hello")
         assert audio_data is not None
         assert audio_data == b"basic tts audio data"
@@ -252,7 +252,7 @@ class TestChatServiceTTSIntegration:
         
         chat_service = ChatService(tts=self.tts_enhanced, llm=self.llm)
         
-        # TTS失败不应该抛出异常，而是返回None
+        # TTS失败不应该抛出异常,而是返回None
         audio_data = chat_service._synthesize_with_error_handling("Hello")
         assert audio_data is None
     
@@ -263,14 +263,14 @@ class TestChatServiceTTSIntegration:
         
         chat_service = ChatService(tts=self.tts_enhanced, llm=self.llm)
         
-        # 即使TTS失败，对话也应该继续
+        # 即使TTS失败,对话也应该继续
         result = chat_service.process_chat(text_input="Hello", use_text_input=True)
         audio_output, chat_history = result
         
-        # 应该有文本回复，但没有音频
+        # 应该有文本回复,但没有音
         assert len(chat_history) > 0
         assert "Test response" in str(chat_history)
-        assert audio_output == (16000, [])  # 空音频
+        assert audio_output == (16000, [])  # 空音
 
 
 class TestTTSCacheManagement:
@@ -281,7 +281,7 @@ class TestTTSCacheManagement:
         self.tts = MockTTSWithErrorHandling({
             "enable_cache": True,
             "cache_size_limit": 5,
-            "cache_ttl": 1  # 1秒过期时间
+            "cache_ttl": 1  # 1秒过期时
         })
     
     def test_cache_expiration(self):
@@ -290,14 +290,14 @@ class TestTTSCacheManagement:
         result1 = self.tts.synthesize_with_error_handling("Expire test")
         assert result1.cached is False
         
-        # 立即再次请求，应该从缓存获取
+        # 立即再次请求,应该从缓存获取
         result2 = self.tts.synthesize_with_error_handling("Expire test")
         assert result2.cached is True
         
         # 等待缓存过期
         time.sleep(1.1)
         
-        # 再次请求，应该重新合成
+        # 再次请求,应该重新合成
         result3 = self.tts.synthesize_with_error_handling("Expire test")
         assert result3.cached is False
     
@@ -328,3 +328,11 @@ class TestTTSCacheManagement:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+
+
+
+
+
+

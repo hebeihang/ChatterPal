@@ -1,4 +1,4 @@
-"""
+﻿"""
 Tests for configuration management system.
 """
 
@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 from unittest.mock import patch
 
-from oralcounsellor.config import (
+from chatterpal.config import (
     Settings,
     get_settings,
     reload_settings,
@@ -241,3 +241,11 @@ ALIBABA_API_SECRET=test_secret
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+
+
+
+
+
+
+

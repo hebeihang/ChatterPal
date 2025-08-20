@@ -1,4 +1,4 @@
-"""
+﻿"""
 Integration tests for web components and Gradio interface.
 Tests chat, score, and correction tabs functionality.
 """
@@ -10,12 +10,12 @@ import os
 import numpy as np
 import gradio as gr
 
-from oralcounsellor.web.components.chat_tab import ChatTab
-from oralcounsellor.web.components.score_tab import ScoreTab
-from oralcounsellor.web.components.correct_tab import CorrectTab
-from oralcounsellor.services.chat import ChatService
-from oralcounsellor.services.evaluation import EvaluationService
-from oralcounsellor.services.correction import CorrectionService
+from chatterpal.web.components.chat_tab import ChatTab
+from chatterpal.web.components.score_tab import ScoreTab
+from chatterpal.web.components.correct_tab import CorrectTab
+from chatterpal.services.chat import ChatService
+from chatterpal.services.evaluation import EvaluationService
+from chatterpal.services.correction import CorrectionService
 
 
 class MockChatService:
@@ -27,7 +27,7 @@ class MockChatService:
     def process_audio_input(self, audio_data):
         return {
             "success": True,
-            "recognized_text": "Hello, how are you?",
+            "recognized_text": "Hello, how are you",
             "response_text": "I'm doing well, thank you!",
             "response_audio": b"fake response audio"
         }
@@ -65,7 +65,7 @@ class MockEvaluationService:
                 "pronunciation": 0.9,
                 "accuracy": 0.85
             },
-            "recognized_text": "Hello, how are you today?",
+            "recognized_text": "Hello, how are you today",
             "target_text": target_text,
             "feedback": "Good pronunciation overall. Keep practicing!"
         }
@@ -107,7 +107,7 @@ class MockCorrectionService:
             ],
             "feedback": "Excellent pronunciation! Your speech is clear and well-paced.",
             "suggestions": ["Continue practicing", "Work on intonation"],
-            "recognized_text": "Hello, how are you today?",
+            "recognized_text": "Hello, how are you today",
             "target_text": target_text
         }
     
@@ -156,7 +156,7 @@ class TestChatTab:
     
     def test_process_text_message(self):
         """Test processing text message."""
-        user_text = "Hello, how are you?"
+        user_text = "Hello, how are you"
         
         result = self.chat_tab.process_text_message(user_text)
         
@@ -245,7 +245,7 @@ class TestScoreTab:
         """Test pronunciation evaluation with target text."""
         audio_array = np.array([0.1, 0.2, 0.3])
         audio_data = (16000, audio_array)
-        target_text = "Hello, how are you today?"
+        target_text = "Hello, how are you today"
         
         result = self.score_tab.evaluate_pronunciation(audio_data, target_text)
         
@@ -345,7 +345,7 @@ class TestCorrectTab:
         """Test pronunciation analysis."""
         audio_array = np.array([0.1, 0.2, 0.3])
         audio_data = (16000, audio_array)
-        target_text = "Hello, how are you today?"
+        target_text = "Hello, how are you today"
         
         result = self.correct_tab.analyze_pronunciation(audio_data, target_text)
         
@@ -514,3 +514,11 @@ class TestWebComponentIntegration:
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+
+
+
+
+
+
+

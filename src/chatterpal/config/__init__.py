@@ -2,7 +2,7 @@
 """
 Configuration management module.
 
-This module provides unified configuration management for OralCounsellor,
+This module provides unified configuration management for ChatterPal,
 supporting environment variables, configuration files, and type-safe access.
 """
 

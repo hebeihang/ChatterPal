@@ -1,6 +1,6 @@
-"""
-功能完整性验证测试
-验证重构后的所有核心功能是否正常工作
+﻿"""
+功能完整性验证测
+验证重构后的所有核心功能是否正常工
 """
 
 import pytest
@@ -10,13 +10,13 @@ import numpy as np
 from unittest.mock import Mock, patch, MagicMock
 
 # 导入所有需要测试的模块
-from oralcounsellor.core.asr.base import ASRBase
-from oralcounsellor.core.tts.base import TTSBase  
-from oralcounsellor.core.llm.base import LLMBase, Conversation
-from oralcounsellor.core.assessment.base import AssessmentBase, AssessmentResult
-from oralcounsellor.services.chat import ChatService
-from oralcounsellor.services.evaluation import EvaluationService
-from oralcounsellor.services.correction import CorrectionService
+from chatterpal.core.asr.base import ASRBase
+from chatterpal.core.tts.base import TTSBase  
+from chatterpal.core.llm.base import LLMBase, Conversation
+from chatterpal.core.assessment.base import AssessmentBase, AssessmentResult
+from chatterpal.services.chat import ChatService
+from chatterpal.services.evaluation import EvaluationService
+from chatterpal.services.correction import CorrectionService
 
 
 class TestCoreModulesIntegration:
@@ -91,11 +91,11 @@ class TestCoreModulesIntegration:
         # 测试对话对象
         conv = llm.create_conversation("你是助手")
         conv.add_user_message("你好")
-        # LLM的chat方法会调用normalize_messages，将Conversation转换为消息列表
+        # LLM的chat方法会调用normalize_messages,将Conversation转换为消息列
         response = llm.chat(conv)
         assert "回复:" in response
         
-        # 测试消息标准化
+        # 测试消息标准
         normalized = llm.normalize_messages("测试消息")
         assert len(normalized) == 1
         assert normalized[0]["role"] == "user"
@@ -103,10 +103,10 @@ class TestCoreModulesIntegration:
     
     def test_assessment_base_functionality(self):
         """测试评估基础功能"""
-        # 创建模拟评估器
+        # 创建模拟评估
         class TestAssessment(AssessmentBase):
             def assess(self, audio_data, target_text="", **kwargs):
-                from oralcounsellor.core.assessment.base import ProsodyFeatures
+                from chatterpal.core.assessment.base import ProsodyFeatures
                 return AssessmentResult(
                     overall_score=0.8,
                     fluency_score=0.7,
@@ -130,21 +130,21 @@ class TestCoreModulesIntegration:
         assert assessment.detect_language("Hello world") == "en"
         assert assessment.detect_language("你好世界") == "zh"
         
-        # 测试文本相似度
+        # 测试文本相似
         similarity = assessment.calculate_text_similarity("hello", "hello")
         assert similarity == 1.0
 
 
 class TestServiceLayerIntegration:
-    """测试服务层集成功能"""
+    """测试服务层集成功""
     
     def setup_method(self):
         """设置测试环境"""
         # 创建模拟组件
         self.mock_asr = Mock()
-        self.mock_asr.recognize.return_value = "Hello, how are you?"
-        self.mock_asr.recognize_file.return_value = "Hello, how are you?"
-        self.mock_asr.recognize_gradio_audio.return_value = "Hello, how are you?"
+        self.mock_asr.recognize.return_value = "Hello, how are you"
+        self.mock_asr.recognize_file.return_value = "Hello, how are you"
+        self.mock_asr.recognize_gradio_audio.return_value = "Hello, how are you"
         
         self.mock_tts = Mock()
         self.mock_tts.synthesize.return_value = b"fake audio response"
@@ -182,12 +182,12 @@ class TestServiceLayerIntegration:
         # 测试清空对话
         self.chat_service.clear_conversation_history(session_id)
         history = self.chat_service.get_conversation_history(session_id)
-        assert len(history) <= 1  # 只剩系统消息或为空
+        assert len(history) <= 1  # 只剩系统消息或为
     
     def test_evaluation_service_functionality(self):
         """测试评估服务功能"""
         audio_data = b"fake audio data"
-        target_text = "Hello, how are you?"
+        target_text = "Hello, how are you"
         
         # 测试发音评估
         result = self.evaluation_service.evaluate_pronunciation(
@@ -196,16 +196,16 @@ class TestServiceLayerIntegration:
         
         assert isinstance(result, AssessmentResult)
         assert result.overall_score >= 0
-        assert result.recognized_text == "Hello, how are you?"
+        assert result.recognized_text == "Hello, how are you"
         assert result.target_text == target_text
     
     def test_correction_service_functionality(self):
         """测试纠错服务功能"""
         audio_data = b"fake audio data"
-        target_text = "Hello, how are you?"
+        target_text = "Hello, how are you"
         
         # 测试综合纠错
-        from oralcounsellor.services.correction import CorrectionReport
+        from chatterpal.services.correction import CorrectionReport
         result = self.correction_service.comprehensive_correction(
             audio_data, target_text
         )
@@ -224,14 +224,14 @@ class TestServiceLayerIntegration:
         assert "key_suggestions" in quick_result
     
     def test_cross_service_integration(self):
-        """测试跨服务集成"""
+        """测试跨服务集""
         # 1. 用户发起对话
         response_text, session_id = self.chat_service.chat_with_text(
             "I want to practice pronunciation"
         )
         assert session_id is not None
         
-        # 2. 用户录音练习（模拟）
+        # 2. 用户录音练习(模拟)
         user_audio = b"user practice audio"
         
         # 3. 评估发音
@@ -241,14 +241,14 @@ class TestServiceLayerIntegration:
         assert isinstance(eval_result, AssessmentResult)
         
         # 4. 获取纠错建议
-        from oralcounsellor.services.correction import CorrectionReport
+        from chatterpal.services.correction import CorrectionReport
         correction_result = self.correction_service.comprehensive_correction(
             user_audio, "I want to practice pronunciation"
         )
         assert isinstance(correction_result, CorrectionReport)
         
         # 5. 将评估结果反馈给对话
-        feedback_text = f"你的发音得分是 {eval_result.overall_score:.1f}"
+        feedback_text = f"你的发音得分{eval_result.overall_score:.1f}"
         feedback_response, _ = self.chat_service.chat_with_text(
             feedback_text, session_id
         )
@@ -259,34 +259,34 @@ class TestWebComponentsBasic:
     """测试Web组件基础功能"""
     
     def test_chat_tab_creation(self):
-        """测试聊天标签页创建"""
-        from oralcounsellor.web.components.chat_tab import ChatTab
+        """测试聊天标签页创""
+        from chatterpal.web.components.chat_tab import ChatTab
         
         mock_service = Mock()
         chat_tab = ChatTab(mock_service)
         
         assert chat_tab.chat_service is mock_service
         
-        # 测试接口创建（不执行Gradio代码）
+        # 测试接口创建(不执行Gradio代码
         with patch('gradio.Column'), patch('gradio.Textbox'), patch('gradio.Button'):
             try:
                 interface = chat_tab.create_interface()
                 # 如果没有异常就算成功
                 assert True
             except Exception as e:
-                # 记录但不失败，因为Gradio在测试环境可能有问题
+                # 记录但不失败,因为Gradio在测试环境可能有问题
                 print(f"Gradio接口创建警告: {e}")
     
     def test_score_tab_creation(self):
-        """测试评分标签页创建"""
-        from oralcounsellor.web.components.score_tab import ScoreTab
+        """测试评分标签页创""
+        from chatterpal.web.components.score_tab import ScoreTab
         
         mock_service = Mock()
         score_tab = ScoreTab(mock_service)
         
         assert score_tab.evaluation_service is mock_service
         
-        # 测试接口创建（不执行Gradio代码）
+        # 测试接口创建(不执行Gradio代码
         with patch('gradio.Column'), patch('gradio.Microphone'), patch('gradio.Button'):
             try:
                 interface = score_tab.create_interface()
@@ -295,15 +295,15 @@ class TestWebComponentsBasic:
                 print(f"Gradio接口创建警告: {e}")
     
     def test_correct_tab_creation(self):
-        """测试纠错标签页创建"""
-        from oralcounsellor.web.components.correct_tab import CorrectTab
+        """测试纠错标签页创""
+        from chatterpal.web.components.correct_tab import CorrectTab
         
         mock_service = Mock()
         correct_tab = CorrectTab(mock_service)
         
         assert correct_tab.correction_service is mock_service
         
-        # 测试接口创建（不执行Gradio代码）
+        # 测试接口创建(不执行Gradio代码
         with patch('gradio.Column'), patch('gradio.Microphone'), patch('gradio.Button'):
             try:
                 interface = correct_tab.create_interface()
@@ -313,15 +313,15 @@ class TestWebComponentsBasic:
 
 
 class TestEndToEndWorkflow:
-    """测试端到端工作流程"""
+    """测试端到端工作流程""
     
     def test_complete_pronunciation_practice_workflow(self):
-        """测试完整的发音练习工作流程"""
+        """测试完整的发音练习工作流""
         # 创建所有必要的模拟组件
         mock_asr = Mock()
-        mock_asr.recognize.return_value = "Hello, how are you today?"
-        mock_asr.recognize_file.return_value = "Hello, how are you today?"
-        mock_asr.recognize_gradio_audio.return_value = "Hello, how are you today?"
+        mock_asr.recognize.return_value = "Hello, how are you today"
+        mock_asr.recognize_file.return_value = "Hello, how are you today"
+        mock_asr.recognize_gradio_audio.return_value = "Hello, how are you today"
         
         mock_tts = Mock()
         mock_tts.synthesize.return_value = b"synthesized response audio"
@@ -343,31 +343,31 @@ class TestEndToEndWorkflow:
         
         # 2. 用户录音练习
         user_audio = b"user pronunciation audio"
-        practice_sentence = "Hello, how are you today?"
+        practice_sentence = "Hello, how are you today"
         
         # 3. 评估发音
         eval_result = evaluation_service.evaluate_pronunciation(
             user_audio, practice_sentence
         )
         assert isinstance(eval_result, AssessmentResult)
-        assert eval_result.recognized_text == "Hello, how are you today?"
+        assert eval_result.recognized_text == "Hello, how are you today"
         assert eval_result.target_text == practice_sentence
         
         # 4. 获取纠错建议
-        from oralcounsellor.services.correction import CorrectionReport
+        from chatterpal.services.correction import CorrectionReport
         correction_result = correction_service.comprehensive_correction(
             user_audio, practice_sentence
         )
         assert isinstance(correction_result, CorrectionReport)
         
         # 5. 继续对话讨论结果
-        feedback_text = f"我的发音得分是 {eval_result.overall_score:.1f}，请给我一些建议"
+        feedback_text = f"我的发音得分{eval_result.overall_score:.1f},请给我一些建
         final_response, _ = chat_service.chat_with_text(feedback_text, session_id)
         assert final_response == "Great! Let's practice pronunciation together."
         
         # 6. 验证对话历史
         history = chat_service.get_conversation_history(session_id)
-        assert len(history) >= 4  # 至少4条消息（系统+用户+助手+用户+助手）
+        assert len(history) >= 4  # 至少4条消息(系统+用户+助手+用户+助手
     
     def test_audio_processing_pipeline(self):
         """测试音频处理管道"""
@@ -381,7 +381,7 @@ class TestEndToEndWorkflow:
         mock_asr = Mock()
         mock_asr.recognize_gradio_audio.return_value = "Test audio recognition"
         
-        # 测试不同格式的音频处理
+        # 测试不同格式的音频处
         # 1. 字节数据
         result1 = mock_asr.recognize(b"audio bytes")
         
@@ -396,38 +396,38 @@ class TestEndToEndWorkflow:
         
         try:
             result3 = mock_asr.recognize_file(temp_path)
-            # 验证所有格式都能处理
+            # 验证所有格式都能处
             assert True
         finally:
             os.unlink(temp_path)
     
     def test_error_handling_robustness(self):
-        """测试错误处理的健壮性"""
+        """测试错误处理的健壮""
         # 创建会失败的模拟组件
         failing_asr = Mock()
         failing_asr.recognize.side_effect = Exception("ASR服务不可用")
         
-        failing_tts = Mock()
+        failing_tts = Mock(")
         failing_tts.synthesize.side_effect = Exception("TTS服务不可用")
         
-        failing_llm = Mock()
+        failing_llm = Mock(")
         failing_llm.chat.side_effect = Exception("LLM服务不可用")
         
-        # 测试服务在组件失败时的处理
+        # 测试服务在组件失败时的处
         chat_service = ChatService(asr=failing_asr, tts=failing_tts, llm=failing_llm)
         
-        # 应该抛出适当的异常而不是崩溃
-        with pytest.raises(Exception):
+        # 应该抛出适当的异常而不是崩
+        with pytest.raises(Exception"):
             chat_service.chat_with_audio(b"audio data")
         
         with pytest.raises(Exception):
             chat_service.chat_with_text("Hello")
     
     def test_configuration_integration(self):
-        """测试配置集成"""
-        from oralcounsellor.config.settings import Settings
+        """测试配置值集成"""
+        from chatterpal.config.settings import Settings
         
-        # 测试配置加载
+        # 测试配置值加载
         settings = Settings()
         assert settings.audio_sample_rate > 0
         assert settings.whisper_model in ["tiny", "base", "small", "medium", "large"]
@@ -446,11 +446,11 @@ class TestEndToEndWorkflow:
 
 
 class TestDataFlowIntegrity:
-    """测试数据流完整性"""
+    """测试数据流完整""
     
     def test_message_flow_integrity(self):
-        """测试消息流完整性"""
-        from oralcounsellor.core.llm.base import Message, Conversation
+        """测试消息流完整""
+        from chatterpal.core.llm.base import Message, Conversation
         
         # 创建对话
         conv = Conversation("你是英语老师")
@@ -458,9 +458,9 @@ class TestDataFlowIntegrity:
         # 添加消息
         conv.add_user_message("Hello")
         conv.add_assistant_message("Hi there!")
-        conv.add_user_message("How are you?")
+        conv.add_user_message("How are you")
         
-        # 验证消息完整性
+        # 验证消息完整
         messages = conv.get_messages()
         assert len(messages) == 4  # 系统+用户+助手+用户
         
@@ -471,12 +471,12 @@ class TestDataFlowIntegrity:
             assert msg["role"] in ["system", "user", "assistant"]
     
     def test_assessment_result_integrity(self):
-        """测试评估结果完整性"""
-        from oralcounsellor.core.assessment.base import (
+        """测试评估结果完整""
+        from chatterpal.core.assessment.base import (
             AssessmentResult, ProsodyFeatures, WordAnalysis, PhonemeAnalysis
         )
         
-        # 创建完整的评估结果
+        # 创建完整的评估结
         result = AssessmentResult(
             overall_score=0.85,
             fluency_score=0.8,
@@ -498,7 +498,7 @@ class TestDataFlowIntegrity:
             feedback="发音很好"
         )
         
-        # 验证数据完整性
+        # 验证数据完整
         result_dict = result.to_dict()
         assert "overall_score" in result_dict
         assert "detailed_scores" in result_dict
@@ -511,14 +511,14 @@ class TestDataFlowIntegrity:
         assert len(result_dict["phoneme_analysis"]) == 1
     
     def test_service_status_reporting(self):
-        """测试服务状态报告"""
+        """测试服务状态报""
         mock_asr = Mock()
         mock_tts = Mock()
         mock_llm = Mock()
         
         chat_service = ChatService(asr=mock_asr, tts=mock_tts, llm=mock_llm)
         
-        # 获取服务状态
+        # 获取服务状
         status = chat_service.get_service_status()
         
         assert isinstance(status, dict)
@@ -530,3 +530,12 @@ class TestDataFlowIntegrity:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+
+
+
+
+
+
+

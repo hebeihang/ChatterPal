@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-启动API服务器脚本
+启动API服务器脚�?
 """
 
 import os
@@ -13,9 +13,9 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from src.oralcounsellor.web.api_server import create_api_server
-from src.oralcounsellor.config.settings import get_settings
-from src.oralcounsellor.utils.logger import get_logger
+from src.chatterpal.web.api_server import create_api_server
+from src.chatterpal.config.settings import get_settings
+from src.chatterpal.utils.logger import get_logger
 
 
 def main():
@@ -29,22 +29,22 @@ def main():
         settings = get_settings()
         logger.info("配置加载完成")
         
-        # 创建API服务器
+        # 创建API服务�?
         server = create_api_server(settings)
         logger.info("API服务器创建完成")
         
-        # 启动服务器
-        logger.info("启动API服务器...")
+        # 启动服务�?
+        logger.info("启动API服务�?..")
         logger.info("API服务器地址: http://localhost:8010")
         logger.info("API文档地址: http://localhost:8010/docs")
-        logger.info("健康检查: http://localhost:8010/health")
+        logger.info("健康检�? http://localhost:8010/health")
         
         server.run(host="0.0.0.0", port=8010, debug=False)
         
     except KeyboardInterrupt:
         logger.info("收到中断信号，正在关闭服务器...")
     except Exception as e:
-        logger.error(f"启动API服务器失败: {e}")
+        logger.error(f"启动API服务器失�? {e}")
         sys.exit(1)
 
 

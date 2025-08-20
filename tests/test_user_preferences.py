@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
-from src.oralcounsellor.utils.preferences import (
+from chatterpal.utils.preferences import (
     UserPreferences,
     get_preferences_manager,
     get_user_preference,
@@ -18,7 +18,7 @@ from src.oralcounsellor.utils.preferences import (
 
 
 class TestUserPreferences:
-    """用户偏好设置测试类"""
+    """用户偏好设置测试"""
     
     def setup_method(self):
         """测试前设置"""
@@ -39,19 +39,19 @@ class TestUserPreferences:
     
     def test_default_preferences_loaded(self):
         """测试默认偏好设置加载"""
-        # 检查默认值
+        # 检查默认设置
         assert self.preferences.get("chat.input_mode") == "text"
         assert self.preferences.get("chat.auto_play_response") is True
         assert self.preferences.get("chat.show_history") is False
         assert self.preferences.get("ui.language") == "zh-CN"
     
     def test_get_set_preference(self):
-        """测试获取和设置偏好"""
-        # 设置简单值
+        """测试获取和设置偏"""
+        # 设置简单
         assert self.preferences.set("test_key", "test_value")
         assert self.preferences.get("test_key") == "test_value"
         
-        # 设置嵌套值
+        # 设置嵌套
         assert self.preferences.set("nested.key", "nested_value")
         assert self.preferences.get("nested.key") == "nested_value"
         
@@ -96,7 +96,7 @@ class TestUserPreferences:
         self.preferences.set("test.persistence", "persistent_value")
         self.preferences.set_input_mode("voice")
         
-        # 创建新的实例（模拟重启）
+        # 创建新的实例(模拟重启)
         new_preferences = UserPreferences(config_dir=self.temp_dir)
         
         # 检查值是否被保存
@@ -125,7 +125,7 @@ class TestUserPreferences:
         self.preferences.set("test.custom", "custom_value")
         self.preferences.set_input_mode("voice")
         
-        # 重置为默认值
+        # 重置为默认
         assert self.preferences.reset_to_defaults()
         
         # 检查是否重置成功
@@ -181,27 +181,27 @@ class TestUserPreferences:
         }
         
         loaded = {
-            "b": {"c": 20},  # 覆盖嵌套值
-            "f": 5  # 新增值
+            "b": {"c": 20},  # 覆盖嵌套
+            "f": 5  # 新增
         }
         
         result = self.preferences._merge_preferences(default, loaded)
         
-        assert result["a"] == 1  # 保持默认值
-        assert result["b"]["c"] == 20  # 覆盖值
-        assert result["b"]["d"] == 3  # 保持默认嵌套值
-        assert result["e"] == 4  # 保持默认值
-        assert result["f"] == 5  # 新增值
+        assert result["a"] == 1  # 保持默认
+        assert result["b"]["c"] == 20  # 覆盖
+        assert result["b"]["d"] == 3  # 保持默认嵌套
+        assert result["e"] == 4  # 保持默认
+        assert result["f"] == 5  # 新增
     
     def test_error_handling(self):
         """测试错误处理"""
-        # 测试保存失败的情况
+        # 测试保存失败的情
         with patch('builtins.open', side_effect=PermissionError("Permission denied")):
             # 设置操作应该失败但不抛出异常
             result = self.preferences.set("test.key", "test_value")
             assert result is False
         
-        # 测试加载损坏的配置文件
+        # 测试加载损坏的配置文
         import json
         with patch('json.load', side_effect=json.JSONDecodeError("Invalid JSON", "", 0)):
             # 应该使用默认设置
@@ -217,21 +217,21 @@ class TestGlobalPreferencesManager:
         manager1 = get_preferences_manager()
         manager2 = get_preferences_manager()
         
-        # 应该返回同一个实例
+        # 应该返回同一个实
         assert manager1 is manager2
     
     def test_convenience_functions(self):
         """测试便捷函数"""
-        # 测试设置和获取
+        # 测试设置和获
         assert set_user_preference("test.convenience", "test_value")
         assert get_user_preference("test.convenience") == "test_value"
         
-        # 测试默认值
+        # 测试默认
         assert get_user_preference("nonexistent.key", "default") == "default"
 
 
 class TestPreferencesIntegration:
-    """偏好设置集成测试"""
+    """用户偏好设置管理模块的测试"""
     
     def setup_method(self):
         """测试前设置"""
@@ -246,7 +246,7 @@ class TestPreferencesIntegration:
         """测试文件格式兼容性"""
         preferences = UserPreferences(config_dir=self.temp_dir)
         
-        # 设置一些值
+        # 设置一些
         preferences.set("test.value", "test")
         preferences.set_input_mode("voice")
         
@@ -267,10 +267,10 @@ class TestPreferencesIntegration:
         prefs1 = UserPreferences(config_dir=self.temp_dir)
         prefs2 = UserPreferences(config_dir=self.temp_dir)
         
-        # 第一个实例设置值
+        # 第一个实例设置
         prefs1.set("concurrent.test", "value1")
         
-        # 第二个实例应该能读取到更新
+        # 第二个实例应该能读取到更
         prefs2._preferences = prefs2._load_preferences()
         assert prefs2.get("concurrent.test") == "value1"
     
@@ -278,7 +278,7 @@ class TestPreferencesIntegration:
         """测试迁移兼容性"""
         # 模拟旧版本配置文件
         old_config = {
-            "input_mode": "voice",  # 旧格式：直接在根级别
+            "input_mode": "voice",  # 旧格式:直接在根级别
             "auto_play": True
         }
         
@@ -290,9 +290,17 @@ class TestPreferencesIntegration:
         preferences = UserPreferences(config_dir=self.temp_dir)
         
         # 检查是否正确合并了默认设置
-        assert preferences.get("chat.input_mode") == "text"  # 使用默认值
-        assert preferences.get("input_mode") == "voice"  # 保留旧值
+        assert preferences.get("chat.input_mode") == "text"  # 使用默认
+        assert preferences.get("input_mode") == "voice"  # 保留旧
 
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+
+
+
+
+
+
+

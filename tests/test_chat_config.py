@@ -1,4 +1,4 @@
-"""
+﻿"""
 聊天模块配置管理测试
 """
 
@@ -9,7 +9,7 @@ import shutil
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-from src.oralcounsellor.services.chat_config import (
+from chatterpal.services.chat_config import (
     AudioConfig,
     TopicGenerationConfig,
     SessionConfig,
@@ -176,7 +176,7 @@ class TestChatModuleConfig:
         assert config.validate() is True
     
     def test_config_to_dict(self):
-        """测试配置转换为字典"""
+        """测试配置值转换为字典"""
         config = ChatModuleConfig()
         config_dict = config.to_dict()
         
@@ -389,7 +389,7 @@ class TestChatConfigManager:
 class TestGlobalFunctions:
     """全局函数测试"""
     
-    @patch('src.oralcounsellor.services.chat_config._chat_config_manager', None)
+    @patch('chatterpal.services.chat_config._chat_config_manager', None)
     def test_get_chat_config_manager(self):
         """测试获取全局配置管理器"""
         manager1 = get_chat_config_manager()
@@ -428,19 +428,19 @@ class TestConfigIntegration:
         shutil.rmtree(temp_dir)
     
     def test_config_persistence(self, temp_config_dir):
-        """测试配置持久化"""
+        """测试配置值持久化"""
         # 创建配置管理器并修改配置
         manager1 = ChatConfigManager(config_dir=temp_config_dir)
         manager1.update_audio_config(max_recording_duration=100)
         
-        # 创建新的管理器实例，应该加载之前的配置
+        # 创建新的管理器实例,应该加载之前的配置
         manager2 = ChatConfigManager(config_dir=temp_config_dir)
         config = manager2.get_config()
         
         assert config.audio.max_recording_duration == 100
     
     def test_config_backup_creation(self, temp_config_dir):
-        """测试配置备份创建"""
+        """测试配置值备份创建"""
         manager = ChatConfigManager(config_dir=temp_config_dir)
         
         # 先保存一次配置以创建初始文件
@@ -456,7 +456,7 @@ class TestConfigIntegration:
         
         # 检查备份文件
         backup_files = list(manager.backup_dir.glob("chat_config_*.json"))
-        assert len(backup_files) >= 1  # 至少有1个备份文件
+        assert len(backup_files) >= 1  # 至少一个备份文件
         
         # 检查配置文件存在
         assert manager.config_file.exists()
@@ -470,12 +470,20 @@ class TestConfigIntegration:
         with open(config_file, 'w') as f:
             f.write("invalid json content")
         
-        # 创建管理器，应该使用默认配置
+        # 创建管理器,应该使用默认配置
         manager = ChatConfigManager(config_dir=temp_config_dir)
         config = manager.get_config()
         
-        assert config.audio.max_recording_duration == 60  # 默认值
+        assert config.audio.max_recording_duration == 60  # 默认
 
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+    
+
+
+
+
+
+

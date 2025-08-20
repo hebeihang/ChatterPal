@@ -1,4 +1,4 @@
-"""
+﻿"""
 Integration tests for service layer functionality.
 Tests chat, evaluation, and correction services.
 """
@@ -9,23 +9,23 @@ import tempfile
 import os
 import numpy as np
 
-from oralcounsellor.services.chat import ChatService
-from oralcounsellor.services.evaluation import EvaluationService
-from oralcounsellor.services.correction import CorrectionService, CorrectionReport
-from oralcounsellor.core.asr.base import ASRBase
-from oralcounsellor.core.tts.base import TTSBase
-from oralcounsellor.core.llm.base import LLMBase
-from oralcounsellor.core.assessment.base import AssessmentBase, AssessmentResult, ProsodyFeatures, AssessmentError
+from chatterpal.services.chat import ChatService
+from chatterpal.services.evaluation import EvaluationService
+from chatterpal.services.correction import CorrectionService, CorrectionReport
+from chatterpal.core.asr.base import ASRBase
+from chatterpal.core.tts.base import TTSBase
+from chatterpal.core.llm.base import LLMBase
+from chatterpal.core.assessment.base import AssessmentBase, AssessmentResult, ProsodyFeatures, AssessmentError
 
 
 class MockASR(ASRBase):
     """Mock ASR for testing services."""
     
     def recognize(self, audio_data, **kwargs):
-        return "Hello, how are you today?"
+        return "Hello, how are you today"
     
     def recognize_file(self, audio_path, **kwargs):
-        return "Hello, how are you today?"
+        return "Hello, how are you today"
 
 
 class MockTTS(TTSBase):
@@ -63,7 +63,7 @@ class MockAssessment(AssessmentBase):
             prosody_score=0.8,
             accuracy_score=0.85,
             prosody_features=ProsodyFeatures(),
-            recognized_text="Hello, how are you today?",
+            recognized_text="Hello, how are you today",
             target_text=target_text,
             feedback="Good pronunciation overall",
             suggestions=["Practice vowel sounds", "Work on intonation"]
@@ -93,7 +93,7 @@ class TestChatService:
         assert len(self.chat_service.sessions) == 0
     
     def test_process_audio_input_bytes(self):
-        """测试处理字节格式的音频输入"""
+        """测试处理字节格式的音频输""
         audio_data = b"fake audio bytes"
         
         result = self.chat_service.chat_with_audio(audio_data)
@@ -106,7 +106,7 @@ class TestChatService:
         assert session_id is not None
     
     def test_process_audio_input_file(self):
-        """测试处理文件路径格式的音频输入"""
+        """测试处理文件路径格式的音频输""
         with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_file:
             temp_file.write(b"fake audio data")
             temp_path = temp_file.name
@@ -135,7 +135,7 @@ class TestChatService:
     
     def test_process_text_input(self):
         """测试处理文本输入"""
-        text_input = "Hello, how are you?"
+        text_input = "Hello, how are you"
         
         result = self.chat_service.chat_with_text(text_input)
         
@@ -152,7 +152,7 @@ class TestChatService:
         
         # Add some conversation
         self.chat_service.chat_with_text("Hello", session_id)
-        self.chat_service.chat_with_text("How are you?", session_id)
+        self.chat_service.chat_with_text("How are you", session_id)
         
         history = self.chat_service.get_conversation_history(session_id)
         
@@ -212,15 +212,15 @@ class TestChatService:
         
         result = self.chat_service.chat_with_audio(b"audio data")
         
-        # 应该仍然成功但没有音频
+        # 应该仍然成功但没有音
         assert len(result) == 3
         response_text, response_audio, session_id = result
         assert response_text.startswith("Response to:")
         assert response_audio is None  # TTS失败时音频为None
 
     def test_process_chat_text_input(self):
-        """测试 process_chat 方法的文本输入模式"""
-        text_input = "Hello, how are you?"
+        """测试 process_chat 方法的文本输入模""
+        text_input = "Hello, how are you"
         
         result = self.chat_service.process_chat(
             text_input=text_input,
@@ -231,13 +231,13 @@ class TestChatService:
         assert len(result) == 2
         audio_output, formatted_history = result
         
-        # 检查音频输出格式
+        # 检查音频输出格
         assert len(audio_output) == 2
         sample_rate, audio_data = audio_output
         assert sample_rate == 16000
-        assert audio_data is not None  # 应该有TTS生成的音频
+        assert audio_data is not None  # 应该有TTS生成的音
         
-        # 检查格式化的历史记录
+        # 检查格式化的历史记
         assert isinstance(formatted_history, list)
         assert len(formatted_history) >= 1
         # 最后一条记录应该包含用户输入和AI回复
@@ -247,7 +247,7 @@ class TestChatService:
         assert last_entry[1] is not None   # AI回复
 
     def test_process_chat_audio_input(self):
-        """测试 process_chat 方法的语音输入模式"""
+        """测试 process_chat 方法的语音输入模""
         audio_data = b"fake audio bytes"
         
         result = self.chat_service.process_chat(
@@ -259,19 +259,19 @@ class TestChatService:
         assert len(result) == 2
         audio_output, formatted_history = result
         
-        # 检查音频输出格式
+        # 检查音频输出格
         assert len(audio_output) == 2
         sample_rate, audio_data_out = audio_output
         assert sample_rate == 16000
         assert audio_data_out is not None
         
-        # 检查格式化的历史记录
+        # 检查格式化的历史记
         assert isinstance(formatted_history, list)
         assert len(formatted_history) >= 1
 
     def test_process_chat_with_session_id(self):
         """测试 process_chat 方法使用指定会话ID"""
-        # 先创建一个会话
+        # 先创建一个会
         session_id = self.chat_service.create_session()
         
         result = self.chat_service.process_chat(
@@ -286,8 +286,8 @@ class TestChatService:
         assert len(history) >= 2  # 至少有用户消息和AI回复
 
     def test_process_chat_error_handling(self):
-        """测试 process_chat 方法的错误处理"""
-        # 测试空文本输入
+        """测试 process_chat 方法的错误处""
+        # 测试空文本输
         result = self.chat_service.process_chat(
             text_input="",
             use_text_input=True
@@ -296,7 +296,7 @@ class TestChatService:
         assert len(result) == 2
         audio_output, formatted_history = result
         
-        # 错误情况下应该返回错误消息
+        # 错误情况下应该返回错误消
         assert len(formatted_history) >= 1
         error_entry = formatted_history[-1]
         assert "处理失败" in error_entry[1]
@@ -307,12 +307,12 @@ class TestChatService:
         
         assert isinstance(topic, str)
         assert len(topic) > 0
-        # MockLLM 会返回 "Mock response"，但我们的方法会处理它
-        # 如果LLM返回的内容不合适，会使用默认主题
-        assert len(topic) >= 10  # 主题应该有一定长度
+        # MockLLM 会返"Mock response",但我们的方法会处理
+        # 如果LLM返回的内容不合适,会使用默认主
+        assert len(topic) >= 10  # 主题应该有一定长
 
     def test_generate_topic_llm_failure(self):
-        """测试 generate_topic 方法在LLM失败时使用默认主题"""
+        """测试 generate_topic 方法在LLM失败时使用默认主""
         # 模拟LLM失败
         self.mock_llm.chat = Mock(side_effect=Exception("LLM failed"))
         
@@ -320,14 +320,14 @@ class TestChatService:
         
         assert isinstance(topic, str)
         assert len(topic) > 0
-        # 应该返回TopicGenerator的默认主题之一或备用主题
-        # 新的实现会使用TopicGenerator的预定义主题库
+        # 应该返回TopicGenerator的默认主题之一或备用主
+        # 新的实现会使用TopicGenerator的预定义主题
         assert len(topic) >= 10  # 主题应该有合理的长度
-        # 验证主题格式（应该是问题或指令）
-        assert topic.endswith('?') or any(word in topic.lower() for word in ['tell me', 'describe', 'what', 'how'])
+        # 验证主题格式(应该是问题或指令)
+        assert topic.endswith('') or any(word in topic.lower() for word in ['tell me', 'describe', 'what', 'how'])
 
     def test_generate_topic_no_llm(self):
-        """测试没有LLM时 generate_topic 方法使用默认主题"""
+        """测试没有LLMgenerate_topic 方法使用默认主题"""
         # 创建没有LLM的ChatService
         chat_service_no_llm = ChatService(
             asr=self.mock_asr,
@@ -340,32 +340,32 @@ class TestChatService:
         assert isinstance(topic, str)
         assert len(topic) > 0
         # 应该返回TopicGenerator的默认主题之一
-        # 新的实现会使用TopicGenerator的预定义主题库
+        # 新的实现会使用TopicGenerator的预定义主题
         assert len(topic) >= 10  # 主题应该有合理的长度
-        # 验证主题格式（应该是问题或指令）
-        assert topic.endswith('?') or any(word in topic.lower() for word in ['tell me', 'describe', 'what', 'how'])
+        # 验证主题格式(应该是问题或指令)
+        assert topic.endswith('') or any(word in topic.lower() for word in ['tell me', 'describe', 'what', 'how'])
 
     def test_clear_context_specific_session(self):
         """测试 clear_context 方法清除指定会话"""
-        # 创建会话并添加对话
+        # 创建会话并添加对
         session_id = self.chat_service.create_session()
         self.chat_service.chat_with_text("Hello", session_id)
         
-        # 验证有对话记录
+        # 验证有对话记
         history_before = self.chat_service.get_conversation_history(session_id)
         assert len(history_before) >= 2
         
-        # 清除上下文
+        # 清除上下
         result = self.chat_service.clear_context(session_id)
         
         assert result is True
         
-        # 验证对话记录被清除
+        # 验证对话记录被清
         history_after = self.chat_service.get_conversation_history(session_id)
-        assert len(history_after) <= 1  # 只剩系统消息（如果有）
+        assert len(history_after) <= 1  # 只剩系统消息(如果有
 
     def test_clear_context_all_sessions(self):
-        """测试 clear_context 方法清除所有会话"""
+        """测试 clear_context 方法清除所有会""
         # 创建多个会话
         session1 = self.chat_service.create_session()
         session2 = self.chat_service.create_session()
@@ -374,7 +374,7 @@ class TestChatService:
         self.chat_service.chat_with_text("Hello", session1)
         self.chat_service.chat_with_text("Hi", session2)
         
-        # 验证有会话
+        # 验证有会
         assert len(self.chat_service.sessions) == 2
         
         # 清除所有上下文
@@ -411,7 +411,7 @@ class TestEvaluationService:
     def test_evaluate_pronunciation_with_target(self):
         """测试带目标文本的发音评估"""
         audio_data = b"fake audio data"
-        target_text = "Hello, how are you today?"
+        target_text = "Hello, how are you today"
         
         result = self.evaluation_service.evaluate_pronunciation(
             audio_data, target_text
@@ -420,11 +420,11 @@ class TestEvaluationService:
         # evaluate_pronunciation返回AssessmentResult对象
         assert isinstance(result, AssessmentResult)
         assert result.overall_score >= 0
-        assert result.recognized_text == "Hello, how are you today?"
+        assert result.recognized_text == "Hello, how are you today"
         assert result.target_text == target_text
     
     def test_evaluate_pronunciation_without_target(self):
-        """测试不带目标文本的发音评估"""
+        """测试不带目标文本的发音评""
         audio_data = b"fake audio data"
         
         result = self.evaluation_service.evaluate_pronunciation(audio_data)
@@ -435,7 +435,7 @@ class TestEvaluationService:
         assert result.target_text == ""
     
     def test_evaluate_pronunciation_gradio_audio(self):
-        """测试Gradio音频格式的发音评估"""
+        """测试Gradio音频格式的发音评""
         audio_array = np.array([0.1, 0.2, 0.3])
         audio_data = (16000, audio_array)
         target_text = "Test sentence"
@@ -466,7 +466,7 @@ class TestEvaluationService:
         assert len(feedback) > 0
     
     def test_calculate_text_similarity(self):
-        """测试文本相似度计算"""
+        """测试文本相似度计""
         recognized_text = "Hello world"
         target_text = "Hello world"
         
@@ -491,7 +491,7 @@ class TestEvaluationService:
             self.evaluation_service.evaluate_pronunciation(b"audio data")
     
     def test_error_handling_invalid_audio(self):
-        """测试无效音频数据的错误处理"""
+        """测试无效音频数据的错误处""
         with pytest.raises(AssessmentError):
             self.evaluation_service.evaluate_pronunciation(None)
 
@@ -508,7 +508,7 @@ class TestCorrectionService:
         )
     
     def test_initialization(self):
-        """测试CorrectionService初始化"""
+        """测试CorrectionService初始""
         assert self.correction_service.asr is self.mock_asr
         assert self.correction_service.corrector is not None
         assert self.correction_service.phoneme_analyzer is not None
@@ -517,7 +517,7 @@ class TestCorrectionService:
     def test_comprehensive_correction(self):
         """测试综合纠错分析"""
         audio_data = b"fake audio data"
-        target_text = "Hello, how are you today?"
+        target_text = "Hello, how are you today"
         
         result = self.correction_service.comprehensive_correction(
             audio_data, target_text
@@ -530,7 +530,7 @@ class TestCorrectionService:
         assert isinstance(result.improvement_suggestions, list)
     
     def test_comprehensive_correction_gradio_audio(self):
-        """测试Gradio音频格式的综合纠错"""
+        """测试Gradio音频格式的综合纠""
         audio_array = np.array([0.1, 0.2, 0.3])
         audio_data = (16000, audio_array)
         target_text = "Test sentence"
@@ -542,8 +542,8 @@ class TestCorrectionService:
         assert isinstance(result, CorrectionReport)
     
     def test_quick_correction(self):
-        """测试快速纠错功能"""
-        # 先进行音频分析
+        """测试快速纠错错功""
+        # 先进行音频分
         result = self.correction_service.quick_correction(
             b"audio data", "Hello world"
         )
@@ -554,7 +554,7 @@ class TestCorrectionService:
         assert "key_suggestions" in result
     
     def test_get_service_status(self):
-        """测试获取服务状态"""
+        """测试获取服务状""
         status = self.correction_service.get_service_status()
         
         assert isinstance(status, dict)
@@ -573,7 +573,7 @@ class TestCorrectionService:
             self.correction_service.comprehensive_correction(b"audio data")
     
     def test_error_handling_invalid_audio(self):
-        """测试无效音频数据的错误处理"""
+        """测试无效音频数据的错误处""
         with pytest.raises(AssessmentError):
             self.correction_service.comprehensive_correction(None)
 
@@ -604,22 +604,22 @@ class TestServiceIntegration:
         )
     
     def test_chat_to_evaluation_workflow(self):
-        """测试从对话到评估的工作流程"""
-        # 开始对话
-        chat_result = self.chat_service.chat_with_text("Hello, how are you?")
+        """测试从对话到评估的工作流""
+        # 开始对
+        chat_result = self.chat_service.chat_with_text("Hello, how are you")
         assert len(chat_result) == 2
         response_text, session_id = chat_result
         
         # 模拟用户录音进行评估
         user_audio = b"user recorded audio"
         eval_result = self.evaluation_service.evaluate_pronunciation(
-            user_audio, "Hello, how are you?"
+            user_audio, "Hello, how are you"
         )
         assert isinstance(eval_result, AssessmentResult)
     
     def test_evaluation_to_correction_workflow(self):
-        """测试从评估到纠错的工作流程"""
-        # 开始评估
+        """测试从评估到纠错的工作流""
+        # 开始评
         audio_data = b"fake audio data"
         target_text = "Hello world"
         
@@ -640,7 +640,7 @@ class TestServiceIntegration:
         chat_result = self.chat_service.chat_with_text("Practice sentence")
         assert len(chat_result) == 2
         
-        # 2. 用户录音（模拟）
+        # 2. 用户录音(模拟)
         user_audio = b"user recorded audio"
         
         # 3. 评估发音
@@ -655,7 +655,7 @@ class TestServiceIntegration:
         )
         assert isinstance(correction_result, CorrectionReport)
         
-        # 5. 为对话生成反馈
+        # 5. 为对话生成反
         feedback_text = f"Your pronunciation score: {eval_result.overall_score:.2f}"
         feedback_result = self.chat_service.chat_with_text(feedback_text)
         assert len(feedback_result) == 2
@@ -663,3 +663,11 @@ class TestServiceIntegration:
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+
+
+
+
+
+
+

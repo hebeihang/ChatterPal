@@ -1,4 +1,4 @@
-# OralCounsellor 开发文档
+# ChatterPal 开发文档
 
 ## 开发环境搭建
 
@@ -20,8 +20,8 @@
 
 #### 1. 克隆项目
 ```bash
-git clone https://github.com/your-org/oralcounsellor.git
-cd oralcounsellor
+git clone https://github.com/your-org/chatterpal.git
+cd chatterpal
 ```
 
 #### 2. 安装开发依赖
@@ -56,7 +56,7 @@ python scripts/run.py
 ### 目录结构详解
 
 ```
-src/oralcounsellor/
+src/chatterpal/
 ├── __init__.py
 ├── config/                 # 配置管理
 │   ├── __init__.py
@@ -258,7 +258,7 @@ pytest
 pytest tests/test_asr.py
 
 # 运行测试并生成覆盖率报告
-pytest --cov=src/oralcounsellor --cov-report=html
+pytest --cov=src/chatterpal --cov-report=html
 
 # 运行测试（详细输出）
 pytest -v
@@ -270,7 +270,7 @@ pytest -v
 ```python
 import pytest
 from unittest.mock import Mock, patch
-from oralcounsellor.core.asr.whisper import WhisperASR
+from chatterpal.core.asr.whisper import WhisperASR
 
 class TestWhisperASR:
     def setup_method(self):
@@ -314,7 +314,7 @@ def test_chat_service_integration():
 ```python
 # conftest.py
 import pytest
-from oralcounsellor.config.settings import Settings
+from chatterpal.config.settings import Settings
 
 @pytest.fixture
 def test_settings():
@@ -335,7 +335,7 @@ def sample_audio_file(tmp_path):
 
 #### Mock外部依赖
 ```python
-@patch('oralcounsellor.core.llm.openai.openai.ChatCompletion.create')
+@patch('chatterpal.core.llm.openai.openai.ChatCompletion.create')
 def test_openai_llm(mock_create):
     mock_create.return_value = {
         "choices": [{"message": {"content": "Test response"}}]
@@ -352,7 +352,7 @@ def test_openai_llm(mock_create):
 
 ```python
 # 在代码中使用日志
-from oralcounsellor.utils.logger import get_logger
+from chatterpal.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -540,7 +540,7 @@ git push origin feature/new-feature
 A: 继承 `BaseASR` 类并实现 `transcribe` 方法：
 
 ```python
-from oralcounsellor.core.asr.base import BaseASR
+from chatterpal.core.asr.base import BaseASR
 
 class NewASR(BaseASR):
     def transcribe(self, audio_path: str) -> str:

@@ -1,4 +1,4 @@
-# OralCounsellor Deployment Guide
+# ChatterPal Deployment Guide
 
 ## System Requirements
 
@@ -18,8 +18,8 @@
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-org/oralcounsellor.git
-cd oralcounsellor
+git clone https://github.com/your-org/chatterpal.git
+cd chatterpal
 ```
 
 ### 2. Set Up Python Environment
@@ -142,7 +142,7 @@ TEMP_AUDIO_DIR=temp_audio
 python scripts/run.py
 
 # Or directly
-python -m oralcounsellor.web.app
+python -m chatterpal.web.app
 ```
 
 ### Production Mode
@@ -153,7 +153,7 @@ python -m oralcounsellor.web.app
 pip install gunicorn
 
 # Run with gunicorn
-gunicorn -w 4 -b 0.0.0.0:7860 oralcounsellor.web.app:app
+gunicorn -w 4 -b 0.0.0.0:7860 chatterpal.web.app:app
 ```
 
 #### Using Waitress (Windows)
@@ -162,7 +162,7 @@ gunicorn -w 4 -b 0.0.0.0:7860 oralcounsellor.web.app:app
 pip install waitress
 
 # Run with waitress
-waitress-serve --host=0.0.0.0 --port=7860 oralcounsellor.web.app:app
+waitress-serve --host=0.0.0.0 --port=7860 chatterpal.web.app:app
 ```
 
 ## Docker Deployment
@@ -212,10 +212,10 @@ CMD ["python", "scripts/run.py"]
 ### 2. Build and Run
 ```bash
 # Build image
-docker build -t oralcounsellor .
+docker build -t chatterpal .
 
 # Run container
-docker run -p 7860:7860 --env-file .env oralcounsellor
+docker run -p 7860:7860 --env-file .env chatterpal
 ```
 
 ### 3. Docker Compose
@@ -224,7 +224,7 @@ docker run -p 7860:7860 --env-file .env oralcounsellor
 version: '3.8'
 
 services:
-  oralcounsellor:
+  chatterpal:
     build: .
     ports:
       - "7860:7860"
@@ -266,7 +266,7 @@ volumes:
 version: '3.8'
 
 services:
-  oralcounsellor:
+  chatterpal:
     build: 
       context: .
       dockerfile: Dockerfile.prod
@@ -301,7 +301,7 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./ssl:/etc/nginx/ssl
     depends_on:
-      - oralcounsellor
+      - chatterpal
     restart: unless-stopped
 
   redis:
@@ -349,10 +349,10 @@ railway up
 ### Google Cloud Run
 ```bash
 # Build and push to Container Registry
-gcloud builds submit --tag gcr.io/PROJECT_ID/oralcounsellor
+gcloud builds submit --tag gcr.io/PROJECT_ID/chatterpal
 
 # Deploy to Cloud Run
-gcloud run deploy --image gcr.io/PROJECT_ID/oralcounsellor --platform managed
+gcloud run deploy --image gcr.io/PROJECT_ID/chatterpal --platform managed
 ```
 
 ## 配置选项
@@ -452,7 +452,7 @@ WHISPER_MODEL=large   # 最佳准确性，最慢
 LOG_LEVEL=DEBUG  # DEBUG, INFO, WARNING, ERROR
 
 # Log file location
-LOG_FILE=logs/oralcounsellor.log
+LOG_FILE=logs/chatterpal.log
 ```
 
 ### Health Check Endpoint

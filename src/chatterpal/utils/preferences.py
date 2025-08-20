@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class UserPreferences:
     """用户偏好设置管理类"""
     
-    def __init__(self, config_dir: str = ".config/oralcounsellor"):
+    def __init__(self, config_dir: str = ".config/chatterpal"):
         """
         初始化用户偏好管理器
         

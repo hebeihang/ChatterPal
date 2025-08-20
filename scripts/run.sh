@@ -1,7 +1,7 @@
 #!/bin/bash
-# Shell脚本用于启动OralCounsellor
+# Shell脚本用于启动ChatterPal
 
-echo "启动OralCounsellor..."
+echo "启动ChatterPal..."
 
 # 检查是否安装了uv
 if ! command -v uv &> /dev/null; then

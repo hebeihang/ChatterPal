@@ -1,15 +1,15 @@
-"""
+﻿"""
 Tests for LLM (Large Language Model) modules.
 """
 
 import pytest
 from unittest.mock import Mock, patch, MagicMock
 
-from oralcounsellor.core.llm.base import (
+from chatterpal.core.llm.base import (
     LLMBase, LLMError, Message, Conversation
 )
-from oralcounsellor.core.llm.alibaba import AlibabaDashScopeLLM
-from oralcounsellor.core.llm.openai import OpenAILLM
+from chatterpal.core.llm.alibaba import AlibabaDashScopeLLM
+from chatterpal.core.llm.openai import OpenAILLM
 
 
 class MockLLM(LLMBase):
@@ -145,7 +145,7 @@ class TestConversation:
         conv = Conversation()
         conv.add_user_message("Hello")
         conv.add_assistant_message("Hi")
-        conv.add_user_message("How are you?")
+        conv.add_user_message("How are you")
         
         messages = conv.get_messages()
         assert len(messages) == 3
@@ -156,7 +156,7 @@ class TestConversation:
         conv = Conversation("System prompt")
         conv.add_user_message("Hello")
         conv.add_assistant_message("Hi")
-        conv.add_user_message("How are you?")
+        conv.add_user_message("How are you")
         conv.add_assistant_message("I'm good")
         
         # Should keep system message + 2 most recent messages
@@ -330,7 +330,7 @@ class TestLLMBase:
             {"role": "system", "content": "System prompt"},
             {"role": "user", "content": "Hello"},
             {"role": "assistant", "content": "Hi"},
-            {"role": "user", "content": "How are you?"},
+            {"role": "user", "content": "How are you"},
             {"role": "assistant", "content": "Good"}
         ]
         
@@ -362,7 +362,7 @@ class TestAlibabaDashScopeLLM:
     """测试阿里云DashScope LLM实现"""
     
     def test_initialization(self):
-        """测试阿里云LLM初始化"""
+        """测试阿里云LLM初始""
         config = {
             "api_key": "test_key",
             "model": "qwen-turbo"
@@ -373,18 +373,18 @@ class TestAlibabaDashScopeLLM:
         assert llm.model == "qwen-turbo"
     
     def test_initialization_missing_api_key(self):
-        """测试缺少API密钥时的初始化"""
-        with pytest.raises(LLMError, match="阿里云API密钥未配置"):
+        """测试缺少API密钥时的初始""
+        with pytest.raises(LLMError, match="阿里云API密钥未配):
             AlibabaDashScopeLLM({})
     
     @patch('requests.post')
     def test_chat_success(self, mock_post):
-        """测试成功的对话"""
+        """测试成功的对""
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.json.return_value = {
             "output": {
-                "text": "你好！我可以帮助你什么？"
+                "text": "你好!我可以帮助你什么?"
             }
         }
         mock_post.return_value = mock_response
@@ -393,7 +393,7 @@ class TestAlibabaDashScopeLLM:
         llm = AlibabaDashScopeLLM(config)
         
         result = llm.chat("你好")
-        assert result == "你好！我可以帮助你什么？"
+        assert result == "你好!我可以帮助你什么?"
     
     @patch('requests.post')
     def test_chat_failure(self, mock_post):
@@ -455,7 +455,7 @@ class TestOpenAILLM:
         """Test successful chat with OpenAI LLM."""
         mock_client = MagicMock()
         mock_response = MagicMock()
-        mock_response.choices[0].message.content = "Hello! How can I help?"
+        mock_response.choices[0].message.content = "Hello! How can I help"
         mock_client.chat.completions.create.return_value = mock_response
         mock_openai_class.return_value = mock_client
         
@@ -463,7 +463,7 @@ class TestOpenAILLM:
         llm = OpenAILLM(config)
         
         result = llm.chat("Hello")
-        assert result == "Hello! How can I help?"
+        assert result == "Hello! How can I help"
     
     @patch('openai.OpenAI')
     def test_chat_failure(self, mock_openai_class):
@@ -505,3 +505,11 @@ class TestOpenAILLM:
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+
+
+
+
+
+
+

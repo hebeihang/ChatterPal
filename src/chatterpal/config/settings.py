@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Configuration management system for OralCounsellor.
+Configuration management system for ChatterPal.
 
 This module provides a unified configuration management system that supports
 environment variables, configuration files, and type-safe configuration access.

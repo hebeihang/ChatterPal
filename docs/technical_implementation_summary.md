@@ -1,8 +1,8 @@
-# OralCounsellor 技术实现总结
+# ChatterPal 技术实现总结
 
 ## 概述
 
-本文档总结了 OralCounsellor 项目的主要技术实现，包括核心功能、API集成、性能优化和部署配置。
+本文档总结了 ChatterPal 项目的主要技术实现，包括核心功能、API集成、性能优化和部署配置。
 
 ## 核心技术栈
 
@@ -55,7 +55,7 @@
 
 #### 配置示例
 ```python
-from oralcounsellor.core.llm.alibaba import AlibabaBailianLLM
+from chatterpal.core.llm.alibaba import AlibabaBailianLLM
 
 llm = AlibabaBailianLLM({
     "api_key": "your_api_key",

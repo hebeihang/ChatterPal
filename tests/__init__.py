@@ -1,1 +1,9 @@
-"""Test suite for OralCounsellor."""
+﻿"""Test suite for ChatterPal."""
+
+
+
+
+
+
+
+

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Main Gradio application for OralCounsellor."""
+"""Main Gradio application for ChatterPal."""
 
 import os
 import sys
@@ -27,8 +27,8 @@ from ..utils.encoding_fix import safe_str
 from .components import ChatTab, ScoreTab, CorrectTab
 
 
-class OralCounsellorApp:
-    """Main application class for OralCounsellor."""
+class ChatterPalApp:
+    """Main application class for ChatterPal."""
 
     def __init__(self, settings: Optional[Settings] = None):
         """Initialize the application."""
@@ -159,12 +159,12 @@ class OralCounsellorApp:
         try:
             # Create main interface with tabs
             with gr.Blocks(
-                title="🎯 OralCounsellor - AI英语口语练习系统",
+                title="🎯 ChatterPal - AI英语口语练习系统",
                 theme=gr.themes.Soft(),
             ) as app:
                 gr.Markdown(
                     """
-                    # 🎯 OralCounsellor - AI英语口语练习系统
+                    # 🎯 ChatterPal - AI英语口语练习系统
                     
                     专业的AI驱动英语口语练习平台，提供智能对话、发音评估和纠错指导。
                     """
@@ -390,9 +390,9 @@ class OralCounsellorApp:
             raise
 
 
-def create_app(settings: Optional[Settings] = None) -> OralCounsellorApp:
-    """Create and return an OralCounsellor application instance."""
-    return OralCounsellorApp(settings)
+def create_app(settings: Optional[Settings] = None) -> ChatterPalApp:
+    """Create and return a ChatterPal application instance."""
+    return ChatterPalApp(settings)
 
 
 def main():

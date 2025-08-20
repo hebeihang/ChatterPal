@@ -1,7 +1,7 @@
 #!/bin/bash
-# Shell脚本用于设置OralCounsellor环境
+# Shell脚本用于设置ChatterPal环境
 
-echo "设置OralCounsellor环境..."
+echo "设置ChatterPal环境..."
 
 # 检查是否安装了uv
 if ! command -v uv &> /dev/null; then

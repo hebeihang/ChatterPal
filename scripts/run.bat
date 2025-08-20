@@ -1,7 +1,7 @@
 @echo off
-REM Windows批处理文件用于启动OralCounsellor
+REM Windows批处理文件用于启动ChatterPal
 
-echo 启动OralCounsellor...
+echo 启动ChatterPal...
 
 REM 检查是否安装了uv
 uv --version >nul 2>&1

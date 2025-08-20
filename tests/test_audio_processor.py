@@ -1,5 +1,5 @@
-"""
-AudioProcessor 音频处理器测试
+﻿"""
+AudioProcessor 音频处理器测
 """
 
 import numpy as np
@@ -8,7 +8,7 @@ import tempfile
 import os
 from pathlib import Path
 
-from src.oralcounsellor.utils.audio import (
+from chatterpal.utils.audio import (
     AudioProcessor, 
     AudioValidationError, 
     AudioQualityLevel, 
@@ -17,7 +17,7 @@ from src.oralcounsellor.utils.audio import (
 
 
 class TestAudioProcessor:
-    """AudioProcessor 测试类"""
+    """AudioProcessor 测试"""
 
     def setup_method(self):
         """测试前准备"""
@@ -32,11 +32,11 @@ class TestAudioProcessor:
         
     def test_validate_audio_input_valid_numpy_array(self):
         """测试验证有效的numpy数组音频数据"""
-        # 创建2秒的测试音频（正弦波）
+        # 创建2秒的测试音频(正弦波
         duration = 2.0
         sample_count = int(duration * self.processor.sample_rate)
         t = np.linspace(0, duration, sample_count)
-        audio_data = 0.5 * np.sin(2 * np.pi * 440 * t)  # 440Hz正弦波
+        audio_data = 0.5 * np.sin(2 * np.pi * 440 * t)  # 440Hz正弦
         
         result = self.processor.validate_audio_input(audio_data)
         
@@ -46,8 +46,8 @@ class TestAudioProcessor:
         assert len(result.issues) == 0
         
     def test_validate_audio_input_too_short(self):
-        """测试验证过短的音频"""
-        # 创建0.5秒的音频（小于最小时长1秒）
+        """测试验证过短的音"""
+        # 创建0.5秒的音频(小于最小时秒)
         duration = 0.5
         sample_count = int(duration * self.processor.sample_rate)
         audio_data = np.random.normal(0, 0.1, sample_count)
@@ -58,8 +58,8 @@ class TestAudioProcessor:
         assert "音频时长过短" in str(result.issues)
         
     def test_validate_audio_input_too_long(self):
-        """测试验证过长的音频"""
-        # 创建65秒的音频（超过最大时长60秒）
+        """测试验证过长的音"""
+        # 创建65秒的音频(超过最大时0秒)
         duration = 65.0
         sample_count = int(duration * self.processor.sample_rate)
         audio_data = np.random.normal(0, 0.1, sample_count)
@@ -70,7 +70,7 @@ class TestAudioProcessor:
         assert "音频时长过长" in str(result.issues)
         
     def test_validate_audio_input_empty_data(self):
-        """测试验证空音频数据"""
+        """测试验证空音频数"""
         audio_data = np.array([])
         
         result = self.processor.validate_audio_input(audio_data)
@@ -80,11 +80,11 @@ class TestAudioProcessor:
         
     def test_validate_audio_input_silent_audio(self):
         """测试验证静音音频"""
-        # 创建几乎全是静音的音频
+        # 创建几乎全是静音的音
         duration = 2.0
         sample_count = int(duration * self.processor.sample_rate)
         audio_data = np.zeros(sample_count)
-        # 添加少量噪音避免完全为0
+        # 添加少量噪音避免完全
         audio_data += np.random.normal(0, 0.001, sample_count)
         
         result = self.processor.validate_audio_input(audio_data)
@@ -93,11 +93,11 @@ class TestAudioProcessor:
         assert any("静音比例过高" in issue for issue in result.issues)
         
     def test_validate_audio_input_low_volume(self):
-        """测试验证音量过低的音频"""
+        """测试验证音量过低的音"""
         duration = 2.0
         sample_count = int(duration * self.processor.sample_rate)
-        # 创建音量很低的音频
-        audio_data = np.random.normal(0, 0.0005, sample_count)  # 更低的音量
+        # 创建音量很低的音
+        audio_data = np.random.normal(0, 0.0005, sample_count)  # 更低的音
         
         result = self.processor.validate_audio_input(audio_data)
         
@@ -105,10 +105,10 @@ class TestAudioProcessor:
         assert any("音量过低" in issue for issue in result.issues)
         
     def test_validate_audio_input_clipped_audio(self):
-        """测试验证削波失真的音频"""
+        """测试验证削波失真的音"""
         duration = 2.0
         sample_count = int(duration * self.processor.sample_rate)
-        # 创建削波的音频
+        # 创建削波的音
         audio_data = np.ones(sample_count) * 0.98
         
         result = self.processor.validate_audio_input(audio_data)
@@ -117,7 +117,7 @@ class TestAudioProcessor:
         assert any("削波失真" in issue for issue in result.issues)
         
     def test_validate_audio_input_bytes_data(self):
-        """测试验证字节格式的音频数据"""
+        """测试验证字节格式的音频数"""
         # 创建16位PCM数据
         duration = 2.0
         sample_count = int(duration * self.processor.sample_rate)
@@ -155,7 +155,7 @@ class TestAudioProcessor:
         )
         
         assert isinstance(wav_bytes, bytes)
-        assert len(wav_bytes) > len(pcm_bytes)  # WAV有头部信息，应该更大
+        assert len(wav_bytes) > len(pcm_bytes)  # WAV有头部信息,应该更大
         
     def test_convert_audio_format_enhanced_numpy_to_pcm(self):
         """测试numpy数组到PCM格式转换"""
@@ -169,10 +169,10 @@ class TestAudioProcessor:
         )
         
         assert isinstance(pcm_bytes, bytes)
-        assert len(pcm_bytes) == len(audio_data) * 2  # 16位 = 2字节
+        assert len(pcm_bytes) == len(audio_data) * 2  # 16= 2字节
         
     def test_convert_audio_format_enhanced_with_resampling(self):
-        """测试带重采样的格式转换"""
+        """测试带重采样的格式转"""
         duration = 1.0
         source_sr = 22050
         target_sr = 16000
@@ -187,7 +187,7 @@ class TestAudioProcessor:
         )
         
         expected_length = int(duration * target_sr) * 2  # 16位PCM
-        assert abs(len(pcm_bytes) - expected_length) <= 4  # 允许小误差
+        assert abs(len(pcm_bytes) - expected_length) <= 4  # 允许小误
         
     def test_get_audio_duration_from_data_numpy(self):
         """测试从numpy数组获取音频时长"""
@@ -200,7 +200,7 @@ class TestAudioProcessor:
         assert abs(calculated_duration - duration) < 0.01
         
     def test_get_audio_duration_from_data_bytes(self):
-        """测试从字节数据获取音频时长"""
+        """测试从字节数据获取音频时"""
         duration = 2.5
         sample_count = int(duration * self.processor.sample_rate)
         audio_int16 = np.random.randint(-32768, 32767, sample_count, dtype=np.int16)
@@ -211,18 +211,18 @@ class TestAudioProcessor:
         assert abs(calculated_duration - duration) < 0.01
         
     def test_detect_voice_activity(self):
-        """测试语音活动检测"""
-        # 创建包含语音和静音段的音频
+        """测试语音活动检"""
+        # 创建包含语音和静音段的音
         sample_rate = self.processor.sample_rate
         
-        # 1秒静音
+        # 1秒静
         silence = np.zeros(sample_rate)
         
-        # 1秒语音（正弦波）
+        # 1秒语音(正弦波)
         t = np.linspace(0, 1, sample_rate)
         voice = 0.5 * np.sin(2 * np.pi * 440 * t)
         
-        # 再1秒静音
+        # 秒静
         audio_data = np.concatenate([silence, voice, silence])
         
         vad_result = self.processor.detect_voice_activity(audio_data, frame_length=1024)
@@ -231,11 +231,11 @@ class TestAudioProcessor:
         middle_frames = len(vad_result) // 3
         voice_detected = np.sum(vad_result[middle_frames:2*middle_frames])
         
-        assert voice_detected > 0  # 应该检测到一些语音活动
+        assert voice_detected > 0  # 应该检测到一些语音活
         
     def test_assess_audio_quality(self):
         """测试音频质量评估"""
-        # 创建高质量音频
+        # 创建高质量音
         duration = 2.0
         sample_count = int(duration * self.processor.sample_rate)
         t = np.linspace(0, duration, sample_count)
@@ -250,8 +250,8 @@ class TestAudioProcessor:
         assert 'dynamic_range' in metadata
         
     def test_calculate_snr(self):
-        """测试信噪比计算"""
-        # 创建纯信号
+        """测试信噪比计"""
+        # 创建纯信
         duration = 1.0
         sample_count = int(duration * self.processor.sample_rate)
         t = np.linspace(0, duration, sample_count)
@@ -263,7 +263,7 @@ class TestAudioProcessor:
         
     def test_calculate_silence_ratio(self):
         """测试静音比例计算"""
-        # 创建50%静音的音频
+        # 创建50%静音的音
         sample_count = 1000
         audio_data = np.zeros(sample_count)
         audio_data[:500] = 0.5  # 前一半有信号
@@ -277,11 +277,11 @@ class TestAudioProcessorIntegration:
     """AudioProcessor 集成测试"""
     
     def setup_method(self):
-        """测试前准备"""
+        """测试前准"""
         self.processor = AudioProcessor()
         
     def test_full_audio_processing_pipeline(self):
-        """测试完整的音频处理流程"""
+        """测试完整的音频处理流"""
         # 1. 创建测试音频
         duration = 3.0
         sample_count = int(duration * self.processor.sample_rate)
@@ -302,12 +302,12 @@ class TestAudioProcessorIntegration:
         calculated_duration = self.processor.get_audio_duration_from_data(original_audio)
         assert abs(calculated_duration - duration) < 0.1
         
-        # 5. 语音活动检测
+        # 5. 语音活动检
         vad_result = self.processor.detect_voice_activity(original_audio)
         assert len(vad_result) > 0
         
     def test_error_handling_robustness(self):
-        """测试错误处理的健壮性"""
+        """测试错误处理的健壮"""
         # 测试各种异常情况
         test_cases = [
             None,
@@ -325,3 +325,11 @@ class TestAudioProcessorIntegration:
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+
+
+
+
+
+
+

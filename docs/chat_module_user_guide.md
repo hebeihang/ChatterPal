@@ -2,7 +2,7 @@
 
 ## 概述
 
-增强聊天模块为 OralCounsellor 提供了完整的多模态对话功能，支持文本和语音输入输出，智能主题生成，以及丰富的会话管理功能。本指南将帮助您充分利用这些新特性。
+增强聊天模块为 ChatterPal 提供了完整的多模态对话功能，支持文本和语音输入输出，智能主题生成，以及丰富的会话管理功能。本指南将帮助您充分利用这些新特性。
 
 ## 主要功能
 
@@ -112,7 +112,7 @@ chat_service.set_topic_for_session(session_id, chosen_topic)
 
 ```python
 # 1. 配置音频设置
-from oralcounsellor.services.chat_config import AudioConfig
+from chatterpal.services.chat_config import AudioConfig
 audio_config = AudioConfig(
     auto_play=True,
     playback_speed=0.9,  # 稍慢的播放速度便于学习
@@ -301,7 +301,7 @@ with gr.Blocks() as demo:
 
 ```python
 # 与评估模块集成
-from oralcounsellor.services.evaluation import EvaluationService
+from chatterpal.services.evaluation import EvaluationService
 
 eval_service = EvaluationService()
 

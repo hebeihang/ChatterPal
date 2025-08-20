@@ -2,7 +2,7 @@
 """
 环境设置脚本
 
-用于初始化OralCounsellor项目的开发和运行环境。
+用于初始化ChatterPal项目的开发和运行环境�?
 """
 
 import os
@@ -42,11 +42,11 @@ class EnvironmentSetup:
         try:
             result = subprocess.run(['uv', '--version'], 
                                   capture_output=True, text=True, check=True)
-            print(f"✅ uv版本: {result.stdout.strip()}")
+            print(f"�?uv版本: {result.stdout.strip()}")
             return True
         except (subprocess.CalledProcessError, FileNotFoundError):
-            print("❌ 错误: 未找到uv包管理器")
-            print("请访问 https://docs.astral.sh/uv/getting-started/installation/ 安装uv")
+            print("�?错误: 未找到uv包管理器")
+            print("请访�?https://docs.astral.sh/uv/getting-started/installation/ 安装uv")
             return False
     
     def install_dependencies(self) -> bool:
@@ -56,10 +56,10 @@ class EnvironmentSetup:
         try:
             # 同步依赖
             subprocess.run(['uv', 'sync'], cwd=self.project_root, check=True)
-            print("✅ 依赖安装完成")
+            print("�?依赖安装完成")
             return True
         except subprocess.CalledProcessError as e:
-            print(f"❌ 依赖安装失败: {e}")
+            print(f"�?依赖安装失败: {e}")
             return False
     
     def create_directories(self) -> None:
@@ -76,7 +76,7 @@ class EnvironmentSetup:
         
         for directory in directories:
             directory.mkdir(parents=True, exist_ok=True)
-            print(f"✅ 创建目录: {directory}")
+            print(f"�?创建目录: {directory}")
     
     def setup_environment_file(self) -> None:
         """设置环境变量文件"""
@@ -92,8 +92,8 @@ class EnvironmentSetup:
         elif env_file.exists():
             print("✅ .env文件已存在")
         else:
-            # 创建基本的.env文件
-            env_content = """# OralCounsellor 环境变量配置
+            # 创建基本.env文件
+            env_content = """# ChatterPal 环境变量配置
 
 # 阿里云API配置
 ALIBABA_API_KEY=your_alibaba_api_key_here
@@ -115,7 +115,7 @@ GRADIO_PORT=7860
 
 # 日志配置
 LOG_LEVEL=INFO
-LOG_FILE=logs/oralcounsellor.log
+LOG_FILE=logs/chatterpal.log
 """
             env_file.write_text(env_content, encoding='utf-8')
             print("✅ 创建基本.env文件")
@@ -128,15 +128,16 @@ LOG_FILE=logs/oralcounsellor.log
         optional_packages = {
             'librosa': '音频处理增强功能',
             'torch': 'PyTorch深度学习框架',
-            'transformers': 'Hugging Face模型库'
+            'transformers': 'Hugging Face模型库',
+            'gradio': 'Web界面框架'
         }
         
         for package, description in optional_packages.items():
             try:
                 __import__(package)
-                print(f"✅ {package}: 已安装 ({description})")
+                print(f"�?{package}: 已安�?({description})")
             except ImportError:
-                print(f"⚠️  {package}: 未安装 ({description})")
+                print(f"⚠️  {package}: 未安�?({description})")
     
     def verify_installation(self) -> bool:
         """验证安装"""
@@ -146,8 +147,8 @@ LOG_FILE=logs/oralcounsellor.log
             # 尝试导入主要模块
             sys.path.insert(0, str(self.src_dir))
             
-            from oralcounsellor.config import Settings
-            from oralcounsellor.utils import get_logger
+            from chatterpal.config import Settings
+            from chatterpal.utils import get_logger
             
             print("✅ 核心模块导入成功")
             
@@ -158,17 +159,17 @@ LOG_FILE=logs/oralcounsellor.log
             # 测试日志系统
             logger = get_logger()
             logger.configure(console_output=False)  # 避免输出到控制台
-            print("✅ 日志系统正常")
+            print("�?日志系统正常")
             
             return True
             
         except Exception as e:
-            print(f"❌ 验证失败: {e}")
+            print(f"�?验证失败: {e}")
             return False
     
     def run_setup(self) -> bool:
         """运行完整设置流程"""
-        print("🚀 开始OralCounsellor环境设置...\n")
+        print("🚀 开始ChatterPal环境设置...\n")
         
         # 检查基础环境
         if not self.check_python_version():
@@ -187,18 +188,18 @@ LOG_FILE=logs/oralcounsellor.log
         if not self.install_dependencies():
             return False
         
-        # 检查可选依赖
+        # 检查可选依�?
         self.check_optional_dependencies()
         
         # 验证安装
         if not self.verify_installation():
             return False
         
-        print("\n🎉 环境设置完成！")
-        print("\n下一步:")
+        print("\n🎉 环境设置完成✅")
+        print("\n下一�?")
         print("1. 编辑.env文件，填入您的API密钥")
         print("2. 运行 'uv run python scripts/run.py' 启动应用")
-        print("3. 或者运行 'uv run python -m oralcounsellor.web.app' 直接启动Web界面")
+        print("3. 或者运�?'uv run python -m chatterpal.web.app' 直接启动Web界面")
         
         return True
 
@@ -207,38 +208,38 @@ def main():
     """主函数"""
     setup = EnvironmentSetup()
     
-    # 解析命令行参数
+    # 解析命令行参�?
     if len(sys.argv) > 1:
         command = sys.argv[1]
         
         if command in ["--help", "-h", "help"]:
-            print("OralCounsellor 环境设置脚本")
+            print("ChatterPal 环境设置脚本")
             print()
             print("用法:")
             print("  python scripts/setup.py [命令]")
             print()
             print("可用命令:")
-            print("  check    - 只检查环境，不安装")
-            print("  verify   - 只验证安装")
-            print("  dirs     - 只创建目录")
-            print("  env      - 只设置环境文件")
-            print("  help     - 显示此帮助信息")
+            print("  check    - 只检查环境，不安�?")
+            print("  verify   - 只验证安�?")
+            print("  dirs     - 只创建目�?")
+            print("  env      - 只设置环境文�?")
+            print("  help     - 显示此帮助信�?")
             print()
-            print("不带参数运行将执行完整的环境设置。")
+            print("不带参数运行将执行完整的环境设置流程✅")
             sys.exit(0)
         elif command == "check":
-            # 只检查环境，不安装
+            # 只检查环境，不安�?
             setup.check_python_version()
             setup.check_uv_installation()
             setup.check_optional_dependencies()
         elif command == "verify":
-            # 只验证安装
+            # 只验证安�?
             setup.verify_installation()
         elif command == "dirs":
-            # 只创建目录
+            # 只创建目�?
             setup.create_directories()
         elif command == "env":
-            # 只设置环境文件
+            # 只设置环境文�?
             setup.setup_environment_file()
         else:
             print(f"未知命令: {command}")

@@ -1,5 +1,5 @@
-"""
-端到端对话流程测试
+﻿"""
+端到端对话流程测
 测试语音输入到语音输出、文本输入到语音输出、输入模式切换的完整流程
 验证对话上下文的正确维护
 """
@@ -11,22 +11,22 @@ import time
 from unittest.mock import Mock, patch, MagicMock
 from typing import List, Tuple, Any
 
-from src.oralcounsellor.services.chat import ChatService
-from src.oralcounsellor.web.components.chat_tab import ChatTab
-from src.oralcounsellor.utils.preferences import UserPreferences
-from src.oralcounsellor.core.errors import error_handler
+from chatterpal.services.chat import ChatService
+from chatterpal.web.components.chat_tab import ChatTab
+from chatterpal.utils.preferences import UserPreferences
+from chatterpal.core.errors import error_handler
 
 
 class TestEndToEndChatFlows:
     """端到端对话流程测试类"""
     
     def setup_method(self):
-        """测试前设置"""
+        """测试前设""
         # 创建模拟的ASR组件
         self.mock_asr = Mock()
-        self.mock_asr.recognize.return_value = "Hello, how are you today?"
-        self.mock_asr.recognize_file.return_value = "Hello, how are you today?"
-        self.mock_asr.recognize_gradio_audio.return_value = "Hello, how are you today?"
+        self.mock_asr.recognize.return_value = "Hello, how are you today"
+        self.mock_asr.recognize_file.return_value = "Hello, how are you today"
+        self.mock_asr.recognize_gradio_audio.return_value = "Hello, how are you today"
         self.mock_asr.test_connection.return_value = True
         
         # 创建增强的ASR错误处理方法
@@ -39,7 +39,7 @@ class TestEndToEndChatFlows:
             processing_time: float = 1.0
             
         def mock_recognize_with_error_handling(audio_data, max_retries=3, **kwargs):
-            return ASRResult(text="Hello, how are you today?", confidence=0.9)
+            return ASRResult(text="Hello, how are you today", confidence=0.9)
         
         self.mock_asr.recognize_with_error_handling = mock_recognize_with_error_handling
         
@@ -62,7 +62,7 @@ class TestEndToEndChatFlows:
         
         # 创建模拟的LLM组件
         self.mock_llm = Mock()
-        self.mock_llm.chat.return_value = "I'm doing well, thank you! How can I help you practice English today?"
+        self.mock_llm.chat.return_value = "I'm doing well, thank you! How can I help you practice English today"
         self.mock_llm.test_connection.return_value = True
         
         # 创建ChatService实例
@@ -80,13 +80,13 @@ class TestEndToEndChatFlows:
         self.temp_dir = tempfile.mkdtemp()
         
         # 创建ChatTab实例
-        with patch('src.oralcounsellor.utils.preferences.get_preferences_manager') as mock_get_prefs:
+        with patch('chatterpal.utils.preferences.get_preferences_manager') as mock_get_prefs:
             self.preferences = UserPreferences(config_dir=self.temp_dir)
             mock_get_prefs.return_value = self.preferences
             self.chat_tab = ChatTab(self.chat_service)
     
     def teardown_method(self):
-        """测试后清理"""
+        """测试后清""
         import shutil
         shutil.rmtree(self.temp_dir, ignore_errors=True)
     
@@ -94,14 +94,14 @@ class TestEndToEndChatFlows:
         """创建示例音频数据"""
         sample_rate = 16000
         t = np.linspace(0, duration, int(sample_rate * duration))
-        # 生成440Hz正弦波
+        # 生成440Hz正弦
         audio_array = np.sin(2 * np.pi * 440 * t).astype(np.float32) * 0.5
         return sample_rate, audio_array
     
     def test_voice_input_to_voice_output_complete_flow(self):
         """
         测试语音输入到语音输出的完整流程
-        需求: 1.1, 1.2, 2.1, 2.2
+        需 1.1, 1.2, 2.1, 2.2
         """
         # 1. 创建会话
         session_id = self.chat_service.create_session()
@@ -119,7 +119,7 @@ class TestEndToEndChatFlows:
         )
         
         # 4. 验证语音识别结果
-        assert response_text == "I'm doing well, thank you! How can I help you practice English today?"
+        assert response_text == "I'm doing well, thank you! How can I help you practice English today"
         assert returned_session_id == session_id
         
         # 5. 验证语音合成结果
@@ -127,8 +127,8 @@ class TestEndToEndChatFlows:
         assert isinstance(response_audio, bytes)
         assert len(response_audio) > 0
         
-        # 6. 验证ASR和TTS被正确调用
-        # 注意：由于使用了lambda函数，我们验证调用结果而不是调用次数
+        # 6. 验证ASR和TTS被正确调
+        # 注意:由于使用了lambda函数,我们验证调用结果而不是调用次
         assert response_text is not None
         assert response_audio is not None
         
@@ -136,19 +136,19 @@ class TestEndToEndChatFlows:
         history = self.chat_service.get_conversation_history(session_id)
         assert len(history) >= 2  # 至少有用户消息和助手回复
         
-        # 查找用户和助手消息
+        # 查找用户和助手消
         user_messages = [msg for msg in history if msg["role"] == "user"]
         assistant_messages = [msg for msg in history if msg["role"] == "assistant"]
         
         assert len(user_messages) >= 1
         assert len(assistant_messages) >= 1
-        assert user_messages[0]["content"] == "Hello, how are you today?"
+        assert user_messages[0]["content"] == "Hello, how are you today"
         assert assistant_messages[0]["content"] == response_text
     
     def test_text_input_to_voice_output_complete_flow(self):
         """
         测试文本输入到语音输出的完整流程
-        需求: 1.1, 2.1, 2.2
+        需 1.1, 2.1, 2.2
         """
         # 1. 创建会话
         session_id = self.chat_service.create_session()
@@ -161,7 +161,7 @@ class TestEndToEndChatFlows:
         )
         
         # 3. 验证文本对话结果
-        assert response_text == "I'm doing well, thank you! How can I help you practice English today?"
+        assert response_text == "I'm doing well, thank you! How can I help you practice English today"
         assert returned_session_id == session_id
         
         # 4. 生成语音输出
@@ -172,9 +172,9 @@ class TestEndToEndChatFlows:
         assert isinstance(response_audio, bytes)
         assert len(response_audio) > 0
         
-        # 6. 验证只有LLM和TTS被调用，ASR没有被调用
+        # 6. 验证只有LLM和TTS被调用,ASR没有被调
         self.mock_llm.chat.assert_called()
-        # 验证TTS生成了音频
+        # 验证TTS生成了音
         assert response_audio is not None
         assert isinstance(response_audio, bytes)
         
@@ -190,10 +190,10 @@ class TestEndToEndChatFlows:
     
     def test_input_mode_switching_complete_flow(self):
         """
-        测试输入模式切换的完整流程
-        需求: 3.1, 3.2, 3.3
+        测试输入模式切换的完整流
+        需 3.1, 3.2, 3.3
         """
-        # 1. 初始状态：文本输入模式
+        # 1. 初始状态:文本输入模式
         assert self.chat_tab.preferences.get_input_mode() == "text"
         
         # 2. 使用文本输入进行对话
@@ -207,7 +207,7 @@ class TestEndToEndChatFlows:
         audio_output1, chat_history1 = text_result
         assert len(chat_history1) > 0
         
-        # 3. 切换到语音输入模式
+        # 3. 切换到语音输入模
         toggle_result = self.chat_tab._toggle_input_mode(True)  # 从文本切换到语音
         new_use_text, audio_update, text_update, status_update, button_update = toggle_result
         
@@ -216,9 +216,9 @@ class TestEndToEndChatFlows:
         assert audio_update["visible"] is True
         assert text_update["visible"] is False
         assert "🎤 语音输入" in status_update["value"]
-        assert "📝 切换到文本输入" in button_update["value"]
+        assert "📝 切换到文本输" in button_update["value"]
         
-        # 验证偏好设置已更新
+        # 验证偏好设置已更
         assert self.chat_tab.preferences.get_input_mode() == "voice"
         
         # 4. 使用语音输入进行对话
@@ -235,7 +235,7 @@ class TestEndToEndChatFlows:
         audio_output2, chat_history2 = voice_result
         assert len(chat_history2) > len(chat_history1)
         
-        # 5. 再次切换回文本输入模式
+        # 5. 再次切换回文本输入模
         toggle_result2 = self.chat_tab._toggle_input_mode(False)  # 从语音切换到文本
         new_use_text2, audio_update2, text_update2, status_update2, button_update2 = toggle_result2
         
@@ -244,30 +244,30 @@ class TestEndToEndChatFlows:
         assert audio_update2["visible"] is False
         assert text_update2["visible"] is True
         assert "📝 文本输入" in status_update2["value"]
-        assert "🎤 切换到语音输入" in button_update2["value"]
+        assert "🎤 切换到语音输" in button_update2["value"]
         
-        # 验证偏好设置已更新（最后一次切换是从语音到文本）
+        # 验证偏好设置已更新(最后一次切换是从语音到文本
         assert self.chat_tab.preferences.get_input_mode() == "text"
         
-        # 6. 验证对话上下文在切换过程中保持不变
-        # 对话历史应该包含之前的所有消息
-        assert len(chat_history2) >= 2  # 至少有两轮对话
+        # 6. 验证对话上下文在切换过程中保持不
+        # 对话历史应该包含之前的所有消
+        assert len(chat_history2) >= 2  # 至少有两轮对
     
     def test_conversation_context_maintenance(self):
         """
         测试对话上下文的正确维护
-        需求: 3.3, 7.1, 7.2
+        需 3.3, 7.1, 7.2
         """
-        # 1. 创建会话并进行多轮对话
+        # 1. 创建会话并进行多轮对
         session_id = self.chat_service.create_session()
         
-        # 第一轮：文本输入
+        # 第一轮:文本输入
         response1, _ = self.chat_service.chat_with_text(
             "Hello, my name is Alice",
             session_id=session_id
         )
         
-        # 第二轮：语音输入
+        # 第二轮:语音输入
         sample_rate, audio_array = self._create_sample_audio_data()
         gradio_audio = (sample_rate, audio_array)
         
@@ -276,37 +276,37 @@ class TestEndToEndChatFlows:
             session_id=session_id
         )
         
-        # 第三轮：再次文本输入
+        # 第三轮:再次文本输入
         response3, _ = self.chat_service.chat_with_text(
-            "What did I tell you my name was?",
+            "What did I tell you my name was",
             session_id=session_id
         )
         
-        # 2. 验证对话历史的完整性
+        # 2. 验证对话历史的完整
         history = self.chat_service.get_conversation_history(session_id)
         
-        # 应该有系统消息 + 3轮对话（6条消息）
+        # 应该有系统消+ 3轮对话(6条消息)
         user_messages = [msg for msg in history if msg["role"] == "user"]
         assistant_messages = [msg for msg in history if msg["role"] == "assistant"]
         
         assert len(user_messages) == 3
         assert len(assistant_messages) == 3
         
-        # 验证消息内容和顺序
+        # 验证消息内容和顺
         assert user_messages[0]["content"] == "Hello, my name is Alice"
-        assert user_messages[1]["content"] == "Hello, how are you today?"  # ASR结果
-        assert user_messages[2]["content"] == "What did I tell you my name was?"
+        assert user_messages[1]["content"] == "Hello, how are you today"  # ASR结果
+        assert user_messages[2]["content"] == "What did I tell you my name was"
         
         # 3. 验证上下文传递给LLM
-        # LLM应该收到完整的对话历史
+        # LLM应该收到完整的对话历
         llm_calls = self.mock_llm.chat.call_args_list
         assert len(llm_calls) >= 3
         
-        # 最后一次调用应该包含所有历史消息
+        # 最后一次调用应该包含所有历史消
         last_call_args = llm_calls[-1][0][0]  # 第一个参数是messages
-        assert len(last_call_args) >= 6  # 系统消息 + 3轮对话
+        assert len(last_call_args) >= 6  # 系统消息 + 3轮对
         
-        # 4. 测试上下文清除
+        # 4. 测试上下文清
         self.chat_service.clear_conversation_history(session_id)
         cleared_history = self.chat_service.get_conversation_history(session_id)
         
@@ -316,8 +316,8 @@ class TestEndToEndChatFlows:
     
     def test_session_isolation_and_management(self):
         """
-        测试会话隔离和管理
-        需求: 7.1, 7.3
+        测试会话隔离和管
+        需 7.1, 7.3
         """
         # 1. 创建多个独立会话
         session1 = self.chat_service.create_session()
@@ -353,7 +353,7 @@ class TestEndToEndChatFlows:
         deleted = self.chat_service.delete_session(session1)
         assert deleted is True
         
-        # 删除后应该无法获取历史
+        # 删除后应该无法获取历
         history1_after_delete = self.chat_service.get_conversation_history(session1)
         assert len(history1_after_delete) == 0
         
@@ -363,8 +363,8 @@ class TestEndToEndChatFlows:
     
     def test_ui_integration_with_chat_service(self):
         """
-        测试UI组件与ChatService的集成
-        需求: 3.1, 3.2, 3.3
+        测试UI组件与ChatService的集
+        需 3.1, 3.2, 3.3
         """
         # 1. 测试ChatTab的process_chat集成
         sample_rate, audio_array = self._create_sample_audio_data()
@@ -395,7 +395,7 @@ class TestEndToEndChatFlows:
         # 3. 测试会话ID管理
         assert self.chat_tab.current_session_id is not None
         
-        # 4. 测试上下文清除
+        # 4. 测试上下文清
         clear_result = self.chat_tab._clear_context()
         status_msg, cleared_history = clear_result
         
@@ -406,13 +406,13 @@ class TestEndToEndChatFlows:
     def test_error_handling_in_complete_flows(self):
         """
         测试完整流程中的错误处理
-        需求: 1.3, 2.3, 4.1, 4.2, 4.3, 4.4
+        需 1.3, 2.3, 4.1, 4.2, 4.3, 4.4
         """
         # 1. 测试ASR失败时的处理
         self.mock_asr.recognize_with_error_handling.side_effect = Exception("ASR服务不可用")
         
         sample_rate, audio_array = self._create_sample_audio_data()
-        gradio_audio = (sample_rate, audio_array)
+        gradio_audio = (sample_rate, audio_array")
         
         result = self.chat_tab._handle_chat(
             audio=gradio_audio,
@@ -423,18 +423,18 @@ class TestEndToEndChatFlows:
         
         audio_output, chat_history = result
         
-        # 应该有错误消息
+        # 应该有错误消
         assert len(chat_history) > 0
         error_message = str(chat_history).lower()
         # 检查是否包含错误相关的关键词或通用错误处理信息
-        error_keywords = ["错误", "失败", "不可用", "重试", "exception", "error", "asr服务不可用", "处理失败"]
+        error_keywords = ["错误", "失败", "不可, "重试", "exception", "error", "asr服务不可, "处理失败"]
         has_error_info = any(keyword in error_message for keyword in error_keywords)
-        assert has_error_info, f"错误消息应包含错误信息: {error_message}"
+        assert has_error_info, f"错误消息应包含错误信 {error_message}"
         
-        # 2. 重置ASR，测试TTS失败时的处理
+        # 2. 重置ASR,测试TTS失败时的处理
         self.mock_asr.recognize_with_error_handling.side_effect = None
         self.mock_asr.recognize_with_error_handling.return_value = Mock(text="Hello", confidence=0.9)
-        self.mock_tts.synthesize_with_error_handling.side_effect = Exception("TTS服务不可用")
+        self.mock_tts.synthesize_with_error_handling.side_effect = Exception("TTS服务不可")
         
         result = self.chat_tab._handle_chat(
             text_input="Hello world",
@@ -445,9 +445,9 @@ class TestEndToEndChatFlows:
         
         audio_output, chat_history = result
         
-        # 文本对话应该成功，但没有音频输出
+        # 文本对话应该成功,但没有音频输出
         assert len(chat_history) > 0
-        assert audio_output == (16000, [])  # 空音频输出
+        assert audio_output == (16000, [])  # 空音频输
         
         # 3. 测试空输入的处理
         result = self.chat_tab._handle_chat(
@@ -459,13 +459,13 @@ class TestEndToEndChatFlows:
         
         audio_output, chat_history = result
         
-        # 应该有错误处理
+        # 应该有错误处
         assert len(chat_history) > 0
     
     def test_performance_and_timing(self):
         """
-        测试性能和时序要求
-        需求: 所有需求的性能方面
+        测试性能和时序要
+        需 所有需求的性能方面
         """
         # 1. 测试响应时间
         start_time = time.time()
@@ -479,7 +479,7 @@ class TestEndToEndChatFlows:
         end_time = time.time()
         response_time = end_time - start_time
         
-        # 文本对话应该在合理时间内完成（考虑到是模拟组件）
+        # 文本对话应该在合理时间内完成(考虑到是模拟组件
         assert response_time < 5.0  # 5秒内完成
         
         # 2. 测试语音处理时间
@@ -512,17 +512,17 @@ class TestEndToEndChatFlows:
         batch_time = end_time - start_time
         
         # 批量操作应该保持良好性能
-        assert batch_time < 15.0  # 15秒内完成5次对话
+        assert batch_time < 15.0  # 15秒内完成5次对
         
         # 验证历史记录正确维护
         history = self.chat_service.get_conversation_history(session_id)
         user_messages = [msg for msg in history if msg["role"] == "user"]
-        assert len(user_messages) >= 6  # 至少6条用户消息
+        assert len(user_messages) >= 6  # 至少6条用户消
     
     def test_concurrent_sessions_handling(self):
         """
         测试并发会话处理
-        需求: 7.3
+        需 7.3
         """
         import threading
         import time
@@ -532,7 +532,7 @@ class TestEndToEndChatFlows:
         
         def worker(worker_id):
             try:
-                # 每个工作线程创建自己的会话
+                # 每个工作线程创建自己的会
                 session_id = self.chat_service.create_session()
                 
                 # 进行多轮对话
@@ -557,22 +557,32 @@ class TestEndToEndChatFlows:
             threads.append(thread)
             thread.start()
         
-        # 等待所有线程完成
+        # 等待所有线程完
         for thread in threads:
             thread.join(timeout=30)
         
         # 验证结果
-        assert len(results) == 3, f"应该有3个成功结果，实际: {len(results)}"
-        assert len(errors) == 0, f"不应该有错误，实际错误: {errors}"
+        assert len(results) == 3, f"应该个成功结果,实际: {len(results)}"
+        assert len(errors) == 0, f"不应该有错误,实际错 {errors}"
         
-        # 验证每个会话都有独立的历史记录
+        # 验证每个会话都有独立的历史记
         session_ids = [result[1] for result in results]
-        assert len(set(session_ids)) == 3, "所有会话ID应该是唯一的"
+        assert len(set(session_ids)) == 3, "所有会话ID应该是唯一
         
-        # 验证每个会话都有正确数量的消息
+        # 验证每个会话都有正确数量的消
         for worker_id, session_id, history_length in results:
-            assert history_length >= 6, f"Worker {worker_id} 应该至少有6条消息（系统+3轮对话）"
+            assert history_length >= 6, f"Worker {worker_id} 应该至少条消息(系统+3轮对话)"
 
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+
+
+
+
+
+
+
+

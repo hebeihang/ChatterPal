@@ -1,4 +1,4 @@
-"""
+﻿"""
 Tests for TTS (Text-to-Speech) modules.
 """
 
@@ -8,8 +8,8 @@ import pytest
 from unittest.mock import Mock, patch, MagicMock, AsyncMock
 import asyncio
 
-from oralcounsellor.core.tts.base import TTSBase, TTSError
-from oralcounsellor.core.tts.edge import EdgeTTS
+from chatterpal.core.tts.base import TTSBase, TTSError
+from chatterpal.core.tts.edge import EdgeTTS
 
 
 class MockTTS(TTSBase):
@@ -79,8 +79,8 @@ class TestTTSBase:
         tts = MockTTS()
         
         # Test basic cleaning
-        cleaned = tts.clean_text_for_tts("Hello, world! How are you?")
-        assert cleaned == "Hello, world! How are you?"
+        cleaned = tts.clean_text_for_tts("Hello, world! How are you")
+        assert cleaned == "Hello, world! How are you"
         
         # Test removing special characters
         cleaned = tts.clean_text_for_tts("Hello @#$% world!!!")
@@ -229,7 +229,7 @@ class TestEdgeTTS:
         
         # 模拟asyncio.run避免实际异步执行
         with patch('asyncio.run') as mock_run:
-            mock_run.return_value = b"audio chunk"  # 修正期望值
+            mock_run.return_value = b"audio chunk"  # 修正期望
             
             result = tts.synthesize("Hello world")
             assert result == b"audio chunk"
@@ -336,3 +336,11 @@ class TestEdgeTTS:
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+
+
+
+
+
+
+

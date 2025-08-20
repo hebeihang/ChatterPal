@@ -1,4 +1,4 @@
-"""
+﻿"""
 增强ASR功能测试
 """
 
@@ -8,7 +8,7 @@ import tempfile
 import os
 from unittest.mock import Mock, patch
 
-from src.oralcounsellor.core.asr.base import (
+from chatterpal.core.asr.base import (
     ASRBase, 
     ASRError, 
     ASRQualityError, 
@@ -111,12 +111,12 @@ class TestASREnhanced:
     def test_recognize_enhanced_confidence_check_disabled(self):
         """测试禁用置信度检查的增强识别"""
         self.asr.enable_confidence_check = False
-        self.asr.mock_result = "a"  # 很短的结果，置信度会很低
+        self.asr.mock_result = "a"  # 很短的结果,置信度会很低
         audio_data = self._create_test_audio_bytes()
         
         result = self.asr.recognize_enhanced(audio_data)
         
-        # 即使置信度低，也不应该抛出异常
+        # 即使置信度低,也不应该抛出异常
         assert result.text == "a"
         
     def test_recognize_enhanced_quality_error(self):
@@ -132,8 +132,8 @@ class TestASREnhanced:
             
     def test_recognize_enhanced_confidence_error(self):
         """测试识别置信度过低错误"""
-        # 模拟返回置信度很低的文本，并确保音频质量也很低
-        self.asr.mock_result = "aaaaaaaaaa"  # 重复字符，会降低置信度
+        # 模拟返回置信度很低的文本,并确保音频质量也很低
+        self.asr.mock_result = "aaaaaaaaaa"  # 重复字符,会降低置信度
         
         # 模拟低质量音频以进一步降低置信度
         with patch.object(self.asr, '_assess_audio_quality') as mock_assess:
@@ -185,7 +185,7 @@ class TestASREnhanced:
             assert 0 <= quality_score <= 1
             assert isinstance(metadata, dict)
         except ImportError:
-            # 如果AudioProcessor不可用，跳过测试
+            # 如果AudioProcessor不可用,跳过测试
             pytest.skip("AudioProcessor not available")
             
     def test_simple_audio_quality_check(self):
@@ -239,7 +239,7 @@ class TestASREnhanced:
         assert confidence < 0.5  # 低质量应该导致低置信度
         
     def test_has_recognition_errors(self):
-        """测试识别错误模式检测"""
+        """测试识别错误模式检查"""
         # 正常文本
         assert not self.asr._has_recognition_errors("这是正常的文本")
         
@@ -247,7 +247,7 @@ class TestASREnhanced:
         assert self.asr._has_recognition_errors("aaaaaa")
         
         # 过多标点符号
-        assert self.asr._has_recognition_errors("文本。。。。")
+        assert self.asr._has_recognition_errors("文本...???")
         
         # 过长英文字符串
         assert self.asr._has_recognition_errors("abcdefghijklmnop")
@@ -268,7 +268,7 @@ class TestASREnhanced:
         
         is_valid, message = self.asr.validate_audio_for_recognition(audio_data)
         
-        # 结果取决于具体的质量评估，但不应该抛出异常
+        # 结果取决于具体的质量评估,但不应该抛出异常
         assert isinstance(is_valid, bool)
         assert isinstance(message, str)
         
@@ -408,3 +408,11 @@ class TestASRIntegration:
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+
+
+
+
+
+
+

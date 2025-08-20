@@ -1,4 +1,4 @@
-"""
+﻿"""
 ChatTab 界面交互功能的测试
 测试输入模式切换、状态指示器和偏好设置持久化
 """
@@ -9,9 +9,9 @@ import gradio as gr
 from unittest.mock import Mock, MagicMock, patch
 from pathlib import Path
 
-from src.oralcounsellor.web.components.chat_tab import ChatTab
-from src.oralcounsellor.services.chat import ChatService
-from src.oralcounsellor.utils.preferences import UserPreferences
+from chatterpal.web.components.chat_tab import ChatTab
+from chatterpal.services.chat import ChatService
+from chatterpal.utils.preferences import UserPreferences
 
 
 class TestChatTabInputModeInteractions:
@@ -22,15 +22,15 @@ class TestChatTabInputModeInteractions:
         # 创建临时目录用于偏好设置
         self.temp_dir = tempfile.mkdtemp()
         
-        # 创建模拟的 ChatService
+        # 创建模拟ChatService
         self.mock_chat_service = Mock(spec=ChatService)
         self.mock_chat_service.create_session.return_value = "test_session_id"
         self.mock_chat_service.generate_topic.return_value = "测试对话主题"
         self.mock_chat_service.process_chat.return_value = ((16000, []), [])
         self.mock_chat_service.clear_context.return_value = None
         
-        # 使用临时目录创建偏好管理器
-        with patch('src.oralcounsellor.utils.preferences.get_preferences_manager') as mock_get_prefs:
+        # 使用临时目录创建偏好管理
+        with patch('chatterpal.utils.preferences.get_preferences_manager') as mock_get_prefs:
             self.preferences = UserPreferences(config_dir=self.temp_dir)
             mock_get_prefs.return_value = self.preferences
             
@@ -48,7 +48,7 @@ class TestChatTabInputModeInteractions:
         self.preferences.set_input_mode("voice")
         
         # 重新创建 ChatTab 以测试初始化
-        with patch('src.oralcounsellor.utils.preferences.get_preferences_manager') as mock_get_prefs:
+        with patch('chatterpal.utils.preferences.get_preferences_manager') as mock_get_prefs:
             mock_get_prefs.return_value = self.preferences
             chat_tab = ChatTab(self.mock_chat_service)
             
@@ -57,43 +57,43 @@ class TestChatTabInputModeInteractions:
     
     def test_toggle_input_mode_text_to_voice(self):
         """测试从文本输入切换到语音输入"""
-        # 初始状态：文本输入
+        # 初始状态:文本输入
         current_use_text = True
         
         # 执行切换
         result = self.chat_tab._toggle_input_mode(current_use_text)
         
-        # 验证返回值
+        # 验证返回
         new_use_text, audio_update, text_update, status_update, button_update = result
         
-        assert new_use_text is False  # 切换到语音输入
+        assert new_use_text is False  # 切换到语音输
         assert audio_update["visible"] is True  # 音频输入可见
         assert text_update["visible"] is False  # 文本输入隐藏
-        assert "🎤 语音输入" in status_update["value"]  # 状态显示语音输入
-        assert "📝 切换到文本输入" in button_update["value"]  # 按钮显示切换到文本
+        assert "🎤 语音输入" in status_update["value"]  # 状态显示语音输
+        assert "📝 切换到文本输" in button_update["value"]  # 按钮显示切换到文
         
-        # 验证偏好设置已保存
+        # 验证偏好设置已保
         assert self.chat_tab.preferences.get_input_mode() == "voice"
     
     def test_toggle_input_mode_voice_to_text(self):
         """测试从语音输入切换到文本输入"""
-        # 设置初始状态：语音输入
+        # 设置初始状态:语音输入
         self.preferences.set_input_mode("voice")
         current_use_text = False
         
         # 执行切换
         result = self.chat_tab._toggle_input_mode(current_use_text)
         
-        # 验证返回值
+        # 验证返回
         new_use_text, audio_update, text_update, status_update, button_update = result
         
-        assert new_use_text is True  # 切换到文本输入
+        assert new_use_text is True  # 切换到文本输
         assert audio_update["visible"] is False  # 音频输入隐藏
         assert text_update["visible"] is True  # 文本输入可见
-        assert "📝 文本输入" in status_update["value"]  # 状态显示文本输入
-        assert "🎤 切换到语音输入" in button_update["value"]  # 按钮显示切换到语音
+        assert "📝 文本输入" in status_update["value"]  # 状态显示文本输
+        assert "🎤 切换到语音输" in button_update["value"]  # 按钮显示切换到语
         
-        # 验证偏好设置已保存
+        # 验证偏好设置已保
         assert self.chat_tab.preferences.get_input_mode() == "text"
     
     def test_input_mode_persistence(self):
@@ -104,7 +104,7 @@ class TestChatTabInputModeInteractions:
         # 验证当前实例的设置已更新
         assert self.chat_tab.preferences.get_input_mode() == "voice"
         
-        # 创建新的偏好管理器实例（模拟重启）
+        # 创建新的偏好管理器实例(模拟重启)
         new_preferences = UserPreferences(config_dir=self.temp_dir)
         
         # 验证设置被持久化保存
@@ -138,35 +138,35 @@ class TestChatTabInputModeInteractions:
     
     def test_input_mode_status_indicator(self):
         """测试输入模式状态指示器"""
-        # 测试文本模式状态
-        result = self.chat_tab._toggle_input_mode(False)  # 切换到文本
+        # 测试文本模式状
+        result = self.chat_tab._toggle_input_mode(False)  # 切换到文
         _, _, _, status_update, button_update = result
         
         assert "📝 文本输入" in status_update["value"]
-        assert "🎤 切换到语音输入" in button_update["value"]
+        assert "🎤 切换到语音输" in button_update["value"]
         
-        # 测试语音模式状态
-        result = self.chat_tab._toggle_input_mode(True)  # 切换到语音
+        # 测试语音模式状
+        result = self.chat_tab._toggle_input_mode(True)  # 切换到语
         _, _, _, status_update, button_update = result
         
         assert "🎤 语音输入" in status_update["value"]
-        assert "📝 切换到文本输入" in button_update["value"]
+        assert "📝 切换到文本输" in button_update["value"]
     
     def test_session_management_with_input_modes(self):
         """测试会话管理与输入模式的集成"""
         # 模拟聊天交互
         audio_data = None
-        text_input = "Hello, how are you?"
+        text_input = "Hello, how are you"
         chat_history = []
         use_text = True
         
         # 执行聊天
         result = self.chat_tab._handle_chat(audio_data, text_input, chat_history, use_text)
         
-        # 验证会话ID被创建
+        # 验证会话ID被创
         assert self.chat_tab.current_session_id is not None
         
-        # 验证 ChatService 被正确调用
+        # 验证 ChatService 被正确调
         self.mock_chat_service.create_session.assert_called_once()
         self.mock_chat_service.process_chat.assert_called_once_with(
             audio=audio_data,
@@ -216,7 +216,7 @@ class TestChatTabInputModeInteractions:
         # 模拟空文本输入错误
         self.mock_chat_service.process_chat.side_effect = Exception("文本输入不能为空")
         
-        # 执行聊天（空文本）
+        # 执行聊天(空文本)
         result = self.chat_tab._handle_chat(None, "", [], True)
         
         # 验证错误处理
@@ -247,26 +247,26 @@ class TestChatTabPreferencesIntegration:
         preferences.set_auto_play_response(False)
         
         # 创建 ChatTab 并验证偏好设置被加载
-        with patch('src.oralcounsellor.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
+        with patch('chatterpal.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
             mock_get_prefs.return_value = preferences
             chat_tab = ChatTab(self.mock_chat_service)
             
-            # 验证偏好设置被正确加载
+            # 验证偏好设置被正确加
             assert chat_tab.preferences.get_input_mode() == "voice"
             assert chat_tab.preferences.get_show_history() is True
             assert chat_tab.preferences.get_auto_play_response() is False
     
     def test_multiple_preference_changes(self):
-        """测试多个偏好设置的连续更改"""
+        """测试多个偏好设置的连续更新"""
         preferences = UserPreferences(config_dir=self.temp_dir)
         
-        with patch('src.oralcounsellor.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
+        with patch('chatterpal.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
             mock_get_prefs.return_value = preferences
             chat_tab = ChatTab(self.mock_chat_service)
             
             # 连续更改多个设置
             chat_tab._toggle_input_mode(True)  # 切换到语音
-            chat_tab._toggle_history_display(True)  # 显示历史
+            chat_tab._toggle_history_display(True)  # 显示历史记录
             chat_tab._toggle_input_mode(False)  # 切换回文本
             
             # 验证最终状态
@@ -284,7 +284,7 @@ class TestChatTabPreferencesIntegration:
             prefs1 = UserPreferences(config_dir=temp_dir1)
             prefs2 = UserPreferences(config_dir=temp_dir2)
             
-            # 设置不同的偏好
+            # 设置不同的偏
             prefs1.set_input_mode("voice")
             prefs2.set_input_mode("text")
             
@@ -316,7 +316,7 @@ class TestChatTabUIComponents:
         """测试主题生成功能"""
         preferences = UserPreferences(config_dir=self.temp_dir)
         
-        with patch('src.oralcounsellor.utils.preferences.get_preferences_manager') as mock_get_prefs:
+        with patch('chatterpal.utils.preferences.get_preferences_manager') as mock_get_prefs:
             mock_get_prefs.return_value = preferences
             chat_tab = ChatTab(self.mock_chat_service)
             
@@ -332,7 +332,7 @@ class TestChatTabUIComponents:
         
         preferences = UserPreferences(config_dir=self.temp_dir)
         
-        with patch('src.oralcounsellor.utils.preferences.get_preferences_manager') as mock_get_prefs:
+        with patch('chatterpal.utils.preferences.get_preferences_manager') as mock_get_prefs:
             mock_get_prefs.return_value = preferences
             chat_tab = ChatTab(self.mock_chat_service)
             
@@ -359,7 +359,7 @@ class TestChatTabStateManagement:
         """测试输入模式状态一致性"""
         preferences = UserPreferences(config_dir=self.temp_dir)
         
-        with patch('src.oralcounsellor.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
+        with patch('chatterpal.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
             mock_get_prefs.return_value = preferences
             chat_tab = ChatTab(self.mock_chat_service)
             
@@ -379,7 +379,7 @@ class TestChatTabStateManagement:
         """测试会话状态管理"""
         preferences = UserPreferences(config_dir=self.temp_dir)
         
-        with patch('src.oralcounsellor.utils.preferences.get_preferences_manager') as mock_get_prefs:
+        with patch('chatterpal.utils.preferences.get_preferences_manager') as mock_get_prefs:
             mock_get_prefs.return_value = preferences
             chat_tab = ChatTab(self.mock_chat_service)
             
@@ -400,3 +400,12 @@ class TestChatTabStateManagement:
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+
+
+
+
+
+
+
+

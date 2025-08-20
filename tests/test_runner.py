@@ -1,5 +1,5 @@
-"""
-Comprehensive test runner for OralCounsellor project.
+﻿"""
+Comprehensive test runner for ChatterPal project.
 Runs all tests and generates coverage reports.
 """
 
@@ -17,14 +17,14 @@ def run_tests():
     project_root = Path(__file__).parent.parent
     os.chdir(project_root)
     
-    print("🧪 Running OralCounsellor Test Suite")
+    print("🧪 Running ChatterPal Test Suite")
     print("=" * 50)
     
     # Test configuration
     test_args = [
         "--verbose",
         "--tb=short",
-        "--cov=src/oralcounsellor",
+        "--cov=src/chatterpal",
         "--cov-report=term-missing",
         "--cov-report=html:htmlcov",
         "--cov-fail-under=70",  # Require at least 70% coverage
@@ -36,10 +36,10 @@ def run_tests():
         result = pytest.main(test_args)
         
         if result == 0:
-            print("\n✅ All tests passed!")
+            print("\nAll tests passed!")
             print("📊 Coverage report generated in htmlcov/")
         else:
-            print(f"\n❌ Tests failed with exit code: {result}")
+            print(f"\nTests failed with exit code: {result}")
             
         return result
         
@@ -87,7 +87,7 @@ def run_specific_module_tests():
     print("\n📊 Test Results Summary")
     print("-" * 30)
     for module, result in results.items():
-        status_emoji = "✅" if result == "PASS" else "❌"
+        status_emoji = " if result == "PASS" else "
         print(f"{status_emoji} {module}: {result}")
     
     return results
@@ -111,17 +111,17 @@ def check_test_dependencies():
     for package in required_packages:
         try:
             __import__(package.replace("-", "_"))
-            print(f"  ✅ {package}")
+            print(f"  {package}")
         except ImportError:
             missing_packages.append(package)
-            print(f"  ❌ {package} - MISSING")
+            print(f"  {package} - MISSING")
     
     if missing_packages:
         print(f"\n⚠️  Missing packages: {', '.join(missing_packages)}")
         print("Install with: uv add --dev " + " ".join(missing_packages))
         return False
     
-    print("✅ All test dependencies available")
+    print("All test dependencies available")
     return True
 
 
@@ -144,10 +144,10 @@ def run_integration_tests():
         ])
         
         if result != 0:
-            print(f"❌ Integration test failed: {test}")
+            print(f"Integration test failed: {test}")
             return False
     
-    print("✅ All integration tests passed!")
+    print("All integration tests passed!")
     return True
 
 
@@ -160,14 +160,14 @@ def generate_test_report():
     result = pytest.main([
         "--verbose",
         "--tb=short",
-        "--cov=src/oralcounsellor",
+        "--cov=src/chatterpal",
         "--cov-report=xml:coverage.xml",
         "--junit-xml=test-results.xml",
         "tests/"
     ])
     
     if result == 0:
-        print("✅ Test report generated:")
+        print("Test report generated:")
         print("  - coverage.xml (coverage data)")
         print("  - test-results.xml (test results)")
         print("  - htmlcov/ (HTML coverage report)")
@@ -178,12 +178,12 @@ def generate_test_report():
 def main():
     """Main test runner function."""
     
-    print("🚀 OralCounsellor Test Suite Runner")
+    print("🚀 ChatterPal Test Suite Runner")
     print("=" * 50)
     
     # Check dependencies first
     if not check_test_dependencies():
-        print("\n❌ Cannot run tests due to missing dependencies")
+        print("\nCannot run tests due to missing dependencies")
         return 1
     
     # Parse command line arguments
@@ -210,3 +210,10 @@ def main():
 if __name__ == "__main__":
     exit_code = main()
     sys.exit(exit_code)
+
+
+
+
+
+
+

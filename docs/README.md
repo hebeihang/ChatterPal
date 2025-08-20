@@ -1,6 +1,6 @@
-# OralCounsellor 项目文档
+# ChatterPal 项目文档
 
-本目录包含 OralCounsellor 项目的完整文档。
+本目录包含 ChatterPal 项目的完整文档。
 
 ## 文档结构
 
@@ -56,6 +56,6 @@
 如果在使用过程中遇到问题：
 
 1. 首先查看相关文档
-2. 搜索 [GitHub Issues](https://github.com/your-org/oralcounsellor/issues)
-3. 提交新的 Issue 描述问题
-4. 参与 [讨论区](https://github.com/your-org/oralcounsellor/discussions) 交流
+2. 搜索 [GitHub Issues](https://github.com/your-org/chatterpal/issues)
+3. 查看相关文档
+4. 参与 [讨论区](https://github.com/your-org/chatterpal/discussions) 交流

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 项目最终验证脚本
 验证项目重构后的所有功能是否正常工作
@@ -14,10 +15,10 @@ def check_python_version():
     print("🔍 检查Python版本...")
     version = sys.version_info
     if version.major == 3 and version.minor >= 8:
-        print(f"✅ Python版本: {version.major}.{version.minor}.{version.micro}")
+        print(f"�?Python版本: {version.major}.{version.minor}.{version.micro}")
         return True
     else:
-        print(f"❌ Python版本过低: {version.major}.{version.minor}.{version.micro}")
+        print(f"�?Python版本过低: {version.major}.{version.minor}.{version.micro}")
         return False
 
 def check_uv_available():
@@ -37,15 +38,15 @@ def check_uv_available():
 
 def check_project_structure():
     """检查项目结构"""
-    print("🔍 检查项目结构...")
+    print("🔍 检查项目结构..")
     
     required_dirs = [
-        "src/oralcounsellor",
-        "src/oralcounsellor/core",
-        "src/oralcounsellor/services",
-        "src/oralcounsellor/web",
-        "src/oralcounsellor/config",
-        "src/oralcounsellor/utils",
+        "src/chatterpal",
+        "src/chatterpal/core",
+        "src/chatterpal/services",
+        "src/chatterpal/web",
+        "src/chatterpal/config",
+        "src/chatterpal/utils",
         "tests",
         "docs",
         "scripts",
@@ -64,16 +65,16 @@ def check_project_structure():
     
     for dir_path in required_dirs:
         if Path(dir_path).exists():
-            print(f"✅ 目录存在: {dir_path}")
+            print(f"�?目录存在: {dir_path}")
         else:
-            print(f"❌ 目录缺失: {dir_path}")
+            print(f"�?目录缺失: {dir_path}")
             all_good = False
     
     for file_path in required_files:
         if Path(file_path).exists():
-            print(f"✅ 文件存在: {file_path}")
+            print(f"�?文件存在: {file_path}")
         else:
-            print(f"❌ 文件缺失: {file_path}")
+            print(f"�?文件缺失: {file_path}")
             all_good = False
     
     return all_good
@@ -84,10 +85,10 @@ def check_dependencies():
     try:
         result = subprocess.run(['uv', 'sync', '--dry-run'], capture_output=True, text=True)
         if result.returncode == 0:
-            print("✅ 依赖同步正常")
+            print("�?依赖同步正常")
             return True
         else:
-            print(f"❌ 依赖同步失败: {result.stderr}")
+            print(f"�?依赖同步失败: {result.stderr}")
             return False
     except Exception as e:
         print(f"❌ 检查依赖失败: {e}")
@@ -98,18 +99,18 @@ def check_imports():
     print("🔍 检查核心模块导入...")
     
     modules_to_test = [
-        "oralcounsellor.config.settings",
-        "oralcounsellor.core.asr",
-        "oralcounsellor.core.tts", 
-        "oralcounsellor.core.llm",
-        "oralcounsellor.core.assessment",
-        "oralcounsellor.services.chat",
-        "oralcounsellor.services.evaluation",
-        "oralcounsellor.services.correction",
-        "oralcounsellor.utils.audio",
-        "oralcounsellor.utils.text",
-        "oralcounsellor.utils.logger",
-        "oralcounsellor.web.app"
+        "chatterpal.config.settings",
+        "chatterpal.core.asr",
+        "chatterpal.core.tts",
+        "chatterpal.core.llm",
+        "chatterpal.core.assessment",
+        "chatterpal.services.chat",
+        "chatterpal.services.evaluation",
+        "chatterpal.services.correction",
+        "chatterpal.utils.audio",
+        "chatterpal.utils.text",
+        "chatterpal.utils.logger",
+        "chatterpal.web.app"
     ]
     
     all_good = True
@@ -117,9 +118,9 @@ def check_imports():
     for module in modules_to_test:
         try:
             __import__(module)
-            print(f"✅ 模块导入成功: {module}")
+            print(f"�?模块导入成功: {module}")
         except ImportError as e:
-            print(f"❌ 模块导入失败: {module} - {e}")
+            print(f"�?模块导入失败: {module} - {e}")
             all_good = False
         except Exception as e:
             print(f"⚠️  模块导入警告: {module} - {e}")
@@ -130,11 +131,11 @@ def check_configuration():
     """检查配置系统"""
     print("🔍 检查配置系统...")
     try:
-        from oralcounsellor.config.settings import get_settings
+        from chatterpal.config.settings import get_settings
         settings = get_settings()
-        print(f"✅ 配置加载成功")
+        print(f"�?配置加载成功")
         print(f"   - Whisper模型: {settings.whisper_model}")
-        print(f"   - 音频采样率: {settings.audio_sample_rate}")
+        print(f"   - 音频采样�? {settings.audio_sample_rate}")
         print(f"   - 日志级别: {settings.log_level}")
         return True
     except Exception as e:
@@ -159,11 +160,11 @@ def check_documentation():
         if Path(doc).exists():
             size = Path(doc).stat().st_size
             if size > 100:  # 至少100字节
-                print(f"✅ 文档完整: {doc} ({size} bytes)")
+                print(f"�?文档完整: {doc} ({size} bytes)")
             else:
                 print(f"⚠️  文档过短: {doc} ({size} bytes)")
         else:
-            print(f"❌ 文档缺失: {doc}")
+            print(f"�?文档缺失: {doc}")
             all_good = False
     
     return all_good
@@ -184,20 +185,20 @@ def check_scripts():
             result = subprocess.run(['python', script] + args, 
                                   capture_output=True, text=True, timeout=10)
             if result.returncode == 0:
-                print(f"✅ 脚本正常: {script}")
+                print(f"�?脚本正常: {script}")
             else:
-                print(f"❌ 脚本异常: {script}")
+                print(f"�?脚本异常: {script}")
                 all_good = False
         except subprocess.TimeoutExpired:
             print(f"⚠️  脚本超时: {script}")
         except Exception as e:
-            print(f"❌ 脚本错误: {script} - {e}")
+            print(f"�?脚本错误: {script} - {e}")
             all_good = False
     
     return all_good
 
 def main():
-    """主验证流程"""
+    """主验证流"""
     print("🚀 开始项目最终验证...\n")
     
     checks = [
@@ -215,14 +216,14 @@ def main():
     
     for name, check_func in checks:
         print(f"\n{'='*50}")
-        print(f"检查项目: {name}")
+        print(f"检查项�? {name}")
         print('='*50)
         
         try:
             result = check_func()
             results.append((name, result))
         except Exception as e:
-            print(f"❌ 检查失败: {e}")
+            print(f"�?检查失�? {e}")
             results.append((name, False))
     
     # 输出总结
@@ -234,7 +235,7 @@ def main():
     total = len(results)
     
     for name, result in results:
-        status = "✅ 通过" if result else "❌ 失败"
+        status = "�?通过" if result else "�?失败"
         print(f"{name}: {status}")
         if result:
             passed += 1
@@ -242,16 +243,17 @@ def main():
     print(f"\n总体结果: {passed}/{total} 项检查通过")
     
     if passed == total:
-        print("🎉 项目重构验证完全通过！")
-        print("\n✅ 项目已准备就绪，可以正常使用")
-        print("✅ 所有模块功能正常")
-        print("✅ 文档完整")
-        print("✅ 依赖管理正常")
+        print("🎉 项目最终验证完全通过")
+        print("\n�?项目已准备就绪，可以正常使用")
+        print("�?所有模块功能正常")
+        print("�?文档完整")
+        print("�?依赖管理正常")
         return 0
     else:
-        print("⚠️  项目重构验证部分通过")
-        print(f"   有 {total - passed} 项检查未通过，请检查上述错误")
+        print("⚠️  项目最终验证部分通过")
+        print(f" ❌ {total - passed} 项检查未通过，请检查上述错误")
         return 1
 
 if __name__ == "__main__":
-    sys.exit(main())
+    result = main();
+    sys.exit(result)

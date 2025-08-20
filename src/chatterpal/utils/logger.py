@@ -62,10 +62,10 @@ class JSONFormatter(logging.Formatter):
         return json.dumps(log_entry, ensure_ascii=False)
 
 
-class OralCounsellorLogger:
-    """OralCounsellor专用日志器"""
+class ChatterPalLogger:
+    """ChatterPal专用日志器"""
 
-    def __init__(self, name: str = "oralcounsellor"):
+    def __init__(self, name: str = "chatterpal"):
         """
         初始化日志器
 
@@ -192,10 +192,10 @@ class OralCounsellorLogger:
 
 
 # 全局日志器实例
-_global_logger: Optional[OralCounsellorLogger] = None
+_global_logger: Optional[ChatterPalLogger] = None
 
 
-def get_logger(name: str = "oralcounsellor") -> OralCounsellorLogger:
+def get_logger(name: str = "chatterpal") -> ChatterPalLogger:
     """
     获取日志器实例
 
@@ -203,17 +203,17 @@ def get_logger(name: str = "oralcounsellor") -> OralCounsellorLogger:
         name: 日志器名称
 
     Returns:
-        OralCounsellorLogger: 日志器实例
+        ChatterPalLogger: 日志器实例
     """
     global _global_logger
 
     if _global_logger is None or _global_logger.name != name:
-        _global_logger = OralCounsellorLogger(name)
+        _global_logger = ChatterPalLogger(name)
 
     return _global_logger
 
 
-def setup_logging(config: Optional[Dict[str, Any]] = None) -> OralCounsellorLogger:
+def setup_logging(config: Optional[Dict[str, Any]] = None) -> ChatterPalLogger:
     """
     设置全局日志配置
 
@@ -221,7 +221,7 @@ def setup_logging(config: Optional[Dict[str, Any]] = None) -> OralCounsellorLogg
         config: 日志配置字典
 
     Returns:
-        OralCounsellorLogger: 配置好的日志器
+        ChatterPalLogger: 配置好的日志器
     """
     logger = get_logger()
 
@@ -236,11 +236,11 @@ class LoggerMixin:
     """日志器混入类"""
 
     @property
-    def logger(self) -> OralCounsellorLogger:
+    def logger(self) -> ChatterPalLogger:
         """获取日志器"""
         if not hasattr(self, "_logger"):
             class_name = self.__class__.__name__
-            self._logger = get_logger(f"oralcounsellor.{class_name}")
+            self._logger = get_logger(f"chatterpal.{class_name}")
         return self._logger
 
 

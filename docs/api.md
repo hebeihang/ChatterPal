@@ -1,8 +1,8 @@
-# OralCounsellor API 文档
+# ChatterPal API 文档
 
 ## 概述
 
-OralCounsellor 提供了一个全面的英语发音训练和评估 API。系统采用模块化架构，支持多种 ASR 引擎、TTS 服务和 LLM 提供商。该文档涵盖了增强的聊天模块功能，包括多模态输入输出、主题生成、音频处理优化等新特性。
+ChatterPal 提供了一个全面的英语发音训练和评估 API。系统采用模块化架构，支持多种 ASR 引擎、TTS 服务和 LLM 提供商。该文档涵盖了增强的聊天模块功能，包括多模态输入输出、主题生成、音频处理优化等新特性。
 
 ## Core Modules
 
@@ -10,7 +10,7 @@ OralCounsellor 提供了一个全面的英语发音训练和评估 API。系统�
 
 #### Base ASR Interface
 ```python
-from oralcounsellor.core.asr.base import BaseASR
+from chatterpal.core.asr.base import BaseASR
 
 class BaseASR:
     def transcribe(self, audio_path: str) -> str:
@@ -20,7 +20,7 @@ class BaseASR:
 
 #### Whisper ASR
 ```python
-from oralcounsellor.core.asr.whisper import WhisperASR
+from chatterpal.core.asr.whisper import WhisperASR
 
 asr = WhisperASR()
 transcript = asr.transcribe("audio.wav")
@@ -28,7 +28,7 @@ transcript = asr.transcribe("audio.wav")
 
 #### Aliyun ASR
 ```python
-from oralcounsellor.core.asr.aliyun import AliyunASR
+from chatterpal.core.asr.aliyun import AliyunASR
 
 asr = AliyunASR()
 transcript = asr.transcribe("audio.wav")
@@ -38,7 +38,7 @@ transcript = asr.transcribe("audio.wav")
 
 #### Base TTS Interface
 ```python
-from oralcounsellor.core.tts.base import BaseTTS
+from chatterpal.core.tts.base import BaseTTS
 
 class BaseTTS:
     def synthesize(self, text: str, output_path: str) -> str:
@@ -48,7 +48,7 @@ class BaseTTS:
 
 #### Edge TTS
 ```python
-from oralcounsellor.core.tts.edge import EdgeTTS
+from chatterpal.core.tts.edge import EdgeTTS
 
 tts = EdgeTTS()
 audio_path = tts.synthesize("Hello world", "output.wav")
@@ -58,7 +58,7 @@ audio_path = tts.synthesize("Hello world", "output.wav")
 
 #### Base LLM Interface
 ```python
-from oralcounsellor.core.llm.base import BaseLLM
+from chatterpal.core.llm.base import BaseLLM
 
 class BaseLLM:
     def chat(self, messages: List[Dict]) -> str:
@@ -68,7 +68,7 @@ class BaseLLM:
 
 #### 阿里百炼 LLM (OpenAI 兼容接口)
 ```python
-from oralcounsellor.core.llm.alibaba import AlibabaBailianLLM
+from chatterpal.core.llm.alibaba import AlibabaBailianLLM
 
 # 基本使用 - 使用环境变量 DASHSCOPE_API_KEY
 llm = AlibabaBailianLLM({
@@ -124,7 +124,7 @@ if llm.test_connection():
 
 #### OpenAI LLM
 ```python
-from oralcounsellor.core.llm.openai import OpenAILLM
+from chatterpal.core.llm.openai import OpenAILLM
 
 llm = OpenAILLM()
 response = llm.chat([{"role": "user", "content": "Hello"}])
@@ -134,7 +134,7 @@ response = llm.chat([{"role": "user", "content": "Hello"}])
 
 #### Pronunciation Assessment
 ```python
-from oralcounsellor.core.assessment.base import BaseAssessment
+from chatterpal.core.assessment.base import BaseAssessment
 
 class BaseAssessment:
     def assess(self, audio_path: str, reference_text: str) -> Dict:
@@ -144,7 +144,7 @@ class BaseAssessment:
 
 #### Prosody Analysis
 ```python
-from oralcounsellor.core.assessment.prosody import ProsodyAnalyzer
+from chatterpal.core.assessment.prosody import ProsodyAnalyzer
 
 analyzer = ProsodyAnalyzer()
 results = analyzer.analyze("audio.wav")
@@ -152,7 +152,7 @@ results = analyzer.analyze("audio.wav")
 
 #### Phoneme Analysis
 ```python
-from oralcounsellor.core.assessment.phoneme import PhonemeAnalyzer
+from chatterpal.core.assessment.phoneme import PhonemeAnalyzer
 
 analyzer = PhonemeAnalyzer()
 results = analyzer.analyze("audio.wav", "reference text")
@@ -160,7 +160,7 @@ results = analyzer.analyze("audio.wav", "reference text")
 
 #### Pronunciation Corrector
 ```python
-from oralcounsellor.core.assessment.corrector import PronunciationCorrector
+from chatterpal.core.assessment.corrector import PronunciationCorrector
 
 corrector = PronunciationCorrector()
 corrections = corrector.correct("audio.wav", "reference text")
@@ -173,7 +173,7 @@ corrections = corrector.correct("audio.wav", "reference text")
 #### 基本使用
 
 ```python
-from oralcounsellor.services.chat import ChatService
+from chatterpal.services.chat import ChatService
 
 # 初始化聊天服务
 chat_service = ChatService(asr=asr_instance, tts=tts_instance, llm=llm_instance)
@@ -284,7 +284,7 @@ status = chat_service.get_service_status()
 ### 主题生成服务 (TopicGenerator)
 
 ```python
-from oralcounsellor.services.topic_generator import TopicGenerator
+from chatterpal.services.topic_generator import TopicGenerator
 
 # 初始化主题生成器
 topic_generator = TopicGenerator(llm=llm_instance, config=topic_config)
@@ -321,7 +321,7 @@ stats = topic_generator.get_statistics()
 ### 评估服务 (EvaluationService)
 
 ```python
-from oralcounsellor.services.evaluation import EvaluationService
+from chatterpal.services.evaluation import EvaluationService
 
 eval_service = EvaluationService()
 scores = eval_service.evaluate_pronunciation("audio.wav", "reference text")
@@ -330,7 +330,7 @@ scores = eval_service.evaluate_pronunciation("audio.wav", "reference text")
 ### 纠错服务 (CorrectionService)
 
 ```python
-from oralcounsellor.services.correction import CorrectionService
+from chatterpal.services.correction import CorrectionService
 
 correction_service = CorrectionService()
 corrections = correction_service.analyze_pronunciation("audio.wav", "reference text")
@@ -341,7 +341,7 @@ corrections = correction_service.analyze_pronunciation("audio.wav", "reference t
 ### 聊天模块配置管理
 
 ```python
-from oralcounsellor.services.chat_config import ChatConfigManager, AudioConfig, TopicGenerationConfig
+from chatterpal.services.chat_config import ChatConfigManager, AudioConfig, TopicGenerationConfig
 
 # 初始化配置管理器
 config_manager = ChatConfigManager()
@@ -380,7 +380,7 @@ config_manager.reset_to_defaults()
 ### 用户偏好管理
 
 ```python
-from oralcounsellor.utils.preferences import get_preferences_manager
+from chatterpal.utils.preferences import get_preferences_manager
 
 # 获取偏好管理器
 prefs = get_preferences_manager()
@@ -401,7 +401,7 @@ prefs.save_preferences()
 ### 基础设置管理
 
 ```python
-from oralcounsellor.config.settings import Settings
+from chatterpal.config.settings import Settings
 
 settings = Settings()
 # 访问配置值
@@ -457,9 +457,9 @@ CHAT_CACHE_TTL=1800
 
 ### Gradio Components
 ```python
-from oralcounsellor.web.components.chat_tab import create_chat_tab
-from oralcounsellor.web.components.score_tab import create_score_tab
-from oralcounsellor.web.components.correct_tab import create_correct_tab
+from chatterpal.web.components.chat_tab import create_chat_tab
+from chatterpal.web.components.score_tab import create_score_tab
+from chatterpal.web.components.correct_tab import create_correct_tab
 
 # Create individual tabs
 chat_tab = create_chat_tab()
@@ -469,7 +469,7 @@ correct_tab = create_correct_tab()
 
 ### Main Application
 ```python
-from oralcounsellor.web.app import create_app
+from chatterpal.web.app import create_app
 
 app = create_app()
 app.launch()
@@ -480,7 +480,7 @@ app.launch()
 ### 音频处理优化
 
 ```python
-from oralcounsellor.utils.audio_optimizer import AudioProcessor, AudioBuffer
+from chatterpal.utils.audio_optimizer import AudioProcessor, AudioBuffer
 
 # 音频处理器
 processor = AudioProcessor()
@@ -506,7 +506,7 @@ audio = buffer.get(timeout=1.0)
 ### 缓存管理
 
 ```python
-from oralcounsellor.utils.cache import get_tts_cache, get_chat_cache
+from chatterpal.utils.cache import get_tts_cache, get_chat_cache
 
 # TTS 缓存
 tts_cache = get_tts_cache()
@@ -530,7 +530,7 @@ session_data = chat_cache.get_session_data(session_id)
 ### 基础音频处理
 
 ```python
-from oralcounsellor.utils.audio import AudioProcessor
+from chatterpal.utils.audio import AudioProcessor
 
 processor = AudioProcessor()
 processed_audio = processor.preprocess("input.wav")
@@ -538,7 +538,7 @@ processed_audio = processor.preprocess("input.wav")
 
 ### Text Processing
 ```python
-from oralcounsellor.utils.text import TextProcessor
+from chatterpal.utils.text import TextProcessor
 
 processor = TextProcessor()
 cleaned_text = processor.clean("input text")
@@ -546,7 +546,7 @@ cleaned_text = processor.clean("input text")
 
 ### Logging
 ```python
-from oralcounsellor.utils.logger import get_logger
+from chatterpal.utils.logger import get_logger
 
 logger = get_logger(__name__)
 logger.info("Processing started")
@@ -559,7 +559,7 @@ logger.info("Processing started")
 ### 基础错误类型
 
 ```python
-from oralcounsellor.core.errors import (
+from chatterpal.core.errors import (
     ChatModuleError,
     AudioInputError,
     SpeechRecognitionError,
@@ -739,10 +739,10 @@ sample_rate, audio_data = audio_output
 ### 完整的聊天对话示例
 
 ```python
-from oralcounsellor.services.chat import ChatService
-from oralcounsellor.core.asr.whisper import WhisperASR
-from oralcounsellor.core.tts.edge import EdgeTTS
-from oralcounsellor.core.llm.openai import OpenAILLM
+from chatterpal.services.chat import ChatService
+from chatterpal.core.asr.whisper import WhisperASR
+from chatterpal.core.tts.edge import EdgeTTS
+from chatterpal.core.llm.openai import OpenAILLM
 
 # 初始化组件
 asr = WhisperASR()
@@ -816,7 +816,7 @@ chat_service.set_topic_for_session(
 ### 配置管理示例
 
 ```python
-from oralcounsellor.services.chat_config import ChatConfigManager, AudioConfig
+from chatterpal.services.chat_config import ChatConfigManager, AudioConfig
 
 # 配置音频设置
 config_manager = ChatConfigManager()
@@ -834,7 +834,7 @@ config_manager.save_config()
 ### 错误处理示例
 
 ```python
-from oralcounsellor.core.errors import SpeechRecognitionError, AudioInputError
+from chatterpal.core.errors import SpeechRecognitionError, AudioInputError
 
 try:
     audio_output, history = chat_service.process_chat(

@@ -168,7 +168,7 @@ def print_config_status() -> None:
     try:
         summary = get_config_summary()
 
-        print("=== OralCounsellor Configuration Status ===")
+        print("=== ChatterPal Configuration Status ===")
         print(f"Environment: {summary['environment']['environment']}")
         print(f"Debug Mode: {summary['environment']['debug']}")
         print(f"Log Level: {summary['environment']['log_level']}")
@@ -230,7 +230,7 @@ def create_tts(settings: Optional[Settings] = None):
         settings = get_settings()
         
     if settings.tts_provider == "edge":
-        from oralcounsellor.core.tts.edge import EdgeTTS
+        from chatterpal.core.tts.edge import EdgeTTS
 
         return EdgeTTS(
             {
@@ -240,7 +240,7 @@ def create_tts(settings: Optional[Settings] = None):
             }
         )
     elif settings.tts_provider == "alibaba":
-        from oralcounsellor.core.tts.alibaba import AlibabaTTS
+        from chatterpal.core.tts.alibaba import AlibabaTTS
         
         return AlibabaTTS(
             {
@@ -262,7 +262,7 @@ def create_asr(settings: Optional[Settings] = None):
         settings = get_settings()
         
     if settings.asr_provider == "whisper":
-        from oralcounsellor.core.asr.whisper import WhisperASR
+        from chatterpal.core.asr.whisper import WhisperASR
         
         return WhisperASR(
             {
@@ -271,7 +271,7 @@ def create_asr(settings: Optional[Settings] = None):
             }
         )
     elif settings.asr_provider == "alibaba":
-        from oralcounsellor.core.asr.aliyun import AliyunASR
+        from chatterpal.core.asr.aliyun import AliyunASR
         
         return AliyunASR(
             {
@@ -289,7 +289,7 @@ def create_llm(settings: Optional[Settings] = None):
         settings = get_settings()
         
     if settings.llm_provider == "openai":
-        from oralcounsellor.core.llm.openai import OpenAILLM
+        from chatterpal.core.llm.openai import OpenAILLM
         
         return OpenAILLM(
             {
@@ -299,7 +299,7 @@ def create_llm(settings: Optional[Settings] = None):
             }
         )
     elif settings.llm_provider == "alibaba":
-        from oralcounsellor.core.llm.alibaba import AlibabaBailianLLM
+        from chatterpal.core.llm.alibaba import AlibabaBailianLLM
         
         return AlibabaBailianLLM(
             {

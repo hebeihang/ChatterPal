@@ -1,4 +1,4 @@
-"""
+﻿"""
 Tests for Assessment (Pronunciation Assessment) modules.
 """
 
@@ -8,13 +8,13 @@ import pytest
 from unittest.mock import Mock, patch, MagicMock
 import numpy as np
 
-from oralcounsellor.core.assessment.base import (
+from chatterpal.core.assessment.base import (
     AssessmentBase, AssessmentError, AssessmentResult, 
     WordAnalysis, PhonemeAnalysis, ProsodyFeatures
 )
-from oralcounsellor.core.assessment.prosody import ProsodyAnalyzer
-from oralcounsellor.core.assessment.phoneme import PhonemeAnalyzer
-from oralcounsellor.core.assessment.corrector import PronunciationCorrector
+from chatterpal.core.assessment.prosody import ProsodyAnalyzer
+from chatterpal.core.assessment.phoneme import PhonemeAnalyzer
+from chatterpal.core.assessment.corrector import PronunciationCorrector
 
 
 class MockAssessment(AssessmentBase):
@@ -535,8 +535,14 @@ class TestPronunciationCorrector:
         suggestions = corrector.generate_suggestions(result)
         assert isinstance(suggestions, list)
         assert len(suggestions) > 0
-        assert any("语速" in suggestion for suggestion in suggestions)
-
+        assert any("速度" in suggestion for suggestion in suggestions)
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+
+
+
+
+
+

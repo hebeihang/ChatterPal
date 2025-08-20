@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-OralCounsellor - AI-powered English pronunciation practice system.
+ChatterPal - AI-powered English pronunciation practice system.
 """
 
 import os
@@ -12,4 +12,4 @@ if os.name == 'nt':  # Windows
     os.environ['PYTHONLEGACYWINDOWSSTDIO'] = '1'
 
 __version__ = "0.1.0"
-__author__ = "OralCounsellor Team"
+__author__ = "ChatterPal Team"

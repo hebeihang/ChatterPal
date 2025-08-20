@@ -22,7 +22,7 @@ from .text import (
 )
 
 from .logger import (
-    OralCounsellorLogger,
+    ChatterPalLogger,
     get_logger,
     setup_logging,
     LoggerMixin,
@@ -50,7 +50,7 @@ __all__ = [
     "extract_pronunciation_targets",
     "generate_pronunciation_feedback",
     # Logger utilities
-    "OralCounsellorLogger",
+    "ChatterPalLogger",
     "get_logger",
     "setup_logging",
     "LoggerMixin",

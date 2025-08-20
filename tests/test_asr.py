@@ -1,4 +1,4 @@
-"""
+﻿"""
 Tests for ASR (Automatic Speech Recognition) modules.
 """
 
@@ -8,9 +8,9 @@ import pytest
 from unittest.mock import Mock, patch, MagicMock
 import numpy as np
 
-from oralcounsellor.core.asr.base import ASRBase, ASRError
-from oralcounsellor.core.asr.whisper import WhisperASR
-from oralcounsellor.core.asr.aliyun import AliyunASR
+from chatterpal.core.asr.base import ASRBase, ASRError
+from chatterpal.core.asr.whisper import WhisperASR
+from chatterpal.core.asr.aliyun import AliyunASR
 
 
 class MockASR(ASRBase):
@@ -339,3 +339,11 @@ class TestAliyunASR:
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+
+
+
+
+
+
+

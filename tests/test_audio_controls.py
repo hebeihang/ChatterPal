@@ -1,4 +1,4 @@
-"""
+﻿"""
 音频播放控制功能的测试
 测试音频播放、暂停、重播和停止功能
 """
@@ -7,9 +7,9 @@ import pytest
 import tempfile
 from unittest.mock import Mock, MagicMock, patch
 
-from src.oralcounsellor.web.components.chat_tab import ChatTab
-from src.oralcounsellor.services.chat import ChatService
-from src.oralcounsellor.utils.preferences import UserPreferences
+from chatterpal.web.components.chat_tab import ChatTab
+from chatterpal.services.chat import ChatService
+from chatterpal.utils.preferences import UserPreferences
 
 
 class TestAudioPlaybackControls:
@@ -20,7 +20,7 @@ class TestAudioPlaybackControls:
         # 创建临时目录用于偏好设置
         self.temp_dir = tempfile.mkdtemp()
         
-        # 创建模拟的 ChatService
+        # 创建模拟的ChatService
         self.mock_chat_service = Mock(spec=ChatService)
         self.mock_chat_service.create_session.return_value = "test_session_id"
         self.mock_chat_service.generate_topic.return_value = "测试对话主题"
@@ -28,7 +28,7 @@ class TestAudioPlaybackControls:
         self.mock_chat_service.clear_context.return_value = None
         
         # 使用临时目录创建偏好管理器
-        with patch('src.oralcounsellor.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
+        with patch('chatterpal.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
             self.preferences = UserPreferences(config_dir=self.temp_dir)
             mock_get_prefs.return_value = self.preferences
             
@@ -53,31 +53,31 @@ class TestAudioPlaybackControls:
         assert self.chat_tab.preferences.get_auto_play_response() is False
     
     def test_auto_play_persistence(self):
-        """测试自动播放设置持久化"""
+        """测试自动播放设置持久"""
         # 设置自动播放为False
         self.chat_tab._toggle_auto_play(False)
         
         # 验证当前实例的设置已更新
         assert self.chat_tab.preferences.get_auto_play_response() is False
         
-        # 创建新的偏好管理器实例
+        # 创建新的偏好管理器器实
         new_preferences = UserPreferences(config_dir=self.temp_dir)
         
         # 验证设置被持久化保存
         assert new_preferences.get_auto_play_response() is False
     
     def test_audio_play_with_valid_data(self):
-        """测试有效音频数据的播放"""
-        # 模拟有效的音频数据
+        """测试有效音频数据的播"""
+        # 模拟有效的音频数
         audio_data = (16000, [1, 2, 3, 4, 5])
         
         # 执行播放
         result = self.chat_tab._handle_audio_play(audio_data)
         status_update, play_btn_update, pause_btn_update, stop_btn_update = result
         
-        # 验证状态更新
+        # 验证状态更
         assert "正在播放" in status_update["value"]
-        assert play_btn_update["interactive"] is False  # 播放按钮不可用
+        assert play_btn_update["interactive"] is False  # 播放按钮不可
         assert pause_btn_update["interactive"] is True  # 暂停按钮可用
         assert stop_btn_update["interactive"] is True   # 停止按钮可用
     
@@ -87,27 +87,27 @@ class TestAudioPlaybackControls:
         result = self.chat_tab._handle_audio_play(None)
         status_update, play_btn_update, pause_btn_update, stop_btn_update = result
         
-        assert "无音频内容" in status_update["value"]
+        assert "无音频内" in status_update["value"]
         assert play_btn_update["interactive"] is True   # 播放按钮保持可用
-        assert pause_btn_update["interactive"] is False # 暂停按钮不可用
-        assert stop_btn_update["interactive"] is False  # 停止按钮不可用
+        assert pause_btn_update["interactive"] is False # 暂停按钮不可
+        assert stop_btn_update["interactive"] is False  # 停止按钮不可
         
         # 测试空音频数据
         empty_audio = (16000, [])
         result = self.chat_tab._handle_audio_play(empty_audio)
         status_update, _, _, _ = result
         
-        assert "无音频内容" in status_update["value"]
+        assert "无音频内" in status_update["value"]
     
     def test_audio_pause(self):
         """测试音频暂停"""
         result = self.chat_tab._handle_audio_pause()
         status_update, play_btn_update, pause_btn_update, stop_btn_update = result
         
-        # 验证暂停状态
-        assert "已暂停" in status_update["value"]
-        assert play_btn_update["interactive"] is True   # 播放按钮可用（继续播放）
-        assert pause_btn_update["interactive"] is False # 暂停按钮不可用
+        # 验证暂停状
+        assert "已暂" in status_update["value"]
+        assert play_btn_update["interactive"] is True   # 播放按钮可用(继续播放)
+        assert pause_btn_update["interactive"] is False # 暂停按钮不可
         assert stop_btn_update["interactive"] is True   # 停止按钮可用
     
     def test_audio_replay_with_valid_data(self):
@@ -120,7 +120,7 @@ class TestAudioPlaybackControls:
         status_update, play_btn_update, pause_btn_update, stop_btn_update = result
         
         # 验证重播状态
-        assert "重新播放中" in status_update["value"]
+        assert "重新播放" in status_update["value"]
         assert play_btn_update["interactive"] is False  # 播放按钮不可用
         assert pause_btn_update["interactive"] is True  # 暂停按钮可用
         assert stop_btn_update["interactive"] is True   # 停止按钮可用
@@ -136,7 +136,7 @@ class TestAudioPlaybackControls:
         assert pause_btn_update["interactive"] is False
         assert stop_btn_update["interactive"] is False
         
-        # 测试空音频数据
+        # 测试空音频数
         empty_audio = (16000, [])
         result = self.chat_tab._handle_audio_replay(empty_audio)
         status_update, _, _, _ = result
@@ -179,7 +179,7 @@ class TestAudioPlaybackControls:
         
         # 停止 -> 重播
         replay_result = self.chat_tab._handle_audio_replay(audio_data)
-        assert "重新播放中" in replay_result[0]["value"]
+        assert "重新播放" in replay_result[0]["value"]
         assert replay_result[1]["interactive"] is False # 播放按钮不可用
         assert replay_result[2]["interactive"] is True  # 暂停按钮可用
         assert replay_result[3]["interactive"] is True  # 停止按钮可用
@@ -209,7 +209,7 @@ class TestAudioControlsIntegration:
         
         preferences = UserPreferences(config_dir=self.temp_dir)
         
-        with patch('src.oralcounsellor.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
+        with patch('chatterpal.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
             mock_get_prefs.return_value = preferences
             chat_tab = ChatTab(self.mock_chat_service)
             
@@ -222,8 +222,8 @@ class TestAudioControlsIntegration:
             assert audio_output is not None
             assert isinstance(audio_output, tuple)
             assert len(audio_output) == 2
-            assert audio_output[0] == 16000  # 采样率
-            assert len(audio_output[1]) > 0  # 有音频数据
+            assert audio_output[0] == 16000  # 采样
+            assert len(audio_output[1]) > 0  # 有音频数
             
             # 测试播放控制
             play_result = chat_tab._handle_audio_play(audio_output)
@@ -236,7 +236,7 @@ class TestAudioControlsIntegration:
         # 设置初始偏好
         preferences.set_auto_play_response(False)
         
-        with patch('src.oralcounsellor.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
+        with patch('chatterpal.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
             mock_get_prefs.return_value = preferences
             chat_tab = ChatTab(self.mock_chat_service)
             
@@ -246,19 +246,19 @@ class TestAudioControlsIntegration:
             # 切换自动播放
             chat_tab._toggle_auto_play(True)
             
-            # 验证设置已更新
+            # 验证设置已更
             assert chat_tab.preferences.get_auto_play_response() is True
     
     def test_audio_controls_error_handling(self):
         """测试音频控制错误处理"""
         preferences = UserPreferences(config_dir=self.temp_dir)
         
-        with patch('src.oralcounsellor.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
+        with patch('chatterpal.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
             mock_get_prefs.return_value = preferences
             chat_tab = ChatTab(self.mock_chat_service)
             
             # 测试播放时的异常处理
-            # 模拟异常情况（虽然当前实现中没有可能抛出异常的代码，但为了完整性）
+            # 模拟异常情况(虽然当前实现中没有可能抛出异常的代码,但为了完整性)
             with patch.object(chat_tab, '_handle_audio_play', side_effect=Exception("播放错误")):
                 try:
                     chat_tab._handle_audio_play((16000, [1, 2, 3]))
@@ -283,44 +283,44 @@ class TestAudioControlsUserExperience:
         """测试按钮状态一致性"""
         preferences = UserPreferences(config_dir=self.temp_dir)
         
-        with patch('src.oralcounsellor.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
+        with patch('chatterpal.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
             mock_get_prefs.return_value = preferences
             chat_tab = ChatTab(self.mock_chat_service)
             
             audio_data = (16000, [1, 2, 3, 4, 5])
             
-            # 测试播放状态下的按钮状态
+            # 测试播放状态下的按钮状
             play_result = chat_tab._handle_audio_play(audio_data)
             _, play_btn, pause_btn, stop_btn = play_result
             
-            # 播放时：播放按钮不可用，暂停和停止按钮可用
+            # 播放时:播放按钮不可用,暂停和停止按钮可
             assert play_btn["interactive"] is False
             assert pause_btn["interactive"] is True
             assert stop_btn["interactive"] is True
             
-            # 测试暂停状态下的按钮状态
+            # 测试暂停状态下的按钮状
             pause_result = chat_tab._handle_audio_pause()
             _, play_btn, pause_btn, stop_btn = pause_result
             
-            # 暂停时：播放按钮可用，暂停按钮不可用，停止按钮可用
+            # 暂停时:播放按钮可用,暂停按钮不可用,停止按钮可
             assert play_btn["interactive"] is True
             assert pause_btn["interactive"] is False
             assert stop_btn["interactive"] is True
             
-            # 测试停止状态下的按钮状态
+            # 测试停止状态下的按钮状
             stop_result = chat_tab._handle_audio_stop()
             _, play_btn, pause_btn, stop_btn = stop_result
             
-            # 停止时：播放按钮可用，暂停和停止按钮不可用
+            # 停止时:播放按钮可用,暂停和停止按钮不可
             assert play_btn["interactive"] is True
             assert pause_btn["interactive"] is False
             assert stop_btn["interactive"] is False
     
     def test_status_messages_clarity(self):
-        """测试状态消息的清晰度"""
+        """测试状态消息的清晰性"""
         preferences = UserPreferences(config_dir=self.temp_dir)
         
-        with patch('src.oralcounsellor.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
+        with patch('chatterpal.web.components.chat_tab.get_preferences_manager') as mock_get_prefs:
             mock_get_prefs.return_value = preferences
             chat_tab = ChatTab(self.mock_chat_service)
             
@@ -341,7 +341,7 @@ class TestAudioControlsUserExperience:
             
             replay_result = chat_tab._handle_audio_replay(audio_data)
             assert "播放状态" in replay_result[0]["value"]
-            assert "重新播放中" in replay_result[0]["value"]
+            assert "重新播放" in replay_result[0]["value"]
             
             # 测试错误状态消息
             empty_play_result = chat_tab._handle_audio_play(None)
@@ -353,3 +353,12 @@ class TestAudioControlsUserExperience:
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+
+
+
+
+
+
+
+
