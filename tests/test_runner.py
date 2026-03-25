@@ -1,4 +1,4 @@
-﻿"""
+"""
 Comprehensive test runner for ChatterPal project.
 Runs all tests and generates coverage reports.
 """
@@ -87,7 +87,7 @@ def run_specific_module_tests():
     print("\n📊 Test Results Summary")
     print("-" * 30)
     for module, result in results.items():
-        status_emoji = " if result == "PASS" else "
+        status_emoji = "✅" if result == "PASS" else "❌"
         print(f"{status_emoji} {module}: {result}")
     
     return results

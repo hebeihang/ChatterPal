@@ -7,6 +7,7 @@ Edge TTS语音合成实现
 import asyncio
 import tempfile
 import os
+import sys
 from typing import Optional, Dict, Any, List
 
 try:
@@ -83,12 +84,23 @@ class EdgeTTS(TTSBase):
                 temp_path = temp_file.name
 
             try:
-                # 异步合成语音
-                success = asyncio.run(
-                    self._async_synthesize_to_file(
-                        cleaned_text, temp_path, voice, rate, pitch, volume
+                # 检查是否已经在事件循环中运行
+                try:
+                    loop = asyncio.get_running_loop()
+                except RuntimeError:
+                    loop = None
+
+                if loop and loop.is_running():
+                    # 如果在运行中的事件循环中，使用命令行方式避开 asyncio.run 冲突
+                    self.logger.info("检测到运行中的事件循环，切换至命令行模式进行语音合成")
+                    success = self.synthesize_with_command(cleaned_text, temp_path, voice=voice, rate=rate)
+                else:
+                    # 异步合成语音
+                    success = asyncio.run(
+                        self._async_synthesize_to_file(
+                            cleaned_text, temp_path, voice, rate, pitch, volume
+                        )
                     )
-                )
 
                 if not success:
                     raise TTSError("语音合成失败")
@@ -146,12 +158,23 @@ class EdgeTTS(TTSBase):
             pitch = kwargs.get("pitch", self.pitch)
             volume = kwargs.get("volume", self.volume)
 
-            # 异步合成语音
-            success = asyncio.run(
-                self._async_synthesize_to_file(
-                    cleaned_text, output_path, voice, rate, pitch, volume
+            # 检查是否已经在事件循环中运行
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                loop = None
+
+            if loop and loop.is_running():
+                # 如果在运行中的事件循环中，使用命令行方式
+                self.logger.info("检测到运行中的事件循环，切换至命令行模式进行文件语音合成")
+                success = self.synthesize_with_command(cleaned_text, output_path, voice=voice, rate=rate)
+            else:
+                # 异步合成语音
+                success = asyncio.run(
+                    self._async_synthesize_to_file(
+                        cleaned_text, output_path, voice, rate, pitch, volume
+                    )
                 )
-            )
 
             if success:
                 self.logger.info(f"语音合成成功，保存到: {output_path}")
@@ -165,6 +188,56 @@ class EdgeTTS(TTSBase):
         except Exception as e:
             self.logger.error(f"语音合成到文件异常: {e}")
             raise TTSError(f"语音合成到文件异常: {e}")
+
+    async def async_synthesize_to_file(self, text: str, output_path: str, **kwargs) -> bool:
+        """
+        异步合成语音并保存到文件 (公有接口)
+
+        Args:
+            text: 要合成的文本
+            output_path: 输出文件路径
+            **kwargs: 其他参数 (voice, rate, pitch, volume)
+
+        Returns:
+            是否成功保存
+        """
+        try:
+            if not self.validate_text(text):
+                return False
+
+            if not self.validate_output_path(output_path):
+                return False
+
+            # 清理文本
+            cleaned_text = self.clean_text_for_tts(text)
+            if not cleaned_text:
+                return False
+
+            # 获取参数
+            voice = kwargs.get("voice", self.voice)
+            rate = kwargs.get("rate", self.rate)
+            pitch = kwargs.get("pitch", self.pitch)
+            volume = kwargs.get("volume", self.volume)
+
+            # 异步合成语音
+            success = await self._async_synthesize_to_file(
+                cleaned_text, output_path, voice, rate, pitch, volume
+            )
+
+            if not success:
+                self.logger.info("异步合成失败，尝试使用命令行模式...")
+                success = self.synthesize_with_command(cleaned_text, output_path, voice=voice, rate=rate)
+
+            if success:
+                self.logger.info(f"异步语音合成成功，保存到: {output_path}")
+            else:
+                self.logger.error("异步语音合成失败 (包括命令行尝试)")
+
+            return success
+
+        except Exception as e:
+            self.logger.error(f"异步语音合成异常: {e}")
+            return False
 
     async def _async_synthesize_to_file(
         self,
@@ -235,7 +308,9 @@ class EdgeTTS(TTSBase):
 
             # 构建命令
             cmd_parts = [
-                "edge-tts",
+                f'"{sys.executable}"',
+                "-m",
+                "edge_tts",
                 "--text",
                 f'"{cleaned_text}"',
                 "--voice",
@@ -277,6 +352,29 @@ class EdgeTTS(TTSBase):
             支持的语音列表
         """
         try:
+            # 检查是否已经在事件循环中运行
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                loop = None
+
+            if loop and loop.is_running():
+                # 注意：在运行中的事件循环中直接获取语音列表比较复杂
+                # 这里返回默认列表以避免阻塞
+                self.logger.info("在大事件循环中请求语音列表，返回预设语音以避免阻塞")
+                return [
+                    "ja-JP-NanamiNeural",
+                    "ja-JP-KeitaNeural",
+                    "ja-JP-NanamiMultilingualNeural",
+                    "ja-JP-KeitaMultilingualNeural",
+                    "en-US-AriaNeural",
+                    "en-US-JennyNeural",
+                    "en-US-GuyNeural",
+                    "zh-CN-XiaoxiaoNeural",
+                    "zh-CN-YunxiNeural",
+                    "zh-CN-YunjianNeural",
+                ]
+            
             # 异步获取语音列表
             voices = asyncio.run(self._async_get_voices())
             return [voice["Name"] for voice in voices]
@@ -362,7 +460,40 @@ class EdgeTTS(TTSBase):
         target_voice = voice_name or self.voice
 
         try:
-            voices = asyncio.run(self._async_get_voices())
+            # 检查是否已经在事件循环中运行
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                loop = None
+
+            if loop and loop.is_running():
+                self.logger.info("在大事件循环中获取语音信息，返回基本信息")
+                # 针对日语常用音色的快速返回
+                if target_voice == "ja-JP-NanamiNeural":
+                    return {
+                        "name": "ja-JP-NanamiNeural",
+                        "display_name": "ななみ",
+                        "local_name": "ななみ",
+                        "gender": "Female",
+                        "locale": "ja-JP",
+                        "language": "Japanese",
+                        "sample_rate": 24000,
+                        "voice_type": "Neural",
+                    }
+                elif target_voice == "ja-JP-KeitaNeural":
+                    return {
+                        "name": "ja-JP-KeitaNeural",
+                        "display_name": "けいた",
+                        "local_name": "けいた",
+                        "gender": "Male",
+                        "locale": "ja-JP",
+                        "language": "Japanese",
+                        "sample_rate": 24000,
+                        "voice_type": "Neural",
+                    }
+                voices = [] # 模拟空列表触发回退
+            else:
+                voices = asyncio.run(self._async_get_voices())
 
             for voice in voices:
                 if voice.get("Name") == target_voice:

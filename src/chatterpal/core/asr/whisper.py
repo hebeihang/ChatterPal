@@ -43,7 +43,7 @@ class WhisperASR(ASRBase):
             )
 
         self.model_size = self.config.get("model_size", "base")
-        self.language = self.config.get("language", "zh")
+        self.language = self.config.get("language", "ja")
 
         # 初始化识别器
         self.recognizer = sr.Recognizer()
@@ -314,6 +314,8 @@ class WhisperASR(ASRBase):
             "en": "english",
             "chinese": "chinese",
             "english": "english",
+            "ja": "japanese",
+            "japanese": "japanese",
         }
 
         return language_map.get(language.lower(), language)

@@ -40,7 +40,7 @@ from ..utils.encoding_fix import safe_str
 class ChatRequest(BaseModel):
     message: str
     session_id: Optional[str] = None
-    voice: Optional[str] = "longxiaochun"
+    voice: Optional[str] = "ja-JP-NanamiNeural"
 
 class ChatResponse(BaseModel):
     response: str
@@ -258,7 +258,7 @@ class APIServer:
             """聊天接口"""
             try:
                 # 处理文本聊天
-                response_text, session_id = self.chat_service.chat_with_text(
+                response_text, session_id = await self.chat_service.chat_with_text(
                     text=request.message,
                     session_id=request.session_id
                 )
@@ -276,7 +276,11 @@ class APIServer:
                             self.tts.set_voice(request.voice)
                         
                         # 合成语音到文件
-                        success = self.tts.synthesize_to_file(response_text, str(audio_path))
+                        if hasattr(self.tts, 'async_synthesize_to_file'):
+                            success = await self.tts.async_synthesize_to_file(response_text, str(audio_path), voice=request.voice)
+                        else:
+                            success = self.tts.synthesize_to_file(response_text, str(audio_path), voice=request.voice)
+                        
                         if success:
                             audio_url = f"/api/audio/{audio_filename}"
                         else:
@@ -293,7 +297,13 @@ class APIServer:
                 
             except Exception as e:
                 self.logger.error(f"聊天处理失败: {e}")
-                raise HTTPException(status_code=500, detail=str(e))
+                error_msg = str(e)
+                if "401" in error_msg or "Unauthorized" in error_msg or "API密钥无效" in error_msg:
+                    raise HTTPException(
+                        status_code=401, 
+                        detail="LLM认证失败：请在 .env 文件中配置有效的 DASHSCOPE_API_KEY 或 OPENAI_API_KEY。"
+                    )
+                raise HTTPException(status_code=500, detail=error_msg)
         
         self.logger.info("聊天路由已注册")
         
@@ -301,7 +311,7 @@ class APIServer:
         async def chat_with_audio(
             audio: UploadFile = File(...),
             session_id: Optional[str] = Form(None),
-            voice: str = Form("longxiaochun")
+            voice: str = Form("ja-JP-NanamiNeural")
         ):
             """语音聊天接口"""
             try:
@@ -313,7 +323,15 @@ class APIServer:
                     content = await audio.read()
                     f.write(content)
                 
-                self.logger.info(f"音频文件已保存: {audio_filename}")
+                try:
+                    from pydub import AudioSegment
+                    audio_seg = AudioSegment.from_file(str(audio_path))
+                    audio_seg = audio_seg.set_channels(1).set_frame_rate(16000)
+                    audio_seg.export(str(audio_path), format="wav")
+                except Exception as e:
+                    self.logger.warning(f"Audio conversion failed: {e}")
+                
+                self.logger.info(f"音频文件已保存并转换: {audio_filename}")
                 
                 # 首先进行语音识别获取用户输入文本
                 recognized_text = ""
@@ -333,7 +351,7 @@ class APIServer:
                     self.tts.set_voice(voice)
                 
                 # 处理语音聊天获取AI回复（已包含TTS处理）
-                response_text, response_audio, session_id = self.chat_service.chat_with_audio(
+                response_text, response_audio, session_id = await self.chat_service.chat_with_audio(
                     audio_data=str(audio_path),
                     session_id=session_id,
                     return_audio=True
@@ -387,6 +405,14 @@ class APIServer:
                 with open(audio_path, "wb") as f:
                     content = await audio.read()
                     f.write(content)
+                
+                try:
+                    from pydub import AudioSegment
+                    audio_seg = AudioSegment.from_file(str(audio_path))
+                    audio_seg = audio_seg.set_channels(1).set_frame_rate(16000)
+                    audio_seg.export(str(audio_path), format="wav")
+                except Exception as e:
+                    self.logger.warning(f"Audio conversion failed: {e}")
                 
                 # 进行发音分析
                 report = self.correction_service.comprehensive_correction(
@@ -448,6 +474,14 @@ class APIServer:
                 with open(audio_path, "wb") as f:
                     content = await audio.read()
                     f.write(content)
+                
+                try:
+                    from pydub import AudioSegment
+                    audio_seg = AudioSegment.from_file(str(audio_path))
+                    audio_seg = audio_seg.set_channels(1).set_frame_rate(16000)
+                    audio_seg.export(str(audio_path), format="wav")
+                except Exception as e:
+                    self.logger.warning(f"Audio conversion failed: {e}")
                 
                 # 进行AI驱动的综合分析
                 ai_result = await self.ai_correction_service.comprehensive_ai_analysis(
@@ -547,14 +581,21 @@ class APIServer:
                             gender=voice_info.get('gender', 'female')
                         ))
                 else:
-                    # 默认音色
+                    # 针对日语学习助手的默认音色回退
                     voices = [
                         VoiceInfo(
-                            id="longxiaochun",
-                            name="龙小春",
-                            description="温柔甜美的女声",
-                            language="zh-CN",
+                            id="ja-JP-NanamiNeural",
+                            name="ななみ",
+                            description="温柔甜美的女声 (Japanese)",
+                            language="ja-JP",
                             gender="female"
+                        ),
+                        VoiceInfo(
+                            id="ja-JP-KeitaNeural",
+                            name="けいた",
+                            description="阳光活泼的男声 (Japanese)",
+                            language="ja-JP",
+                            gender="male"
                         )
                     ]
                 
@@ -586,7 +627,7 @@ class APIServer:
         
         self.logger.info("音频文件路由已注册")
     
-    def run(self, host: str = "0.0.0.0", port: int = 8000, debug: bool = False):
+    def run(self, host: str = "0.0.0.0", port: int = 8010, debug: bool = False):
         """运行API服务器"""
         uvicorn.run(
             self.app,

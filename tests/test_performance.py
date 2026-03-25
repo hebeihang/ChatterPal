@@ -1,4 +1,4 @@
-﻿"""
+"""
 性能测试模块
 测试缓存和音频处理的性能
 """
@@ -40,8 +40,8 @@ class TestLRUCache:
             cache.get(f"key_{i}")
         read_time = time.time() - start_time
         
-        print(f"写入1000个条目耗时: 秒{write_time:.4f})
-        print(f"读取1000个条目耗时: 秒{read_time:.4f})
+        print(f"写入1000个条目耗时: {write_time:.4f}秒")
+        print(f"读取1000个条目耗时: {read_time:.4f}秒")
         
         # 性能断言
         assert write_time < 1.0  # 写入应该秒内完成
@@ -87,8 +87,8 @@ class TestLRUCache:
         
         read_time = time.time() - start_time
         
-        print(f"并发写入耗时: 秒{write_time:.4f})
-        print(f"并发读取耗时: 秒{read_time:.4f})
+        print(f"并发写入耗时: {write_time:.4f}秒")
+        print(f"并发读取耗时: {read_time:.4f}秒")
         
         # 并发性能断言
         assert write_time < 2.0
@@ -144,8 +144,8 @@ class TestTTSCache:
             assert result is not None
         retrieve_time = time.time() - start_time
         
-        print(f"存储1检索100个TTS结果耗时: 秒秒{store_time:.4f})
-        print(f"检检索100个TTS结果耗时: 秒{retrieve_time:.4f})
+        print(f"存储100个TTS结果耗时: {store_time:.4f}秒")
+        print(f"检索100个TTS结果耗时: {retrieve_time:.4f}秒")
         
         # 性能断言
         assert store_time < 2.0
@@ -176,7 +176,7 @@ class TestTTSCache:
             assert result is not None
         disk_read_time = time.time() - start_time
         
-        print(f"从磁盘读0个TTS结果耗时: {disk_read_time:.4f})
+        print(f"从磁盘读20个TTS结果耗时: {disk_read_time:.4f}秒")
         
         # 磁盘读取性能断言
         assert disk_read_time < 1.0
@@ -207,8 +207,8 @@ class TestAudioProcessor:
             processor.normalize_volume(audio_data, 0.8)
         normalize_time = time.time() - start_time
         
-        print(f"10次采样率转换耗时: 秒{convert_time:.4f})
-        print(f"10次音量标准化耗时: 秒{normalize_time:.4f})
+        print(f"10次采样率转换耗时: {convert_time:.4f}秒")
+        print(f"10次音量标准化耗时: {normalize_time:.4f}秒")
         
         # 性能断言
         assert convert_time < 2.0
@@ -251,7 +251,7 @@ class TestAudioProcessor:
         
         processing_time = time.time() - start_time
         
-        print(f"并发处理20个音频任务耗时: 秒{processing_time:.4f})
+        print(f"并发处理20个音频任务耗时: {processing_time:.4f}秒")
         
         # 并发处理应该比串行处理快
         assert processing_time < 5.0
@@ -283,8 +283,8 @@ class TestAudioBuffer:
             assert data is not None
         read_time = time.time() - start_time
         
-        print(f"缓冲区写00个块耗时: {write_time:.4f})
-        print(f"缓冲区读00个块耗时: {read_time:.4f})
+        print(f"缓冲区写100个块耗时: {write_time:.4f}秒")
+        print(f"缓冲区读100个块耗时: {read_time:.4f}秒")
         
         # 吞吐量断言
         assert write_time < 1.0
@@ -321,8 +321,8 @@ class TestOptimizedTTSService:
         # 缓存应该更快或至少不慢太多(考虑测量误差)
         assert cached_time <= first_time * 1.5
         
-        print(f"首次TTS合成耗时: 秒{first_time:.4f})
-        print(f"缓存命中耗时: 秒{cached_time:.4f})
+        print(f"首次TTS合成耗时: {first_time:.4f}秒")
+        print(f"缓存命中耗时: {cached_time:.4f}秒")
         if first_time > 0:
             print(f"性能提升: {(first_time - cached_time) / first_time * 100:.1f}%")
         else:
@@ -357,14 +357,14 @@ class TestOptimizedTTSService:
             assert result is not None
         preloaded_time = time.time() - start_time
         
-        print(f"访问8个预加载短语耗时: 秒{preloaded_time:.4f})
+        print(f"访问8个预加载短语耗时: {preloaded_time:.4f}秒")
         
         # 预加载的短语应该很快访问
         assert preloaded_time < 0.1
 
 
 class TestPerformanceMonitor:
-    """性能监控器测试""
+    """性能监控器测试"""
     
     def test_timing_accuracy(self):
         """测试计时精度"""
@@ -407,7 +407,7 @@ class TestPerformanceMonitor:
         print(f"操作统计: {stats}")
     
     def test_timing_decorator(self):
-        """测试计时装饰器""
+        """测试计时装饰器"""
         
         @time_operation("decorated_function")
         def test_function(delay: float):
@@ -451,8 +451,8 @@ class TestSessionCache:
             assert session is not None
         retrieve_time = time.time() - start_time
         
-        print(f"存储1检索1000个会话耗时: 秒秒{store_time:.4f})
-        print(f"检检索1000个会话耗时: 秒{retrieve_time:.4f})
+        print(f"存储1000个会话耗时: {store_time:.4f}秒")
+        print(f"检索1000个会话耗时: {retrieve_time:.4f}秒")
         
         # 性能断言
         assert store_time < 1.0
@@ -489,7 +489,7 @@ class TestSessionCache:
         
         concurrent_time = time.time() - start_time
         
-        print(f"并发处理400个会话耗时: 秒{concurrent_time:.4f})
+        print(f"并发处理400个会话耗时: {concurrent_time:.4f}秒")
         
         # 并发性能断言
         assert concurrent_time < 2.0
@@ -524,8 +524,8 @@ class TestCacheManager:
             session_cache.put_session(f"session_{i}", session_data)
         session_store_time = time.time() - start_time
         
-        print(f"TTS缓存存储耗时: 秒{tts_store_time:.4f})
-        print(f"会话缓存存储耗时: 秒{session_store_time:.4f})
+        print(f"TTS缓存存储耗时: {tts_store_time:.4f}秒")
+        print(f"会话缓存存储耗时: {session_store_time:.4f}秒")
         
         # 获取整体统计
         overall_stats = manager.get_overall_stats()

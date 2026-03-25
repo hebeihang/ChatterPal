@@ -1,4 +1,4 @@
-﻿"""
+"""
 端到端对话流程测
 测试语音输入到语音输出、文本输入到语音输出、输入模式切换的完整流程
 验证对话上下文的正确维护
@@ -21,7 +21,7 @@ class TestEndToEndChatFlows:
     """端到端对话流程测试类"""
     
     def setup_method(self):
-        """测试前设""
+        """测试前设置"""
         # 创建模拟的ASR组件
         self.mock_asr = Mock()
         self.mock_asr.recognize.return_value = "Hello, how are you today"
@@ -86,7 +86,7 @@ class TestEndToEndChatFlows:
             self.chat_tab = ChatTab(self.chat_service)
     
     def teardown_method(self):
-        """测试后清""
+        """测试后清理"""
         import shutil
         shutil.rmtree(self.temp_dir, ignore_errors=True)
     
@@ -216,7 +216,7 @@ class TestEndToEndChatFlows:
         assert audio_update["visible"] is True
         assert text_update["visible"] is False
         assert "🎤 语音输入" in status_update["value"]
-        assert "📝 切换到文本输" in button_update["value"]
+        assert "📝 切换到文本输入" in button_update["value"]
         
         # 验证偏好设置已更
         assert self.chat_tab.preferences.get_input_mode() == "voice"
@@ -244,7 +244,7 @@ class TestEndToEndChatFlows:
         assert audio_update2["visible"] is False
         assert text_update2["visible"] is True
         assert "📝 文本输入" in status_update2["value"]
-        assert "🎤 切换到语音输" in button_update2["value"]
+        assert "🎤 切换到语音输入" in button_update2["value"]
         
         # 验证偏好设置已更新(最后一次切换是从语音到文本
         assert self.chat_tab.preferences.get_input_mode() == "text"
@@ -412,7 +412,7 @@ class TestEndToEndChatFlows:
         self.mock_asr.recognize_with_error_handling.side_effect = Exception("ASR服务不可用")
         
         sample_rate, audio_array = self._create_sample_audio_data()
-        gradio_audio = (sample_rate, audio_array")
+        gradio_audio = (sample_rate, audio_array)
         
         result = self.chat_tab._handle_chat(
             audio=gradio_audio,
@@ -427,7 +427,7 @@ class TestEndToEndChatFlows:
         assert len(chat_history) > 0
         error_message = str(chat_history).lower()
         # 检查是否包含错误相关的关键词或通用错误处理信息
-        error_keywords = ["错误", "失败", "不可, "重试", "exception", "error", "asr服务不可, "处理失败"]
+        error_keywords = ["错误", "失败", "不可", "重试", "exception", "error", "asr服务不可用", "处理失败"]
         has_error_info = any(keyword in error_message for keyword in error_keywords)
         assert has_error_info, f"错误消息应包含错误信 {error_message}"
         
@@ -562,12 +562,12 @@ class TestEndToEndChatFlows:
             thread.join(timeout=30)
         
         # 验证结果
-        assert len(results) == 3, f"应该个成功结果,实际: {len(results)}"
-        assert len(errors) == 0, f"不应该有错误,实际错 {errors}"
+        assert len(results) == 3, f"应该有3个成功结果,实际: {len(results)}"
+        assert len(errors) == 0, f"不应该有错误,实际错误: {errors}"
         
         # 验证每个会话都有独立的历史记
         session_ids = [result[1] for result in results]
-        assert len(set(session_ids)) == 3, "所有会话ID应该是唯一
+        assert len(set(session_ids)) == 3, "所有会话ID应该是唯一的"
         
         # 验证每个会话都有正确数量的消
         for worker_id, session_id, history_length in results:

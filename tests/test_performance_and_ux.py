@@ -1,4 +1,4 @@
-﻿"""
+"""
 性能和用户体验测
 测试语音识别和合成的响应时间、不同音频质量下的识别准确率
 测试并发用户场景下的系统稳定性、验证用户界面的响应性和流畅
@@ -23,7 +23,7 @@ class TestResponseTimePerformance:
     """响应时间性能测试"""
     
     def setup_method(self):
-        """测试前设""
+        """测试前设置"""
         # 创建带有可控延迟的模拟组
         self.mock_asr = Mock()
         self.mock_tts = Mock()
@@ -102,12 +102,12 @@ class TestResponseTimePerformance:
             self.chat_tab = ChatTab(self.chat_service)
     
     def teardown_method(self):
-        """测试后清""
+        """测试后清理"""
         import shutil
         shutil.rmtree(self.temp_dir, ignore_errors=True)
     
     def _create_sample_audio(self, duration: float = 2.0, quality: str = "high") -> Tuple[int, np.ndarray]:
-        """创建不同质量的示例音""
+        """创建不同质量的示例音频"""
         sample_rate = 16000
         t = np.linspace(0, duration, int(sample_rate * duration))
         
@@ -301,7 +301,7 @@ class TestAudioQualityAccuracy:
     """音频质量与识别准确率测试"""
     
     def setup_method(self):
-        """测试前设""
+        """测试前设置"""
         self.mock_asr = Mock()
         self.mock_tts = Mock()
         self.mock_llm = Mock()
@@ -369,7 +369,7 @@ class TestAudioQualityAccuracy:
         )
     
     def _create_sample_audio(self, duration: float = 2.0, quality: str = "high") -> Tuple[int, np.ndarray]:
-        """创建不同质量的示例音""
+        """创建不同质量的示例音频"""
         sample_rate = 16000
         t = np.linspace(0, duration, int(sample_rate * duration))
         
@@ -412,7 +412,7 @@ class TestAudioQualityAccuracy:
         # 验证高质量音频的识别结果
         recognition_result = self.mock_asr.recognize_with_error_handling.return_value
         assert recognition_result.confidence >= 0.9, f"高质量音频置信度应该 >= 0.9,实 {recognition_result.confidence}"
-        assert "Perfect" in recognition_result.text, "高质量音频应该有完美的识别结
+        assert "Perfect" in recognition_result.text, "高质量音频应该有完美的识别结果"
     
     def test_medium_quality_audio_recognition(self):
         """
@@ -452,7 +452,7 @@ class TestAudioQualityAccuracy:
         # 验证低质量音频的识别结果
         recognition_result = self.mock_asr.recognize_with_error_handling.return_value
         assert recognition_result.confidence < 0.7, f"低质量音频置信度应该 < 0.7,实 {recognition_result.confidence}"
-        assert "Poor" in recognition_result.text, "低质量音频应该有较差的识别结
+        assert "Poor" in recognition_result.text, "低质量音频应该有较差的识别结果"
     
     def test_audio_quality_degradation_handling(self):
         """
@@ -484,13 +484,13 @@ class TestAudioQualityAccuracy:
         medium_confidence = results[1]["confidence"]
         low_confidence = results[2]["confidence"]
         
-        assert high_confidence > medium_confidence > low_confidence, "置信度应该随音频质量降低而下
+        assert high_confidence > medium_confidence > low_confidence, "置信度应该随音频质量降低而下降"
         
         # 验证系统对低质量音频的处
         low_quality_result = results[2]
         if low_quality_result["confidence"] < 0.5:
             # 低置信度时,系统应该有相应的处理机制
-            assert "Poor" in low_quality_result["text"], "低质量音频应该被正确识别为质量较
+            assert "Poor" in low_quality_result["text"], "低质量音频应该被正确识别为质量较差"
     
     def test_different_audio_durations(self):
         """
@@ -530,7 +530,7 @@ class TestConcurrentUserScenarios:
     """并发用户场景测试"""
     
     def setup_method(self):
-        """测试前设""
+        """测试前设置"""
         self.mock_asr = Mock()
         self.mock_tts = Mock()
         self.mock_llm = Mock()
@@ -815,7 +815,7 @@ class TestConcurrentUserScenarios:
     
     def test_session_isolation_under_load(self):
         """
-        测试高负载下的会话隔
+        测试高负载下的会话隔离
         需 所有需求的性能方面
         """
         num_users = 5
@@ -864,20 +864,20 @@ class TestConcurrentUserScenarios:
             session_ids.add(session_id)
             
             # 验证消息数量
-            assert len(data["messages"]) == messages_per_user, f"用户{user_id}消息数量不正
+            assert len(data["messages"]) == messages_per_user, f"用户{user_id}消息数量不正确"
             
             # 验证消息内容包含用户ID(确保没有串话)
             for msg in data["messages"]:
-                assert f"User {user_id}" in msg["user_message"], f"用户{user_id}的消息内容错
+                assert f"User {user_id}" in msg["user_message"], f"用户{user_id}的消息内容错误"
         
-        print(f"会话隔离测试通过 - {num_users}个并发用户,{len(session_ids)}个独立会)
+        print(f"会话隔离测试通过 - {num_users}个并发用户,{len(session_ids)}个独立会话")
 
 
 class TestUIResponsivenessAndFluidity:
-    """用户界面响应性和流畅性测""
+    """用户界面响应性和流畅性测试"""
     
     def setup_method(self):
-        """测试前设""
+        """测试前设置"""
         self.mock_asr = Mock()
         self.mock_tts = Mock()
         self.mock_llm = Mock()
@@ -918,7 +918,7 @@ class TestUIResponsivenessAndFluidity:
             self.chat_tab = ChatTab(self.chat_service)
     
     def teardown_method(self):
-        """测试后清""
+        """测试后清理"""
         import shutil
         shutil.rmtree(self.temp_dir, ignore_errors=True)
     
@@ -942,7 +942,7 @@ class TestUIResponsivenessAndFluidity:
             
             # 验证切换结果
             new_use_text, audio_update, text_update, status_update, button_update = result
-            assert new_use_text != current_mode, "输入模式应该被切
+            assert new_use_text != current_mode, "输入模式应该被切换"
             
             current_mode = new_use_text
         
@@ -978,8 +978,8 @@ class TestUIResponsivenessAndFluidity:
             
             # 验证响应格式
             audio_output, chat_history = result
-            assert isinstance(audio_output, tuple), "音频输出应该是元组格
-            assert isinstance(chat_history, list), "聊天历史应该是列表格
+            assert isinstance(audio_output, tuple), "音频输出应该是元组格式"
+            assert isinstance(chat_history, list), "聊天历史应该是列表格式"
         
         # 测试语音输入响应时间
         voice_response_times = []
@@ -1005,8 +1005,8 @@ class TestUIResponsivenessAndFluidity:
             
             # 验证响应格式
             audio_output, chat_history = result
-            assert isinstance(audio_output, tuple), "音频输出应该是元组格
-            assert isinstance(chat_history, list), "聊天历史应该是列表格
+            assert isinstance(audio_output, tuple), "音频输出应该是元组格式"
+            assert isinstance(chat_history, list), "聊天历史应该是列表格式"
         
         # 分析响应时间
         avg_text_time = statistics.mean(text_response_times)
@@ -1124,8 +1124,8 @@ class TestUIResponsivenessAndFluidity:
             
             # 验证错误处理结果
             audio_output, chat_history = result
-            assert isinstance(audio_output, tuple), "错误情况下仍应返回正确格
-            assert isinstance(chat_history, list), "错误情况下仍应返回聊天历
+            assert isinstance(audio_output, tuple), "错误情况下仍应返回正确格式"
+            assert isinstance(chat_history, list), "错误情况下仍应返回聊天历史"
             
             # 重置模拟组件
             self.mock_asr.recognize_gradio_audio = Mock(return_value="UI test recognition")
@@ -1178,14 +1178,14 @@ class TestUIResponsivenessAndFluidity:
         total_time = end_time - start_time
         
         # 验证操作完成
-        assert len(operations) == 20, "所有操作应该完
+        assert len(operations) == 20, "所有操作应该完成"
         
         # 验证最终状态一致
         final_input_mode = self.preferences.get_input_mode()
         final_show_history = self.preferences.get_show_history()
         
-        assert final_input_mode in ["text", "voice"], "最终输入模式应该有
-        assert isinstance(final_show_history, bool), "最终历史显示设置应该是布尔
+        assert final_input_mode in ["text", "voice"], "最终输入模式应该有效"
+        assert isinstance(final_show_history, bool), "最终历史显示设置应该是布尔值"
         
         # 验证总体性能
         avg_operation_time = total_time / len(operations)

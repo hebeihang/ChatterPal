@@ -1,4 +1,4 @@
-﻿"""
+"""
 错误场景集成测试
 测试网络中断和恢复、音频设备故障、服务超时处理场
 验证错误提示的用户友好
@@ -22,10 +22,10 @@ from chatterpal.core.errors import (
 
 
 class TestNetworkInterruptionScenarios:
-    """网络中断和恢复场景测""
+    """网络中断和恢复场景测试"""
     
     def setup_method(self):
-        """测试前设""
+        """测试前设置"""
         # 创建可控制的模拟组件
         self.mock_asr = Mock()
         self.mock_tts = Mock()
@@ -68,7 +68,7 @@ class TestNetworkInterruptionScenarios:
             
         def asr_enhanced_with_network(*args, **kwargs):
             if not self.network_available:
-                raise error_handler.create_error("NETWORK_ERROR", message="网络连接不可)
+                raise error_handler.create_error("NETWORK_ERROR", message="网络连接不可用")
             return ASRResult(text="Hello, how are you")
         
         @dataclass
@@ -79,7 +79,7 @@ class TestNetworkInterruptionScenarios:
             
         def tts_enhanced_with_network(*args, **kwargs):
             if not self.network_available:
-                raise error_handler.create_error("NETWORK_ERROR", message="网络连接不可)
+                raise error_handler.create_error("NETWORK_ERROR", message="网络连接不可用")
             return TTSResult(audio_data=b"fake audio data")
         
         self.mock_asr.recognize_with_error_handling = asr_enhanced_with_network
@@ -100,7 +100,7 @@ class TestNetworkInterruptionScenarios:
             self.chat_tab = ChatTab(self.chat_service)
     
     def teardown_method(self):
-        """测试后清""
+        """测试后清理"""
         import shutil
         shutil.rmtree(self.temp_dir, ignore_errors=True)
     
@@ -137,7 +137,7 @@ class TestNetworkInterruptionScenarios:
         assert len(chat_history) > 0
         error_message = str(chat_history).lower()
         assert any(keyword in error_message for keyword in [
-            "网络", "连接", "不可, "重试", "稍后"
+            "网络", "连接", "不可用", "重试", "稍后"
         ])
         
         # 5. 模拟网络恢复
@@ -247,7 +247,7 @@ class TestAudioDeviceFailureScenarios:
     """音频设备故障场景测试"""
     
     def setup_method(self):
-        """测试前设""
+        """测试前设置"""
         self.mock_asr = Mock()
         self.mock_tts = Mock()
         self.mock_llm = Mock()
@@ -317,7 +317,7 @@ class TestAudioDeviceFailureScenarios:
             self.chat_tab = ChatTab(self.chat_service)
     
     def teardown_method(self):
-        """测试后清""
+        """测试后清理"""
         import shutil
         shutil.rmtree(self.temp_dir, ignore_errors=True)
     
@@ -347,7 +347,7 @@ class TestAudioDeviceFailureScenarios:
         assert len(chat_history) > 0
         error_message = str(chat_history).lower()
         assert any(keyword in error_message for keyword in [
-            "麦克, "设备", "不可, "权限", "文本输入"
+            "麦克风", "设备", "不可用", "权限", "文本输入"
         ])
         
         # 4. 验证建议切换到文本输
@@ -417,7 +417,7 @@ class TestAudioDeviceFailureScenarios:
         assert len(chat_history) > 0
         error_message = str(chat_history).lower()
         assert any(keyword in error_message for keyword in [
-            "权限", "麦克, "允许", "设置", "浏览
+            "权限", "麦克风", "允许", "设置", "浏览器"
         ])
     
     def test_audio_format_not_supported(self):
@@ -463,7 +463,7 @@ class TestServiceTimeoutScenarios:
     """服务超时处理场景测试"""
     
     def setup_method(self):
-        """测试前设""
+        """测试前设置"""
         self.mock_asr = Mock()
         self.mock_tts = Mock()
         self.mock_llm = Mock()
@@ -483,7 +483,7 @@ class TestServiceTimeoutScenarios:
             self.chat_tab = ChatTab(self.chat_service)
     
     def teardown_method(self):
-        """测试后清""
+        """测试后清理"""
         import shutil
         shutil.rmtree(self.temp_dir, ignore_errors=True)
     
@@ -523,7 +523,7 @@ class TestServiceTimeoutScenarios:
         assert len(chat_history) > 0
         error_message = str(chat_history).lower()
         assert any(keyword in error_message for keyword in [
-            "超时", "响应", ", "重试", "稍后"
+            "超时", "响应", "重试", "稍后"
         ])
     
     def test_tts_service_timeout(self):
@@ -622,7 +622,7 @@ class TestServiceTimeoutScenarios:
         assert len(chat_history) > 0
         error_message = str(chat_history).lower()
         assert any(keyword in error_message for keyword in [
-            "超时", "服务", "不可, "重试", "稍后"
+            "超时", "服务", "不可用", "重试", "稍后"
         ])
     
     def test_timeout_with_retry_mechanism(self):
@@ -638,7 +638,7 @@ class TestServiceTimeoutScenarios:
             retry_count += 1
             if retry_count < 3:
                 raise TimeoutError("服务暂时超时")
-            return "重试成功的回
+            return "重试成功的回复"
         
         self.mock_llm.chat.side_effect = timeout_then_success
         
@@ -667,7 +667,7 @@ class TestUserFriendlyErrorMessages:
     """用户友好错误消息测试"""
     
     def setup_method(self):
-        """测试前设""
+        """测试前设置"""
         self.mock_asr = Mock()
         self.mock_tts = Mock()
         self.mock_llm = Mock()
@@ -687,7 +687,7 @@ class TestUserFriendlyErrorMessages:
             self.chat_tab = ChatTab(self.chat_service)
     
     def teardown_method(self):
-        """测试后清""
+        """测试后清理"""
         import shutil
         shutil.rmtree(self.temp_dir, ignore_errors=True)
     
@@ -704,7 +704,7 @@ class TestUserFriendlyErrorMessages:
             },
             {
                 "error": PermissionError("Microphone access denied"),
-                "expected_keywords": ["权限", "麦克, "允许"]
+                "expected_keywords": ["权限", "麦克风", "允许"]
             },
             {
                 "error": TimeoutError("Service timeout"),
@@ -787,7 +787,7 @@ class TestUserFriendlyErrorMessages:
         
         # 应该包含具体的解决建
         actionable_keywords = [
-            "设置", "允许", "权限", "浏览, "文本输入", "切换"
+            "设置", "允许", "权限", "浏览器", "文本输入", "切换"
         ]
         has_actionable_suggestion = any(
             keyword in error_message 
@@ -827,7 +827,7 @@ class TestUserFriendlyErrorMessages:
         
         self.mock_llm.chat.side_effect = llm_critical_error
         
-        with pytest.raises(Exception"):
+        with pytest.raises(Exception):
             self.chat_service.chat_with_text("Test critical error")
     
     def test_progressive_error_disclosure(self):
@@ -885,14 +885,14 @@ class TestUserFriendlyErrorMessages:
         assert any(keyword in error_messages[1] for keyword in ["超时", "服务"])
         
         # 第三次:更详细的解决方案
-        assert any(keyword in error_messages[2] for keyword in ["稍后", "长时])
+        assert any(keyword in error_messages[2] for keyword in ["稍后", "长时间"])
 
 
 class TestErrorRecoveryIntegration:
     """错误恢复集成测试"""
     
     def setup_method(self):
-        """测试前设""
+        """测试前设置"""
         self.mock_asr = Mock()
         self.mock_tts = Mock()
         self.mock_llm = Mock()
@@ -912,7 +912,7 @@ class TestErrorRecoveryIntegration:
             self.chat_tab = ChatTab(self.chat_service)
     
     def teardown_method(self):
-        """测试后清""
+        """测试后清理"""
         import shutil
         shutil.rmtree(self.temp_dir, ignore_errors=True)
     
@@ -932,7 +932,7 @@ class TestErrorRecoveryIntegration:
         
         sample_rate = 16000
         audio_array = np.random.random(sample_rate).astype(np.float32) * 0.5
-        gradio_audio = (sample_rate, audio_array")
+        gradio_audio = (sample_rate, audio_array)
         
         result = self.chat_tab._handle_chat(
             audio=gradio_audio,
@@ -964,7 +964,7 @@ class TestErrorRecoveryIntegration:
         
         # 场景3:TTS失败,但文本回复仍然显示
         def tts_fail(*args, **kwargs):
-            raise Exception("语音合成不可")
+            raise Exception("语音合成不可用")
         
         self.mock_tts.synthesize_with_error_handling = tts_fail
         
@@ -1000,11 +1000,11 @@ class TestErrorRecoveryIntegration:
         
         # 2. 清除错误状
         self.mock_llm.chat.side_effect = None
-        self.mock_llm.chat.return_value = "错误已恢
+        self.mock_llm.chat.return_value = "错误已恢复"
         
         # 3. 再次尝试,应该成
         response, _ = self.chat_service.chat_with_text("Test recovery", session_id)
-        assert response == "错误已恢
+        assert response == "错误已恢复"
         
         # 4. 验证会话状态正
         history = self.chat_service.get_conversation_history(session_id)

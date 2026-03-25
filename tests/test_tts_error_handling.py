@@ -78,7 +78,7 @@ class TestTTSErrorHandling:
         })
     
     def test_synthesize_with_error_handling_success(self):
-        """测试成功的语音合"""
+        """测试成功的语音合成"""
         result = self.tts.synthesize_with_error_handling("Hello world")
         
         assert isinstance(result, TTSResult)
@@ -218,7 +218,7 @@ class TestTTSErrorHandling:
 
 
 class TestChatServiceTTSIntegration:
-    """测试ChatService与TTS的集""
+    """测试ChatService与TTS的集成"""
     
     def setup_method(self):
         """设置测试环境"""

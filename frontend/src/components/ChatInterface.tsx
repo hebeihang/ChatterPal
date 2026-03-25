@@ -22,7 +22,7 @@ const ChatInterface: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([])
   const [inputText, setInputText] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [selectedVoice, setSelectedVoice] = useState('longxiaochun')
+  const [selectedVoice, setSelectedVoice] = useState('ja-JP-NanamiNeural')
   const [voices, setVoices] = useState<VoiceOption[]>([])
   const [audioError, setAudioError] = useState('')
   const [isTranscribing, setIsTranscribing] = useState(false)
@@ -57,13 +57,11 @@ const ChatInterface: React.FC = () => {
           }
         }
       } catch (error) {
-        console.error('获取音色列表失败:', error)
+        console.error('ボイスリストの取得に失敗しました:', error)
         // 使用默认音色列表作为备选
         setVoices([
-          { id: 'longxiaochun', name: '龙小春' },
-          { id: 'longfei', name: '龙飞' },
-          { id: 'longtian', name: '龙天' },
-          { id: 'longxiaoxia', name: '龙小夏' }
+          { id: 'ja-JP-NanamiNeural', name: 'ななみ' },
+          { id: 'ja-JP-KeitaNeural', name: 'けいた' }
         ])
       }
     }
@@ -87,7 +85,7 @@ const ChatInterface: React.FC = () => {
     setIsLoading(true)
 
     try {
-      const response = await axios.post('http://localhost:8010/api/chat', {
+      const response = await axios.post('/api/chat', {
         message: textToSend,
         voice: selectedVoice,
         session_id: sessionId
@@ -109,11 +107,11 @@ const ChatInterface: React.FC = () => {
 
       setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
-      console.error('发送消息失败:', error)
+      console.error('メッセージの送信に失败しました:', error)
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'assistant',
-        content: '抱歉，发生了错误，请稍后重试。',
+        content: '申し訳ありません。エラーが発生しました。後でもう一度お試しください。',
         hasAudio: false,
         timestamp: new Date()
       }
@@ -148,7 +146,7 @@ const ChatInterface: React.FC = () => {
         formData.append('session_id', sessionId)
       }
       
-      const response = await axios.post('http://localhost:8010/api/chat/audio', formData, {
+      const response = await axios.post('/api/chat/audio', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -186,8 +184,8 @@ const ChatInterface: React.FC = () => {
         setMessages(prev => [...prev, assistantMessage])
       }
     } catch (error) {
-      console.error('语音转文本失败:', error)
-      setAudioError('语音识别失败，请重试')
+      console.error('音声認識に失败しました:', error)
+      setAudioError('音声認識に失敗しました。もう一度お試しください。')
     } finally {
       setIsTranscribing(false)
     }
@@ -249,10 +247,10 @@ const ChatInterface: React.FC = () => {
   return (
     <div className="chat-interface">
       <div className="chat-header">
-        <h2>对话练习</h2>
+        <h2>会話練習</h2>
         <div className="header-controls">
           <div className="voice-selector">
-            <label htmlFor="voice-select">选择音色：</label>
+            <label htmlFor="voice-select">ボイスを選択：</label>
             <select 
               id="voice-select"
               value={selectedVoice} 
@@ -269,9 +267,9 @@ const ChatInterface: React.FC = () => {
           <button 
             onClick={clearConversation}
             className="clear-button"
-            title="开始新对话"
+            title="新しい会話を開始"
           >
-            🗑️ 清除对话
+            🗑️ 会話をクリア
           </button>
         </div>
       </div>
@@ -288,7 +286,7 @@ const ChatInterface: React.FC = () => {
         {isLoading && (
           <div className="message assistant loading">
             <div className="message-content">
-              <p>正在思考中...</p>
+              <p>考え中...</p>
             </div>
           </div>
         )}
@@ -308,7 +306,7 @@ const ChatInterface: React.FC = () => {
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="输入您想要练习的对话内容..."
+              placeholder="練習したい会話内容を入力してください..."
               className="message-input"
               rows={3}
               disabled={isLoading || isTranscribing}
@@ -318,7 +316,7 @@ const ChatInterface: React.FC = () => {
               disabled={!inputText.trim() || isLoading || isTranscribing}
               className="send-button-inside"
             >
-              {isLoading ? '发送中...' : isTranscribing ? '识别中...' : '发送'}
+              {isLoading ? '送信中...' : isTranscribing ? '認識中...' : '送信'}
             </button>
           </div>
         </div>

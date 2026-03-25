@@ -311,14 +311,11 @@ class LLMBase(ABC):
         if not text:
             return 0
 
-        # 统计中文字符
-        chinese_chars = sum(1 for char in text if "\u4e00" <= char <= "\u9fff")
-
-        # 统计英文单词
-        english_words = len([word for word in text.split() if word.isalpha()])
+        # 统计中日文字符 (汉字及假名)
+        cjk_chars = sum(1 for char in text if ("\u4e00" <= char <= "\u9fff") or ("\u3040" <= char <= "\u30ff"))
 
         # 估算token数
-        estimated_tokens = chinese_chars + int(english_words * 1.3)
+        estimated_tokens = cjk_chars + (len(text) - cjk_chars) // 3
 
         return max(estimated_tokens, len(text) // 4)  # 最少按1/4字符数计算
 

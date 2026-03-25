@@ -49,6 +49,8 @@ class DifficultyLevel(Enum):
 @dataclass
 class AIAnalysisResult:
     """AI分析结果"""
+    overall_score: float
+    recognized_text: str
     grammar_corrections: List[Dict[str, Any]]
     pronunciation_feedback: List[Dict[str, Any]]
     scenario_suggestions: List[Dict[str, Any]]
@@ -124,28 +126,28 @@ class AICorrectionService:
                 difficulty_level=DifficultyLevel.BEGINNER,
                 context_description="基础日常对话练习",
                 sample_dialogues=[
-                    "Hello, how are you today?",
-                    "I'm fine, thank you. And you?",
-                    "What's your name?",
-                    "Nice to meet you!"
+                    "こんにちは、お元気ですか？",
+                    "はい、元気です。あなたは？",
+                    "お名前は何ですか？",
+                    "はじめまして！"
                 ],
-                key_vocabulary=["hello", "fine", "thank you", "name", "meet"],
-                grammar_focus=["present tense", "question formation", "polite expressions"],
-                pronunciation_targets=["/θ/", "/ð/", "/r/", "/l/"]
+                key_vocabulary=["こんにちは", "元気", "名前", "はじめまして"],
+                grammar_focus=["です/ます form", "question particles", "polite expressions"],
+                pronunciation_targets=["/a/", "/i/", "/u/", "/e/", "/o/"]
             ),
             DifficultyLevel.INTERMEDIATE: ScenarioContext(
                 scenario_type=ScenarioType.DAILY_CONVERSATION,
                 difficulty_level=DifficultyLevel.INTERMEDIATE,
                 context_description="中级日常对话练习",
                 sample_dialogues=[
-                    "What did you do over the weekend?",
-                    "I went hiking with some friends. It was really enjoyable.",
-                    "That sounds like fun! Where did you go?",
-                    "We explored a trail in the mountains near the city."
+                    "週末は何をしましたか？",
+                    "友達とハイキングに行きました。とても楽しかったです。",
+                    "面白そうですね！どこへ行ったのですか？",
+                    "郊外の山へ行きました。"
                 ],
-                key_vocabulary=["weekend", "hiking", "enjoyable", "explored", "trail", "mountains"],
-                grammar_focus=["past tense", "descriptive adjectives", "prepositions"],
-                pronunciation_targets=["/ɪ/", "/iː/", "/aɪ/", "/aʊ/"]
+                key_vocabulary=["週末", "ハイキング", "楽しい", "面白い", "郊外", "山"],
+                grammar_focus=["past tense (ました/でした)", "て-form for linking"],
+                pronunciation_targets=["long vowels (長音)", "double consonants (促音)"]
             )
         }
         
@@ -156,14 +158,14 @@ class AICorrectionService:
                 difficulty_level=DifficultyLevel.INTERMEDIATE,
                 context_description="商务会议讨论",
                 sample_dialogues=[
-                    "Let's discuss the quarterly sales report.",
-                    "Our revenue has increased by 15% this quarter.",
-                    "That's excellent news! What factors contributed to this growth?",
-                    "We expanded our marketing efforts and improved customer service."
+                    "四半期の売上報告について話し合いましょう。",
+                    "今四半期の収益は15％増加しました。",
+                    "素晴らしいニュースですね！成長の要因は何ですか？",
+                    "マーケティング活動を拡大し、顧客サービスを改善しました。"
                 ],
-                key_vocabulary=["quarterly", "revenue", "increased", "factors", "contributed", "expanded", "marketing"],
-                grammar_focus=["present perfect", "passive voice", "formal expressions"],
-                pronunciation_targets=["/ɜː/", "/ɔː/", "/eɪ/", "/əʊ/"]
+                key_vocabulary=["四半期", "売上", "報告", "収益", "増加", "要因", "拡大"],
+                grammar_focus=["keigo (敬語)", "formal expressions", "passive voice"],
+                pronunciation_targets=["pitch accent", "polite intonation"]
             )
         }
         
@@ -173,7 +175,7 @@ class AICorrectionService:
         """初始化AI分析提示模板"""
         return {
             "grammar_analysis": """
-你是一位专业的英语语法老师。请分析以下语音识别文本中的语法错误，并提供详细的纠正建议。
+你是一位专业的日语语法老师。请分析以下语音识别文本中的语法错误，并提供详细的纠正建议。
 
 识别文本: {recognized_text}
 参考文本: {reference_text}
@@ -195,7 +197,7 @@ class AICorrectionService:
 """,
             
             "pronunciation_analysis": """
-你是一位专业的英语发音教练。请分析以下发音评估结果，并提供个性化的发音指导。
+你是一位专业的日语发音教练。请分析以下发音评估结果，并提供个性化的发音指导。
 
 基础评估结果: {base_assessment}
 识别文本: {recognized_text}
@@ -217,7 +219,7 @@ class AICorrectionService:
 """,
             
             "scenario_recommendation": """
-你是一位英语学习顾问。基于用户的发音和语法表现，推荐合适的练习场景。
+你是一位日语学习顾问。基于用户的发音和语法表现，推荐合适的练习场景。
 
 用户表现:
 - 整体评分: {overall_score}
@@ -302,6 +304,8 @@ class AICorrectionService:
             )
             
             result = AIAnalysisResult(
+                overall_score=base_report.overall_score,
+                recognized_text=base_report.recognized_text,
                 grammar_corrections=grammar_corrections,
                 pronunciation_feedback=pronunciation_feedback,
                 scenario_suggestions=scenario_suggestions,
@@ -711,6 +715,8 @@ class AICorrectionService:
     def _create_fallback_result(self, base_report: CorrectionReport) -> AIAnalysisResult:
         """创建备用结果"""
         return AIAnalysisResult(
+            overall_score=getattr(base_report, 'overall_score', 0.0),
+            recognized_text=getattr(base_report, 'recognized_text', ""),
             grammar_corrections=[],
             pronunciation_feedback=[],
             scenario_suggestions=[],

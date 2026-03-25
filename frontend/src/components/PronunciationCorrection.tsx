@@ -128,8 +128,8 @@ const PronunciationCorrection: React.FC = () => {
       setIsRecording(true)
       setError('')
     } catch (err) {
-      setError('无法访问麦克风，请检查权限设置')
-      console.error('录音失败:', err)
+      setError('マイクにアクセスできません。権限設定を確認してください。')
+      console.error('録音失敗:', err)
     }
   }
 
@@ -150,12 +150,12 @@ const PronunciationCorrection: React.FC = () => {
 
   const analyzeAudio = async () => {
     if (!audioBlob) {
-      setError('请先录制音频')
+      setError('先に音声を録音してください')
       return
     }
 
     if (!referenceText.trim()) {
-      setError('请输入参考文本')
+      setError('お手本テキストを入力してください')
       return
     }
 
@@ -194,7 +194,7 @@ const PronunciationCorrection: React.FC = () => {
         setAiResult(null) // 清除AI分析结果
       }
     } catch (err) {
-      setError('分析失败，请稍后重试')
+      setError('分析に失敗しました。後でもう一度お試しください。')
       console.error('分析失败:', err)
     } finally {
       setIsAnalyzing(false)
@@ -229,17 +229,17 @@ const PronunciationCorrection: React.FC = () => {
   return (
     <div className="pronunciation-correction">
       <div className="correction-header">
-        <h2>口语纠正</h2>
-        <p>录制您的语音，我们将为您提供发音和语法建议</p>
+        <h2>発音矯正</h2>
+        <p>音声を録音してください。発音と文法のアドバイスを提供します。</p>
       </div>
 
       <div className="reference-text-section">
-        <label htmlFor="reference-text">参考文本</label>
+        <label htmlFor="reference-text">お手本テキスト</label>
         <textarea
           id="reference-text"
           value={referenceText}
           onChange={(e) => setReferenceText(e.target.value)}
-          placeholder="请输入您要练习的英文句子或段落..."
+          placeholder="練習したい日本語の文章を入力してください..."
           className="reference-text-input"
           rows={3}
           disabled={isAnalyzing}
@@ -247,28 +247,28 @@ const PronunciationCorrection: React.FC = () => {
       </div>
 
       <div className="analysis-mode-section">
-        <label>分析模式</label>
+        <label>分析モード</label>
         <div className="mode-selector">
           <button
             className={`mode-button ${analysisMode === 'basic' ? 'active' : ''}`}
             onClick={() => setAnalysisMode('basic')}
             disabled={isAnalyzing}
           >
-            基础分析
+            基本分析
           </button>
           <button
             className={`mode-button ${analysisMode === 'ai' ? 'active' : ''}`}
             onClick={() => setAnalysisMode('ai')}
             disabled={isAnalyzing}
           >
-            AI智能分析
+            AIインテリジェント分析
           </button>
         </div>
       </div>
 
       {analysisMode === 'ai' && (
         <div className="scenario-section">
-          <label htmlFor="scenario-select">练习场景（可选）</label>
+          <label htmlFor="scenario-select">練習シーン（任意）</label>
           <select
             id="scenario-select"
             value={selectedScenario}
@@ -276,7 +276,7 @@ const PronunciationCorrection: React.FC = () => {
             className="scenario-select"
             disabled={isAnalyzing}
           >
-            <option value="">选择练习场景...</option>
+            <option value="">練習シーンを選択...</option>
             {scenarios.map((scenario) => (
               <option key={`${scenario.scenario_type}-${scenario.difficulty_level}`} value={`${scenario.scenario_type}-${scenario.difficulty_level}`}>
                 {scenario.display_name}
@@ -286,12 +286,12 @@ const PronunciationCorrection: React.FC = () => {
           
           {scenarioContext && (
             <div className="scenario-context">
-              <h4>场景描述</h4>
+              <h4>シーンの説明</h4>
               <p>{scenarioContext.context_description}</p>
               
               {scenarioContext.sample_dialogues.length > 0 && (
                 <div className="sample-dialogues">
-                  <h5>示例对话</h5>
+                  <h5>例文</h5>
                   <ul>
                     {scenarioContext.sample_dialogues.map((dialogue, index) => (
                       <li key={index}>{dialogue}</li>
@@ -302,7 +302,7 @@ const PronunciationCorrection: React.FC = () => {
               
               {scenarioContext.key_vocabulary.length > 0 && (
                 <div className="key-vocabulary">
-                  <h5>关键词汇</h5>
+                  <h5>重要キーワード</h5>
                   <div className="vocabulary-tags">
                     {scenarioContext.key_vocabulary.map((word, index) => (
                       <span key={index} className="vocabulary-tag">{word}</span>
@@ -313,7 +313,7 @@ const PronunciationCorrection: React.FC = () => {
               
               {scenarioContext.pronunciation_targets.length > 0 && (
                 <div className="pronunciation-targets">
-                  <h5>发音重点</h5>
+                  <h5>発音のポイント</h5>
                   <ul>
                     {scenarioContext.pronunciation_targets.map((target, index) => (
                       <li key={index}>{target}</li>
@@ -334,14 +334,14 @@ const PronunciationCorrection: React.FC = () => {
               className="record-button start"
               disabled={isAnalyzing}
             >
-              🎤 开始录音
+              🎤 録音開始
             </button>
           ) : (
             <button 
               onClick={stopRecording}
               className="record-button stop"
             >
-              ⏹️ 停止录音
+              ⏹️ 停止
             </button>
           )}
           
@@ -352,21 +352,21 @@ const PronunciationCorrection: React.FC = () => {
                 className="play-button"
                 disabled={isAnalyzing}
               >
-                ▶️ 播放录音
+                ▶️ 録音を再生
               </button>
               <button 
                 onClick={analyzeAudio}
                 className="analyze-button"
                 disabled={isAnalyzing}
               >
-                {isAnalyzing ? '分析中...' : '🔍 分析语音'}
+                {isAnalyzing ? '分析中...' : '🔍 音声を分析'}
               </button>
               <button 
                 onClick={resetRecording}
                 className="reset-button"
                 disabled={isAnalyzing}
               >
-                🔄 重新录制
+                🔄 録り直し
               </button>
             </>
           )}
@@ -375,7 +375,7 @@ const PronunciationCorrection: React.FC = () => {
         {isRecording && (
           <div className="recording-indicator">
             <div className="recording-dot"></div>
-            <span>正在录音...</span>
+            <span>録音中...</span>
           </div>
         )}
 
@@ -389,7 +389,7 @@ const PronunciationCorrection: React.FC = () => {
       {result && (
         <div className="analysis-results">
           <div className="score-section">
-            <h3>总体评分</h3>
+            <h3>総合スコア</h3>
             <div 
               className="score-circle"
               style={{ borderColor: getScoreColor(result.score) }}
@@ -402,13 +402,13 @@ const PronunciationCorrection: React.FC = () => {
 
           <div className="text-comparison">
             <div className="text-section">
-              <h4>识别文本</h4>
+              <h4>認識されたテキスト</h4>
               <p className="original-text">{result.original_text}</p>
             </div>
             
             {result.corrected_text !== result.original_text && (
               <div className="text-section">
-                <h4>建议修正</h4>
+                <h4>修正の提案</h4>
                 <p className="corrected-text">{result.corrected_text}</p>
               </div>
             )}
@@ -416,7 +416,7 @@ const PronunciationCorrection: React.FC = () => {
 
           {result.corrections.length > 0 && (
             <div className="corrections-section">
-              <h4>详细建议</h4>
+              <h4>詳細なアドバイス</h4>
               <div className="corrections-list">
                 {result.corrections.map((correction, index) => (
                   <div key={index} className="correction-item">
@@ -424,9 +424,9 @@ const PronunciationCorrection: React.FC = () => {
                       className="correction-type"
                       style={{ backgroundColor: getCorrectionTypeColor(correction.type) }}
                     >
-                      {correction.type === 'grammar' ? '语法' : 
-                       correction.type === 'pronunciation' ? '发音' : 
-                       correction.type === 'vocabulary' ? '词汇' : '其他'}
+                      {correction.type === 'grammar' ? '文法' : 
+                       correction.type === 'pronunciation' ? '発音' : 
+                       correction.type === 'vocabulary' ? '語彙' : 'その他'}
                     </div>
                     <div className="correction-content">
                       <div className="correction-change">
@@ -447,7 +447,7 @@ const PronunciationCorrection: React.FC = () => {
       {aiResult && (
         <div className="ai-analysis-results">
           <div className="ai-score-section">
-            <h3>AI智能评分</h3>
+            <h3>AIインテリジェントスコア</h3>
             <div className="score-grid">
               <div 
                 className="score-circle"
@@ -456,29 +456,29 @@ const PronunciationCorrection: React.FC = () => {
                 <span style={{ color: getScoreColor(aiResult.overall_score) }}>
                   {aiResult.overall_score}
                 </span>
-                <small>总体评分</small>
+                <small>総合スコア</small>
               </div>
               <div className="confidence-score">
                 <span className="confidence-value">{aiResult.confidence_score}%</span>
-                <small>置信度</small>
+                <small>信頼度</small>
               </div>
               <div className="difficulty-level">
                 <span className="difficulty-value">{aiResult.difficulty_level}</span>
-                <small>难度等级</small>
+                <small>難易度</small>
               </div>
             </div>
           </div>
 
           <div className="ai-text-comparison">
             <div className="text-section">
-              <h4>识别文本</h4>
+              <h4>認識されたテキスト</h4>
               <p className="original-text">{aiResult.recognized_text}</p>
             </div>
           </div>
 
           {aiResult.grammar_corrections.length > 0 && (
             <div className="grammar-corrections-section">
-              <h4>📝 语法纠正</h4>
+              <h4>📝 文法修正</h4>
               <div className="corrections-list">
                 {aiResult.grammar_corrections.map((correction, index) => (
                   <div key={index} className="correction-item">
@@ -486,7 +486,7 @@ const PronunciationCorrection: React.FC = () => {
                       className="correction-type"
                       style={{ backgroundColor: getCorrectionTypeColor('grammar') }}
                     >
-                      语法
+                      文法
                     </div>
                     <div className="correction-content">
                       <div className="correction-change">
@@ -504,7 +504,7 @@ const PronunciationCorrection: React.FC = () => {
 
           {aiResult.pronunciation_feedback.length > 0 && (
             <div className="pronunciation-feedback-section">
-              <h4>🎯 发音指导</h4>
+              <h4>🎯 発音指導</h4>
               <div className="corrections-list">
                 {aiResult.pronunciation_feedback.map((feedback, index) => (
                   <div key={index} className="correction-item">
@@ -512,7 +512,7 @@ const PronunciationCorrection: React.FC = () => {
                       className="correction-type"
                       style={{ backgroundColor: getCorrectionTypeColor('pronunciation') }}
                     >
-                      发音
+                      発音
                     </div>
                     <div className="correction-content">
                       <div className="correction-change">
@@ -530,7 +530,7 @@ const PronunciationCorrection: React.FC = () => {
 
           {aiResult.personalized_tips.length > 0 && (
             <div className="personalized-tips-section">
-              <h4>💡 个性化建议</h4>
+              <h4>💡 パーソナライズされたアドバイス</h4>
               <ul className="tips-list">
                 {aiResult.personalized_tips.map((tip, index) => (
                   <li key={index} className="tip-item">{tip}</li>
@@ -541,7 +541,7 @@ const PronunciationCorrection: React.FC = () => {
 
           {aiResult.scenario_suggestions.length > 0 && (
             <div className="scenario-suggestions-section">
-              <h4>🔄 场景建议</h4>
+              <h4>🔄 シーンの提案</h4>
               <div className="scenario-suggestions">
                 {aiResult.scenario_suggestions.map((suggestion, index) => (
                   <div key={index} className="scenario-suggestion">
@@ -559,14 +559,14 @@ const PronunciationCorrection: React.FC = () => {
 
           {aiResult.next_scenario && (
             <div className="next-scenario-section">
-              <h4>📈 推荐下一个练习</h4>
+              <h4>📈 次の練習の推奨</h4>
               <div className="next-scenario">
                 <span className="next-scenario-name">{aiResult.next_scenario}</span>
                 <button 
                   className="apply-scenario-button"
                   onClick={() => setSelectedScenario(aiResult.next_scenario!)}
                 >
-                  应用此场景
+                  このシーンを適用
                 </button>
               </div>
             </div>
@@ -574,7 +574,7 @@ const PronunciationCorrection: React.FC = () => {
 
           {aiResult.detailed_analysis && (
             <div className="detailed-analysis-section">
-              <h4>📊 详细分析</h4>
+              <h4>📊 詳細分析</h4>
               <div className="detailed-analysis">
                 <p>{aiResult.detailed_analysis}</p>
               </div>

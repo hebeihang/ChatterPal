@@ -50,116 +50,116 @@ class TopicGenerator:
         self.default_topics = {
             "beginner": {
                 "daily": [
-                    "What did you have for breakfast today?",
-                    "Tell me about your daily routine.",
-                    "What's your favorite color and why?",
-                    "Describe your family.",
-                    "What time do you usually wake up?",
-                    "What's your favorite food?",
-                    "Tell me about your home.",
-                    "What do you like to do in your free time?",
-                    "What's the weather like today?",
-                    "Do you have any pets?"
+                    "今日の朝ごはんは何を食べましたか？",
+                    "あなたの毎日のルーティンについて教えてください。",
+                    "好きな色は何ですか？それはなぜですか？",
+                    "あなたの家族について教えてください。",
+                    "普段、何時に起きますか？",
+                    "好きな食べ物は何ですか？",
+                    "あなたの家について教えてください。",
+                    "暇な時は何をしますか？",
+                    "今日の天気はどうですか？",
+                    "ペットを飼っていますか？"
                 ],
                 "hobby": [
-                    "Do you like reading books?",
-                    "What sports do you enjoy?",
-                    "Do you like listening to music?",
-                    "Can you cook? What's your favorite dish to make?",
-                    "Do you enjoy watching movies?",
-                    "What games do you like to play?",
-                    "Do you like drawing or painting?",
-                    "Are you interested in photography?",
-                    "Do you enjoy gardening?",
-                    "What do you like to do on weekends?"
+                    "本を読むのは好きですか？",
+                    "どんなスポーツが好きですか？",
+                    "音楽を聴くのは好きですか？",
+                    "料理はできますか？得意料理は何ですか？",
+                    "映画を見るのは好きですか？",
+                    "どんなゲームが好きですか？",
+                    "絵を描くのは好きですか？",
+                    "写真に興味がありますか？",
+                    "ガーデニングは好きですか？",
+                    "週末は何をするのが好きですか？"
                 ]
             },
             "intermediate": {
                 "daily": [
-                    "What's your favorite way to spend a weekend?",
-                    "Describe a memorable meal you've had recently.",
-                    "Tell me about a place you'd love to visit.",
-                    "What's your favorite season and why?",
-                    "Describe your ideal day off from work or school.",
-                    "What's something that always makes you smile?",
-                    "Tell me about a skill you're proud of having.",
-                    "Describe your morning routine.",
-                    "What's something interesting about your hometown?",
-                    "How do you usually celebrate your birthday?"
+                    "週末の好きな過ごし方は何ですか？",
+                    "最近食べた美味しかった食事について教えてください。",
+                    "行ってみたい場所について教えてください。",
+                    "好きな季節とその理由を教えてください。",
+                    "理想的な休日の過ごし方は何ですか？",
+                    "いつも笑顔になるものは何ですか？",
+                    "あなたの得意なことについて教えてください。",
+                    "朝のルーティンについて教えてください。",
+                    "あなたの地元の面白いところは何ですか？",
+                    "誕生日はいつもどのように過ごしますか？"
                 ],
                 "hobby": [
-                    "What's a hobby you enjoy or would like to try?",
-                    "Tell me about a book or movie that impressed you.",
-                    "What's your favorite type of music or artist?",
-                    "Describe a creative project you've worked on.",
-                    "What's your favorite way to stay healthy and active?",
-                    "Tell me about a skill you'd like to learn.",
-                    "What's your favorite outdoor activity?",
-                    "Describe a memorable concert or performance you attended.",
-                    "What's your favorite way to relax after a busy day?",
-                    "Tell me about a hobby that helps you express creativity."
+                    "好きな趣味、またはやってみたい趣味は何ですか？",
+                    "印象に残った本や映画について教えてください。",
+                    "好きな音楽のジャンルやアーティストは何ですか？",
+                    "自分が作ったクリエイティブな作品について教えてください。",
+                    "健康を保つための好きな方法は何ですか？",
+                    "新しく学びたいスキルについて教えてください。",
+                    "好きなアウトドア活動は何ですか？",
+                    "思い出に残っているコンサートやパフォーマンスについて教えてください。",
+                    "忙しい一日の後のリラックス方法は何ですか？",
+                    "創造性を表現できる趣味について教えてください。"
                 ],
                 "travel": [
-                    "Describe the most interesting place you've visited.",
-                    "What's your dream vacation destination?",
-                    "Tell me about a cultural difference you've experienced.",
-                    "What's the best travel advice you've received?",
-                    "Describe a memorable journey you've taken.",
-                    "What do you always pack when traveling?",
-                    "Tell me about local food you've tried while traveling.",
-                    "What's your preferred way to travel and why?",
-                    "Describe a travel experience that changed your perspective.",
-                    "What's something you always do when visiting a new city?"
+                    "今までに行った中で一番面白かった場所について教えてください。",
+                    "夢の旅行先はどこですか？",
+                    "経験した文化の違いについて教えてください。",
+                    "今までにもらった最高のアドバイスは何ですか？",
+                    "思い出に残っている旅行について教えてください。",
+                    "旅行の際、必ず持っていくものは何ですか？",
+                    "旅行中に食べた地元の食べ物について教えてください。",
+                    "好きな旅行のスタイルとその理由は何ですか？",
+                    "あなたの考え方を変えた旅行の経験について教えてください。",
+                    "新しい都市を訪れたときに必ずすることは何ですか？"
                 ],
                 "work": [
-                    "What's the most rewarding part of your work or studies?",
-                    "Describe a typical day at work or school.",
-                    "What skills do you think are important for success?",
-                    "Tell me about a challenge you've overcome recently.",
-                    "What's your ideal work environment?",
-                    "Describe a project you're particularly proud of.",
-                    "What motivates you to work hard?",
-                    "Tell me about someone who has influenced your career.",
-                    "What's something new you've learned recently?",
-                    "How do you balance work and personal life?"
+                    "仕事や勉強で最もやりがいを感じるのはどんな時ですか？",
+                    "仕事や学校での典型的な一日を教えてください。",
+                    "成功するために重要だと思うスキルは何ですか？",
+                    "最近乗り越えた困難について教えてください。",
+                    "あなたの理想的な職場環境はどのようなものですか？",
+                    "誇りに思っているプロジェクトについて教えてください。",
+                    "一生懸命働くモチベーションは何ですか？",
+                    "あなたのキャリアに影響を与えた人について教えてください。",
+                    "最近学んだ新しいことは何ですか？",
+                    "仕事と私生活のバランスをどのように取っていますか？"
                 ]
             },
             "advanced": {
                 "culture": [
-                    "How has technology changed the way people communicate?",
-                    "What role does tradition play in modern society?",
-                    "Discuss the impact of globalization on local cultures.",
-                    "How do you think education will evolve in the future?",
-                    "What are the benefits and challenges of living in a multicultural society?",
-                    "How has social media influenced people's behavior and relationships?",
-                    "What's your opinion on the work-life balance in different cultures?",
-                    "How do you think climate change will affect future generations?",
-                    "Discuss the importance of preserving cultural heritage.",
-                    "What role does art play in society?"
+                    "テクノロジーは人々のコミュニケーション方法をどのように変えましたか？",
+                    "現代社会において伝統はどのような役割を果たしていますか？",
+                    "グローバリゼーションが地域文化に与える影響について議論してください。",
+                    "将来、教育はどのように進化すると思いますか？",
+                    "多文化社会で暮らすことのメリットと課題は何ですか？",
+                    "ソーシャルメディアは人々の行動や人間関係にどのような影響を与えましたか？",
+                    "異なる文化におけるワークライフバランスについてのあなたの意見は何ですか？",
+                    "気候変動は将来の世代にどのような影響を与えると思いますか？",
+                    "文化遺産を保護することの重要性について議論してください。",
+                    "社会において芸術はどのような役割を果たしていますか？"
                 ],
                 "tech": [
-                    "How do you think artificial intelligence will change our daily lives?",
-                    "What are the ethical considerations of using personal data?",
-                    "Discuss the impact of remote work on society and economy.",
-                    "How has the internet changed the way we access information?",
-                    "What are the pros and cons of social media platforms?",
-                    "How do you think virtual reality will be used in the future?",
-                    "Discuss the role of technology in education.",
-                    "What are your thoughts on digital privacy and security?",
-                    "How has e-commerce changed shopping habits?",
-                    "What's your opinion on the digital divide between generations?"
+                    "人工知能は私たちの日常生活をどのように変えると思いますか？",
+                    "個人データを使用する際の倫理的な考慮事項は何ですか？",
+                    "リモートワークが社会や経済に与える影響について議論してください。",
+                    "インターネットは情報のアクセス方法をどのように変えましたか？",
+                    "ソーシャルメディアプラットフォームの長所と短所は何ですか？",
+                    "仮想現実（VR）は将来どのように使用されると思いますか？",
+                    "教育におけるテクノロジーの役割について議論してください。",
+                    "デジタルのプライバシーとセキュリティについてのあなたの考えは何ですか？",
+                    "電子商取引（Eコマース）はショッピングの習慣をどのように変えましたか？",
+                    "世代間のデジタルデバイドについてのあなたの意見は何ですか？"
                 ],
                 "work": [
-                    "What qualities make an effective leader?",
-                    "How do you handle conflicts in a professional environment?",
-                    "Discuss the importance of continuous learning in your career.",
-                    "What's your approach to making difficult decisions?",
-                    "How do you think the job market will change in the next decade?",
-                    "Discuss the role of creativity and innovation in business.",
-                    "What are the challenges of working in a diverse team?",
-                    "How do you maintain motivation during challenging projects?",
-                    "What's your opinion on the gig economy and freelancing?",
-                    "How do you think companies can better support employee wellbeing?"
+                    "効果的なリーダーに必要な資質は何ですか？",
+                    "職場での対立にどのように対処しますか？",
+                    "キャリアにおける継続的な学習の重要性について議論してください。",
+                    "難しい決断を下す際のアプローチは何ですか？",
+                    "今後10年間で雇用市場はどのように変化すると思いますか？",
+                    "ビジネスにおける創造性と革新の役割について議論してください。",
+                    "多様なチームで働く際の課題は何ですか？",
+                    "困難なプロジェクトの間、どのようにモチベーションを維持しますか？",
+                    "ギグエコノミーやフリーランスについてのあなたの意見は何ですか？",
+                    "企業は従業員の健康をどのようにサポートできると思いますか？"
                 ]
             }
         }
@@ -234,11 +234,11 @@ class TopicGenerator:
             self.logger.warning(f"主题生成失败，使用备用主题: {e}")
             # 返回备用主题列表中的一个
             fallback_topics = [
-                "What's something interesting that happened to you recently?",
-                "Tell me about your favorite hobby.",
-                "What's your favorite season and why?",
-                "Describe a place you'd love to visit.",
-                "What's something you're proud of?"
+                "最近あった面白いことについて教えてください。",
+                "好きな趣味について教えてください。",
+                "好きな季節とその理由は何ですか？",
+                "行ってみたい場所について教えてください。",
+                "誇りに思っていることは何ですか？"
             ]
             return random.choice(fallback_topics)
     
@@ -285,7 +285,7 @@ class TopicGenerator:
             
             difficulty_desc = difficulty_descriptions.get(difficulty, "moderate complexity")
             
-            prompt = f"""Based on the following conversation, generate a new related topic that would naturally continue the discussion. The topic should be suitable for {difficulty} English learners using {difficulty_desc}.
+            prompt = f"""Based on the following conversation, generate a new related topic that would naturally continue the discussion. The topic should be suitable for {difficulty} Japanese learners using {difficulty_desc}.
 
 Recent conversation:
 {conversation_text}
@@ -294,9 +294,9 @@ Requirements:
 1. The topic should be related to what was discussed but introduce a new angle
 2. It should be engaging and encourage natural conversation
 3. Keep it appropriate for {difficulty} level learners
-4. Provide just the topic as a question, without explanation
+4. Provide just the topic as a question in Japanese, without explanation
 
-New topic:"""
+New topic (in Japanese):"""
 
             # 调用LLM生成主题（带重试和错误处理）
             last_error = None

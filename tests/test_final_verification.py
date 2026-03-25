@@ -1,4 +1,4 @@
-﻿"""
+"""
 Final functionality verification test
 Tests all core functionality without complex app startup
 """
@@ -29,7 +29,7 @@ def test_all_modules_import_successfully():
         # 配置系统
         from chatterpal.config.settings import Settings
         
-        print("所有模块导入成)
+        print("所有模块导入成功")
         return True
         
     except Exception as e:
@@ -185,7 +185,7 @@ def test_configuration_system():
         pytest.fail(f"配置系统测试失败: {e}")
 
 def test_end_to_end_workflow():
-    """测试端到端工作流程""
+    """测试端到端工作流程"""
     try:
         from chatterpal.services.chat import ChatService
         from chatterpal.services.evaluation import EvaluationService
@@ -234,7 +234,7 @@ def test_end_to_end_workflow():
         final_response, _ = chat_service.chat_with_text(feedback_text, session_id)
         assert final_response == "I'm fine, thank you!"
         
-        print("端到端工作流程正)
+        print("端到端工作流程正常")
         return True
         
     except Exception as e:
@@ -261,7 +261,7 @@ def test_project_structure():
         ]
         
         for path in required_paths:
-            assert os.path.exists(path), f"缺少必要的路 {path}"
+            assert os.path.exists(path), f"缺少必要的路径 {path}"
         
         print("项目结构完整")
         return True

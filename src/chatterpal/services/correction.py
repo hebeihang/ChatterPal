@@ -32,6 +32,7 @@ class CorrectionReport:
 
     def __init__(self):
         self.overall_score = 0.0
+        self.recognized_text = ""
         self.pronunciation_errors = []
         self.prosody_issues = []
         self.phoneme_problems = []
@@ -204,6 +205,7 @@ class CorrectionService:
 
         report = CorrectionReport()
         report.overall_score = base_assessment.overall_score
+        report.recognized_text = recognized_text
 
         # 1. 发音错误检测
         report.pronunciation_errors = self._detect_pronunciation_errors(

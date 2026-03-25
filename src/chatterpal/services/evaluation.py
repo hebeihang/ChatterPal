@@ -64,7 +64,7 @@ class EvaluationService:
         """加载评估提示词模板"""
         return {
             "pronunciation_analysis": """
-You are an expert English pronunciation teacher. Analyze the following pronunciation attempt:
+You are an expert Japanese pronunciation teacher. Analyze the following pronunciation attempt:
 
 Target Text: "{target_text}"
 Recognized Text: "{recognized_text}"
@@ -95,7 +95,7 @@ Format your response as JSON:
 }}
 """,
             "comparative_analysis": """
-You are an English pronunciation expert. Compare the student's pronunciation with the target:
+You are a Japanese pronunciation expert. Compare the student's pronunciation with the target:
 
 Target: "{target_text}"
 Student said: "{recognized_text}"
@@ -110,7 +110,7 @@ Provide detailed feedback on:
 Response format: JSON with scores and detailed analysis.
 """,
             "fluency_assessment": """
-Assess the fluency of this English speech:
+Assess the fluency of this Japanese speech:
 
 Duration: {duration} seconds
 Word count: {word_count}
@@ -125,7 +125,7 @@ Evaluate:
 Provide JSON response with fluency analysis.
 """,
             "prosody_feedback": """
-Analyze the prosody and intonation of this English speech:
+Analyze the prosody and intonation of this Japanese speech:
 
 Text: "{text}"
 Duration: {duration} seconds

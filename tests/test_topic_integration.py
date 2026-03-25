@@ -1,4 +1,4 @@
-﻿"""
+"""
 主题生成器与聊天服务集成测试
 """
 
@@ -10,7 +10,7 @@ from chatterpal.core.llm.base import LLMBase
 
 
 class TestTopicIntegration:
-    """测试主题生成器与聊天服务的集""
+    """测试主题生成器与聊天服务的集成"""
 
     @pytest.fixture
     def mock_llm(self):
@@ -63,7 +63,7 @@ class TestTopicIntegration:
         assert len(hobby_topic) > 0
 
     def test_generate_contextual_topic(self, chat_service, mock_llm):
-        """测试基于上下文生成主""
+        """测试基于上下文生成主题"""
         # 创建会话并添加一些对话历
         session_id = chat_service.create_session()
         chat_service.chat_with_text("I love playing guitar", session_id)
@@ -78,7 +78,7 @@ class TestTopicIntegration:
         assert mock_llm.chat.called
 
     def test_set_topic_for_session(self, chat_service):
-        """测试为会话设置主""
+        """测试为会话设置主题"""
         session_id = chat_service.create_session()
         topic = "Let's talk about your favorite movies."
         
@@ -127,7 +127,7 @@ class TestTopicIntegration:
             assert len(suggestion) > 0
 
     def test_add_custom_topic(self, chat_service):
-        """测试添加自定义主""
+        """测试添加自定义主题"""
         custom_topic = "What's your opinion on artificial intelligence"
         success = chat_service.add_custom_topic(custom_topic, "tech")
         assert success is True
@@ -145,7 +145,7 @@ class TestTopicIntegration:
         assert "topics_by_category" in stats
 
     def test_process_chat_with_topic_context(self, chat_service):
-        """测试带主题上下文的聊天处""
+        """测试带主题上下文的聊天处理"""
         session_id = chat_service.create_session()
         topic = "Tell me about your favorite book."
         
@@ -185,7 +185,7 @@ class TestTopicIntegration:
         assert isinstance(status["topic_statistics"], dict)
 
     def test_topic_context_enhancement(self, chat_service):
-        """测试主题上下文增强功""
+        """测试主题上下文增强功能"""
         session_id = chat_service.create_session()
         topic = "What's your favorite way to exercise"
         

@@ -1,4 +1,4 @@
-﻿"""
+"""
 增强TTS功能测试
 """
 
@@ -83,10 +83,10 @@ class MockTTS(TTSBase):
 
 
 class TestTTSEnhanced:
-    """增强TTS功能测试""
+    """增强TTS功能测试"""
     
     def setup_method(self):
-        """测试前准""
+        """测试前准备"""
         self.tts = MockTTS({
             "enable_cache": True,
             "cache_size_limit": 10,
@@ -96,7 +96,7 @@ class TestTTSEnhanced:
         })
         
     def test_tts_result_dataclass(self):
-        """测试TTSResult数据""
+        """测试TTSResult数据体"""
         result = TTSResult(
             text="测试文本",
             audio_data=b"test_audio",
@@ -118,7 +118,7 @@ class TestTTSEnhanced:
         assert result.metadata["test"] == "data"
         
     def test_cache_entry_dataclass(self):
-        """测试CacheEntry数据""
+        """测试CacheEntry数据体"""
         entry = CacheEntry(
             key="test_key",
             audio_data=b"test_audio",
@@ -134,7 +134,7 @@ class TestTTSEnhanced:
         assert entry.access_count == 1
         
     def test_playback_state_enum(self):
-        """测试播放状态枚""
+        """测试播放状态枚举"""
         assert PlaybackState.STOPPED.value == "stopped"
         assert PlaybackState.PLAYING.value == "playing"
         assert PlaybackState.PAUSED.value == "paused"
@@ -164,7 +164,7 @@ class TestTTSEnhanced:
         assert result2.audio_data == result1.audio_data
         
     def test_synthesize_enhanced_cache_disabled(self):
-        """测试禁用缓存的增强合""
+        """测试禁用缓存的增强合成"""
         self.tts.enable_cache = False
         
         result1 = self.tts.synthesize_enhanced("测试文本")
@@ -185,7 +185,7 @@ class TestTTSEnhanced:
         assert "error" in result.metadata
         
     def test_generate_cache_key(self):
-        """测试缓存键生""
+        """测试缓存键生成"""
         key1 = self.tts._generate_cache_key("测试文本", {"voice": "test"})
         key2 = self.tts._generate_cache_key("测试文本", {"voice": "test"})
         key3 = self.tts._generate_cache_key("测试文本", {"voice": "other"})
@@ -314,7 +314,7 @@ class TestTTSEnhanced:
             assert loaded_entry.metadata == metadata
             
     def test_playback_state_management(self):
-        """测试播放状态管""
+        """测试播放状态管理"""
         assert self.tts.get_playback_state() == PlaybackState.STOPPED
         
         # 模拟播放状态变
@@ -430,7 +430,7 @@ class TestTTSEnhanced:
         mock_audio.stop.assert_called_once()
         
     def test_pause_resume_playback(self):
-        """测试暂停和恢复播""
+        """测试暂停和恢复播放"""
         # 模拟有音频在播放
         mock_audio = MagicMock()
         self.tts._current_audio = mock_audio
@@ -453,7 +453,7 @@ class TestTTSErrorTypes:
     """TTS错误类型测试"""
     
     def test_tts_error_inheritance(self):
-        """测试TTS错误类继承关""
+        """测试TTS错误类继承关系"""
         assert issubclass(TTSCacheError, TTSError)
         assert issubclass(TTSPlaybackError, TTSError)
         
@@ -474,7 +474,7 @@ class TestTTSIntegration:
     """TTS集成测试"""
     
     def test_full_enhanced_synthesis_pipeline(self):
-        """测试完整的增强合成流""
+        """测试完整的增强合成流程"""
         tts = MockTTS({
             "enable_cache": True,
             "cache_size_limit": 5,
@@ -523,7 +523,7 @@ class TestTTSIntegration:
             mock_play.assert_called_once_with(result.audio_data)
             
     def test_error_handling_robustness(self):
-        """测试错误处理的健壮""
+        """测试错误处理的健壮性"""
         tts = MockTTS()
         
         # 测试各种异常情况

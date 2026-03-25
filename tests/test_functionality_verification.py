@@ -1,4 +1,4 @@
-﻿"""
+"""
 功能完整性验证测
 验证重构后的所有核心功能是否正常工
 """
@@ -136,7 +136,7 @@ class TestCoreModulesIntegration:
 
 
 class TestServiceLayerIntegration:
-    """测试服务层集成功""
+    """测试服务层集成功能"""
     
     def setup_method(self):
         """设置测试环境"""
@@ -224,7 +224,7 @@ class TestServiceLayerIntegration:
         assert "key_suggestions" in quick_result
     
     def test_cross_service_integration(self):
-        """测试跨服务集""
+        """测试跨服务集成"""
         # 1. 用户发起对话
         response_text, session_id = self.chat_service.chat_with_text(
             "I want to practice pronunciation"
@@ -259,7 +259,7 @@ class TestWebComponentsBasic:
     """测试Web组件基础功能"""
     
     def test_chat_tab_creation(self):
-        """测试聊天标签页创""
+        """测试聊天标签页创建"""
         from chatterpal.web.components.chat_tab import ChatTab
         
         mock_service = Mock()
@@ -278,7 +278,7 @@ class TestWebComponentsBasic:
                 print(f"Gradio接口创建警告: {e}")
     
     def test_score_tab_creation(self):
-        """测试评分标签页创""
+        """测试评分标签页创建"""
         from chatterpal.web.components.score_tab import ScoreTab
         
         mock_service = Mock()
@@ -295,7 +295,7 @@ class TestWebComponentsBasic:
                 print(f"Gradio接口创建警告: {e}")
     
     def test_correct_tab_creation(self):
-        """测试纠错标签页创""
+        """测试纠错标签页创建"""
         from chatterpal.web.components.correct_tab import CorrectTab
         
         mock_service = Mock()
@@ -313,10 +313,10 @@ class TestWebComponentsBasic:
 
 
 class TestEndToEndWorkflow:
-    """测试端到端工作流程""
+    """测试端到端工作流程"""
     
     def test_complete_pronunciation_practice_workflow(self):
-        """测试完整的发音练习工作流""
+        """测试完整的发音练习工作流"""
         # 创建所有必要的模拟组件
         mock_asr = Mock()
         mock_asr.recognize.return_value = "Hello, how are you today"
@@ -361,7 +361,7 @@ class TestEndToEndWorkflow:
         assert isinstance(correction_result, CorrectionReport)
         
         # 5. 继续对话讨论结果
-        feedback_text = f"我的发音得分{eval_result.overall_score:.1f},请给我一些建
+        feedback_text = f"我的发音得分{eval_result.overall_score:.1f},请给我一些建议"
         final_response, _ = chat_service.chat_with_text(feedback_text, session_id)
         assert final_response == "Great! Let's practice pronunciation together."
         
@@ -402,22 +402,22 @@ class TestEndToEndWorkflow:
             os.unlink(temp_path)
     
     def test_error_handling_robustness(self):
-        """测试错误处理的健壮""
+        """测试错误处理的健壮性"""
         # 创建会失败的模拟组件
         failing_asr = Mock()
         failing_asr.recognize.side_effect = Exception("ASR服务不可用")
         
-        failing_tts = Mock(")
+        failing_tts = Mock()
         failing_tts.synthesize.side_effect = Exception("TTS服务不可用")
         
-        failing_llm = Mock(")
+        failing_llm = Mock()
         failing_llm.chat.side_effect = Exception("LLM服务不可用")
         
         # 测试服务在组件失败时的处
         chat_service = ChatService(asr=failing_asr, tts=failing_tts, llm=failing_llm)
         
         # 应该抛出适当的异常而不是崩
-        with pytest.raises(Exception"):
+        with pytest.raises(Exception):
             chat_service.chat_with_audio(b"audio data")
         
         with pytest.raises(Exception):
@@ -446,10 +446,10 @@ class TestEndToEndWorkflow:
 
 
 class TestDataFlowIntegrity:
-    """测试数据流完整""
+    """测试数据流完整性"""
     
     def test_message_flow_integrity(self):
-        """测试消息流完整""
+        """测试消息流完整性"""
         from chatterpal.core.llm.base import Message, Conversation
         
         # 创建对话
@@ -471,7 +471,7 @@ class TestDataFlowIntegrity:
             assert msg["role"] in ["system", "user", "assistant"]
     
     def test_assessment_result_integrity(self):
-        """测试评估结果完整""
+        """测试评估结果完整性"""
         from chatterpal.core.assessment.base import (
             AssessmentResult, ProsodyFeatures, WordAnalysis, PhonemeAnalysis
         )
@@ -511,7 +511,7 @@ class TestDataFlowIntegrity:
         assert len(result_dict["phoneme_analysis"]) == 1
     
     def test_service_status_reporting(self):
-        """测试服务状态报""
+        """测试服务状态报告"""
         mock_asr = Mock()
         mock_tts = Mock()
         mock_llm = Mock()

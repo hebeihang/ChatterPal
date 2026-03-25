@@ -268,7 +268,7 @@ class AssessmentBase(ABC):
             语言代码 ('zh' 或 'en')
         """
         if not text:
-            return "en"  # 默认英文
+            return "ja"  # 默认日文
 
         import re
 
@@ -277,12 +277,12 @@ class AssessmentBase(ABC):
         if chinese_pattern.search(text):
             return "zh"
 
-        # 检测是否主要是英文字符
-        english_pattern = re.compile(r"[a-zA-Z]")
-        if english_pattern.search(text):
-            return "en"
+        # 检测是否包含日文字符(平假名、片假名)
+        japanese_pattern = re.compile(r"[\u3040-\u309F\u30A0-\u30FF]")
+        if japanese_pattern.search(text):
+            return "ja"
 
-        return "en"  # 默认英文
+        return "ja"  # 默认日文
 
     def calculate_text_similarity(self, text1: str, text2: str) -> float:
         """

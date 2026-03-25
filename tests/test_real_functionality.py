@@ -1,4 +1,4 @@
-﻿"""
+"""
 Real functionality verification test
 Tests the actual implemented functionality without mocking
 """
@@ -10,7 +10,7 @@ import numpy as np
 from unittest.mock import patch
 
 def test_app_can_be_imported():
-    """测试应用可以被导入""
+    """测试应用可以被导入"""
     try:
         from chatterpal.web.app import create_app
         assert create_app is not None
@@ -28,12 +28,12 @@ def test_services_can_be_imported():
         assert ChatService is not None
         assert EvaluationService is not None
         assert CorrectionService is not None
-        print("服务层可以成功导)
+        print("服务层可以成功导入")
     except Exception as e:
         pytest.fail(f"服务层导入失败 {e}")
 
 def test_core_modules_can_be_imported():
-    """测试核心模块可以被导入""
+    """测试核心模块可以被导入"""
     try:
         from chatterpal.core.asr.base import ASRBase
         from chatterpal.core.tts.base import TTSBase
@@ -49,7 +49,7 @@ def test_core_modules_can_be_imported():
         pytest.fail(f"核心模块导入失败: {e}")
 
 def test_web_components_can_be_imported():
-    """测试Web组件可以被导入""
+    """测试Web组件可以被导入"""
     try:
         from chatterpal.web.components.chat_tab import ChatTab
         from chatterpal.web.components.score_tab import ScoreTab
@@ -334,7 +334,7 @@ def test_web_components_basic():
         pytest.fail(f"Web组件测试失败: {e}")
 
 def test_end_to_end_workflow():
-    """测试端到端工作流程""
+    """测试端到端工作流程"""
     try:
         from chatterpal.services.chat import ChatService
         from chatterpal.services.evaluation import EvaluationService
@@ -376,7 +376,7 @@ def test_end_to_end_workflow():
         )
         assert isinstance(correction_result, dict)
         
-        print("端到端工作流程正)
+        print("端到端工作流程正常")
     except Exception as e:
         pytest.fail(f"端到端工作流程测试失败 {e}")
 

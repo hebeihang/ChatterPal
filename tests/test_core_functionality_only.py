@@ -1,4 +1,4 @@
-﻿"""
+"""
 核心功能测试 - 只测试可以正常工作的核心功能
 跳过需要外部依赖的测试
 """
@@ -21,7 +21,7 @@ def test_core_modules_import():
         from chatterpal.services.correction import CorrectionService
         from chatterpal.config.settings import Settings
         
-        print("所有核心模块导入成)
+        print("所有核心模块导入成功")
         assert True
     except Exception as e:
         pytest.fail(f"核心模块导入失败: {e}")
@@ -36,7 +36,7 @@ def test_app_can_be_imported():
         from chatterpal.web.app import create_app
         app = create_app()
         assert app is not None
-        print("应用导入和创建成)
+        print("应用导入和创建成功")
         
         # 清理环境变量
         if 'ALIBABA_API_KEY' in os.environ:
@@ -235,7 +235,7 @@ def test_llm_base_functionality():
         pytest.fail(f"LLM基础功能测试失败: {e}")
 
 def test_end_to_end_workflow():
-    """测试端到端工作流程""
+    """测试端到端工作流程"""
     try:
         from chatterpal.services.chat import ChatService
         from chatterpal.services.evaluation import EvaluationService
@@ -277,7 +277,7 @@ def test_end_to_end_workflow():
         )
         assert isinstance(correction_result, dict)
         
-        print("端到端工作流程正)
+        print("端到端工作流程正常")
     except Exception as e:
         pytest.fail(f"端到端工作流程测试失败 {e}")
 

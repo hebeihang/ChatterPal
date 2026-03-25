@@ -159,14 +159,14 @@ class ChatterPalApp:
         try:
             # Create main interface with tabs
             with gr.Blocks(
-                title="🎯 ChatterPal - AI英语口语练习系统",
+                title="🎯 ChatterPal - AI日语口语练习系统",
                 theme=gr.themes.Soft(),
             ) as app:
                 gr.Markdown(
                     """
-                    # 🎯 ChatterPal - AI英语口语练习系统
+                    # 🎯 ChatterPal - AI日语口语练习系统
                     
-                    专业的AI驱动英语口语练习平台，提供智能对话、发音评估和纠错指导。
+                    专业的AI驱动日语口语练习平台，提供智能对话、发音评估和纠错指导。
                     """
                 )
                 
@@ -196,7 +196,7 @@ class ChatterPalApp:
             """
             ## 💬 AI对话练习
             
-            与AI进行自然对话，提升英语口语表达能力。支持文本和语音输入，获得实时反馈。
+            与AI进行自然对话，提升日语口语表达能力。支持文本和语音输入，获得实时反馈。
             """
         )
         
@@ -216,12 +216,12 @@ class ChatterPalApp:
                             voice_display_map[voice] = f"{display_name} - {description}"
                 except Exception as e:
                     self.logger.warning(f"Failed to get voice list: {e}")
-                    available_voices = ["longxiaochun"]
-                    voice_display_map = {"longxiaochun": "龙小春 - 温柔甜美的女声"}
+                    available_voices = ["ja-JP-NanamiNeural"]
+                    voice_display_map = {"ja-JP-NanamiNeural": "ななみ - 温和な日本語女性の声"}
                 
                 voice_selector = gr.Dropdown(
                     choices=[(voice_display_map.get(v, v), v) for v in available_voices],
-                    value="longxiaochun",
+                    value="ja-JP-NanamiNeural",
                     label="🎵 选择音色",
                     info="选择AI回复的语音音色"
                 )
@@ -249,7 +249,7 @@ class ChatterPalApp:
         )
         
         # Real chat function using ChatService with TTS support
-        def chat_response(message, history, selected_voice):
+        async def chat_response(message, history, selected_voice):
             if not message:
                 return history, "", (22050, [])
             
@@ -263,8 +263,8 @@ class ChatterPalApp:
                     self.logger.info(f"Switching TTS voice from {self.tts.voice_name} to {selected_voice}")
                     self.tts.voice_name = selected_voice
                 
-                # Call process_chat method to enable TTS
-                audio_output_data, updated_history = self.chat_service.process_chat(
+                # Call process_chat method to enable TTS (await async version)
+                audio_output_data, updated_history = await self.chat_service.process_chat(
                     audio=None,
                     text_input=message,
                     chat_history=history,

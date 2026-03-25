@@ -9,19 +9,19 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>ChatterPal - 口语辅导助手</h1>
+        <h1>ChatterPal - 日本語学習パートナー</h1>
         <nav className="tab-nav">
           <button 
             className={`tab-button ${activeTab === 'chat' ? 'active' : ''}`}
             onClick={() => setActiveTab('chat')}
           >
-            对话练习
+            会話練習
           </button>
           <button 
             className={`tab-button ${activeTab === 'pronunciation' ? 'active' : ''}`}
             onClick={() => setActiveTab('pronunciation')}
           >
-            口语纠正
+            発音矯正
           </button>
         </nav>
       </header>

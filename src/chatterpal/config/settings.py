@@ -39,6 +39,7 @@ class Settings(BaseSettings):
     )
     openai_model: str = Field(default="gpt-3.5-turbo", description="OpenAI model name")
     alibaba_model: str = Field(default="qwen-turbo", description="Alibaba model name")
+    target_language: str = Field(default="ja-JP", description="Target language for learning (default: ja-JP)")
     
     # Additional Alibaba Configuration
     dashscope_api_key: Optional[str] = Field(
@@ -101,14 +102,14 @@ class Settings(BaseSettings):
 
     # TTS Configuration
     edge_tts_voice: str = Field(
-        default="en-US-JennyNeural", description="Edge TTS voice"
+        default="ja-JP-NanamiNeural", description="Edge TTS voice"
     )
     edge_tts_rate: str = Field(default="+0%", description="Edge TTS speech rate")
     edge_tts_volume: str = Field(default="+0%", description="Edge TTS volume")
     
     # Alibaba TTS Configuration
     alibaba_tts_voice: str = Field(
-        default="longxiaochun", description="Alibaba TTS voice (longxiaochun for cosyvoice-v1)"
+        default="tomomi", description="Alibaba TTS voice (e.g., tomomi for Japanese)"
     )
     alibaba_tts_volume: int = Field(
         default=50, description="Alibaba TTS volume (0-100)"
@@ -164,6 +165,7 @@ class Settings(BaseSettings):
         env_file = ".env"
         env_file_encoding = "utf-8"
         case_sensitive = False
+        extra = "ignore"
 
     @field_validator("whisper_model")
     @classmethod

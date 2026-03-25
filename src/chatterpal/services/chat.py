@@ -105,16 +105,16 @@ class ChatService:
         self.topic_generator = TopicGenerator(llm=self.llm, config=topic_config)
 
         # 默认配置
-        default_prompt = """You are Alex, a professional and friendly English conversation coach with 10+ years of experience helping non-native speakers improve their English skills. Your personality is warm, encouraging, and patient.
+        default_prompt = """You are Kenji, a professional and friendly Japanese conversation coach with 10+ years of experience helping non-native speakers improve their Japanese skills. Your personality is warm, encouraging, and patient.
 
 ## Your Role & Responsibilities:
 1. **Conversation Partner**: Engage in natural, interesting conversations on various topics
 2. **Language Coach**: Provide gentle corrections and suggestions for improvement
 3. **Motivator**: Encourage users to practice more and build confidence
-4. **Cultural Guide**: Share insights about English-speaking cultures when relevant
+4. **Cultural Guide**: Share insights about Japanese culture when relevant
 
 ## Communication Style:
-- Use clear, natural English appropriate for intermediate learners
+- Use clear, natural Japanese appropriate for intermediate learners
 - Be encouraging and positive in your feedback
 - Ask follow-up questions to keep conversations flowing
 - Vary your vocabulary to help users learn new words
@@ -122,7 +122,7 @@ class ChatService:
 
 ## Correction Guidelines:
 - Don't correct every small mistake - focus on major errors that affect understanding
-- When correcting, use this format: "Great point! Just a small note: instead of '[incorrect]', you could say '[correct]'. For example: [example sentence]"
+- When correcting, use this format: "良いポイントですね！少しだけお直しすると：「[incorrect]」よりも「[correct]」という表現の方が自然です。例えば：[example sentence]"
 - Praise good usage and improvements
 - Suggest alternative expressions to expand vocabulary
 
@@ -141,7 +141,7 @@ class ChatService:
 - Include 1-2 new vocabulary words naturally when appropriate
 - End with encouragement when the user makes good progress
 
-Remember: Your goal is to make English practice enjoyable and confidence-building while providing valuable learning opportunities."""
+Remember: Your goal is to make Japanese practice enjoyable and confidence-building while providing valuable learning opportunities."""
 
         self.default_system_prompt = self.config.get("default_system_prompt", default_prompt)
         self.max_history_length = self.config.get("max_history_length", 20)
@@ -220,22 +220,11 @@ Remember: Your goal is to make English practice enjoyable and confidence-buildin
 
         return len(expired_sessions)
 
-    def chat_with_text(
+    async def chat_with_text(
         self, text: str, session_id: Optional[str] = None, **kwargs
     ) -> Tuple[str, str]:
         """
-        文本对话
-
-        Args:
-            text: 用户输入文本
-            session_id: 会话ID，如果为None则创建新会话
-            **kwargs: 其他参数传递给LLM
-
-        Returns:
-            (回复文本, 会话ID)
-
-        Raises:
-            LLMError: LLM调用失败
+        文本对话 (异步版)
         """
         if not self.llm:
             raise LLMError("LLM模块未初始化")
@@ -256,8 +245,12 @@ Remember: Your goal is to make English practice enjoyable and confidence-buildin
             # 获取对话历史
             messages = session.get_messages(self.max_history_length)
 
-            # 调用LLM生成回复
-            response = self.llm.chat(messages, **kwargs)
+            # 调用LLM生成回复 (如果LLM也是异步的就await，目前基类是同步的，但我们可以先保持接口一致)
+            # 这里的 self.llm.chat 目前在基类中是同步的
+            if hasattr(self.llm, 'async_chat'):
+                response = await self.llm.async_chat(messages, **kwargs)
+            else:
+                response = self.llm.chat(messages, **kwargs)
 
             # 添加助手回复
             session.add_assistant_message(response)
@@ -270,7 +263,7 @@ Remember: Your goal is to make English practice enjoyable and confidence-buildin
             self.logger.error(f"文本对话失败: {error_msg}")
             raise LLMError(f"文本对话失败: {error_msg}")
 
-    def chat_with_audio(
+    async def chat_with_audio(
         self,
         audio_data: Union[str, bytes, Tuple[int, Any]],
         session_id: Optional[str] = None,
@@ -279,7 +272,7 @@ Remember: Your goal is to make English practice enjoyable and confidence-buildin
         **kwargs,
     ) -> Tuple[str, Optional[bytes], str]:
         """
-        语音对话（增强错误处理版本）
+        语音对话 (异步版)
 
         Args:
             audio_data: 音频数据（文件路径、字节数据或Gradio格式）
@@ -313,14 +306,14 @@ Remember: Your goal is to make English practice enjoyable and confidence-buildin
             self.logger.info(f"语音识别结果: {recognized_text} (置信度: {asr_result.confidence:.2f})")
 
             # 文本对话
-            response_text, session_id = self.chat_with_text(
+            response_text, session_id = await self.chat_with_text(
                 recognized_text, session_id, **kwargs
             )
 
             # 语音合成（如果需要）
             response_audio = None
             if return_audio and self.tts:
-                response_audio = self._synthesize_with_error_handling(response_text)
+                response_audio = await self._synthesize_with_error_handling(response_text)
 
             return response_text, response_audio, session_id
 
@@ -331,16 +324,9 @@ Remember: Your goal is to make English practice enjoyable and confidence-buildin
             self.logger.error(f"语音对话失败: {e}")
             raise error_handler.create_error("ASR_SERVICE_ERROR", error_message=safe_str(e))
 
-    def _synthesize_with_error_handling(self, text: str, max_retries: int = 2) -> Optional[bytes]:
+    async def _synthesize_with_error_handling(self, text: str, max_retries: int = 2) -> Optional[bytes]:
         """
-        带错误处理的语音合成
-        
-        Args:
-            text: 要合成的文本
-            max_retries: 最大重试次数
-            
-        Returns:
-            合成的音频数据，失败时返回None
+        带错误处理的语音合成 (异步版支持)
         """
         if not self.tts:
             self.logger.warning("TTS实例为None，无法进行语音合成")
@@ -349,11 +335,28 @@ Remember: Your goal is to make English practice enjoyable and confidence-buildin
         self.logger.info(f"开始语音合成 - TTS类型: {type(self.tts).__name__}")
         
         try:
-            # 使用TTS基类的增强错误处理方法
+            # 优先使用异步合成接口 (如果有)
+            if hasattr(self.tts, 'async_synthesize_to_file'):
+                import tempfile
+                with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+                    tmp_path = tmp.name
+                
+                try:
+                    success = await self.tts.async_synthesize_to_file(text, tmp_path)
+                    if success:
+                        with open(tmp_path, 'rb') as f:
+                            audio_data = f.read()
+                        os.unlink(tmp_path)
+                        return audio_data
+                except Exception as e:
+                    self.logger.error(f"异步合成接口调用失败: {e}")
+                    if os.path.exists(tmp_path):
+                        os.unlink(tmp_path)
+            
+            # 回退到增强错误处理方法 (同步)
             if hasattr(self.tts, 'synthesize_with_error_handling'):
                 self.logger.info("使用TTS增强错误处理方法")
                 result = self.tts.synthesize_with_error_handling(text, max_retries=max_retries)
-                self.logger.info(f"语音合成完成 (耗时: {result.synthesis_time:.2f}s, 缓存: {result.cached})")
                 return result.audio_data
             else:
                 # 回退到基本方法
@@ -363,7 +366,6 @@ Remember: Your goal is to make English practice enjoyable and confidence-buildin
         except Exception as e:
             # 语音合成失败不应阻止对话，记录错误并返回None
             error = error_handler.create_error("TTS_SERVICE_ERROR", error_message=safe_str(e))
-            error_handler.log_error(error, {"text_length": len(text)})
             self.logger.warning(f"语音合成失败，但对话将继续: {safe_str(e)}")
             return None
 
@@ -617,7 +619,7 @@ Topics:"""
 
         return status
 
-    def process_chat(
+    async def process_chat(
         self, 
         audio: Optional[Any] = None,
         text_input: str = "",
@@ -627,18 +629,7 @@ Topics:"""
         topic_context: Optional[str] = None
     ) -> Tuple[Tuple[int, List], List]:
         """
-        统一的聊天处理接口（增强错误处理版本）
-        
-        Args:
-            audio: 音频输入数据
-            text_input: 文本输入
-            chat_history: 对话历史
-            use_text_input: 是否使用文本输入模式
-            session_id: 会话ID
-            topic_context: 主题上下文信息
-            
-        Returns:
-            (音频输出, 更新的对话历史)
+        统一的聊天处理接口 (异步版)
         """
         user_input = ""
         error_context = {
@@ -671,14 +662,14 @@ Topics:"""
                     raise error_handler.create_error("AUDIO_FORMAT_ERROR", message="文本输入不能为空")
                 
                 user_input = text_input
-                response_text, _ = self.chat_with_text(text_input, session_id)
+                response_text, _ = await self.chat_with_text(text_input, session_id)
                 audio_output = None
                 
                 # 生成语音输出（如果TTS可用）
                 if self.tts:
                     self.logger.info(f"TTS实例可用，开始语音合成 - 文本长度: {len(response_text)}")
                     self.logger.debug(f"待合成文本: {response_text[:100]}...")
-                    audio_output = self._synthesize_with_error_handling(response_text)
+                    audio_output = await self._synthesize_with_error_handling(response_text)
                     if audio_output:
                         self.logger.info(f"语音合成成功 - 音频数据长度: {len(audio_output)} bytes")
                     else:
@@ -690,8 +681,8 @@ Topics:"""
                 if audio is None:
                     raise error_handler.create_error("AUDIO_FORMAT_ERROR", message="语音输入模式下音频数据不能为空")
                 
-                # 使用增强的语音对话处理
-                response_text, audio_output, _ = self.chat_with_audio(
+                # 使用增强的语音对话处理 (await 异步版)
+                response_text, audio_output, _ = await self.chat_with_audio(
                     audio, session_id, return_audio=True, max_retries=3
                 )
                 

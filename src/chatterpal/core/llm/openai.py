@@ -46,9 +46,14 @@ class OpenAILLM(LLMBase):
             raise LLMError("OpenAI API密钥未配置")
 
         self.model = self.config.get("model", "gpt-3.5-turbo")
-        self.base_url = self.config.get(
-            "base_url", "https://api.openai.com/v1/chat/completions"
-        )
+        self.base_url = self.config.get("base_url") or "https://api.openai.com/v1/chat/completions"
+        
+        # Ensure base_url ends with /chat/completions for requests-based implementation
+        if "/chat/completions" not in self.base_url:
+            if self.base_url.endswith("/"):
+                self.base_url = self.base_url + "chat/completions"
+            else:
+                self.base_url = self.base_url + "/chat/completions"
         self.max_tokens = self.config.get("max_tokens", 2000)
         self.temperature = self.config.get("temperature", 0.7)
         self.top_p = self.config.get("top_p", 1.0)
@@ -107,8 +112,6 @@ class OpenAILLM(LLMBase):
                 "max_tokens": max_tokens,
                 "temperature": temperature,
                 "top_p": top_p,
-                "frequency_penalty": frequency_penalty,
-                "presence_penalty": presence_penalty,
             }
 
             # 发送请求
@@ -193,8 +196,6 @@ class OpenAILLM(LLMBase):
                 "max_tokens": max_tokens,
                 "temperature": temperature,
                 "top_p": top_p,
-                "frequency_penalty": frequency_penalty,
-                "presence_penalty": presence_penalty,
                 "stream": True,
             }
 

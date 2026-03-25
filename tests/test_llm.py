@@ -1,4 +1,4 @@
-﻿"""
+"""
 Tests for LLM (Large Language Model) modules.
 """
 
@@ -362,7 +362,7 @@ class TestAlibabaDashScopeLLM:
     """测试阿里云DashScope LLM实现"""
     
     def test_initialization(self):
-        """测试阿里云LLM初始""
+        """测试阿里云LLM初始化"""
         config = {
             "api_key": "test_key",
             "model": "qwen-turbo"
@@ -373,13 +373,13 @@ class TestAlibabaDashScopeLLM:
         assert llm.model == "qwen-turbo"
     
     def test_initialization_missing_api_key(self):
-        """测试缺少API密钥时的初始""
-        with pytest.raises(LLMError, match="阿里云API密钥未配):
+        """测试缺少API密钥时的初始化"""
+        with pytest.raises(LLMError, match="阿里云API密钥未配置"):
             AlibabaDashScopeLLM({})
     
     @patch('requests.post')
     def test_chat_success(self, mock_post):
-        """测试成功的对""
+        """测试成功的对话"""
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.json.return_value = {

@@ -1,0 +1,183 @@
+# 增强聊天模块配置文件模板
+# 复制此文件为 chat_config.yaml 并根据需要修改配置
+
+# 音频配置
+audio:
+  max_recording_duration: 60      # 最大录音时长（秒）
+  min_recording_duration: 1       # 最小录音时长（秒）
+  sample_rate: 16000              # 采样率
+  format: "wav"                   # 音频格式
+  auto_play: true                 # 自动播放回复
+  playback_speed: 1.0             # 播放速度 (0.5-2.0)
+  volume: 0.8                     # 音量 (0.0-1.0)
+  noise_threshold: 0.1            # 噪音阈值
+
+# 主题生成配置
+topic_generation:
+  difficulty_levels:              # 支持的难度级别
+    - "beginner"
+    - "intermediate"
+    - "advanced"
+  categories:                     # 主题分类
+    - "daily"
+    - "hobby"
+    - "travel"
+    - "work"
+    - "tech"
+    - "culture"
+  max_retries: 3                  # 最大重试次数
+  default_difficulty: "intermediate"  # 默认难度
+  preferred_categories: []        # 用户偏好分类
+  auto_generate: false            # 自动生成主题
+  context_aware: true             # 基于上下文生成
+
+# 会话配置
+session:
+  max_history_length: 50          # 最大历史记录长度
+  session_timeout: 3600           # 会话超时时间（秒）
+  auto_save: true                 # 自动保存
+  save_interval: 300              # 保存间隔（秒）
+  max_sessions: 100               # 最大会话数量
+  cleanup_interval: 86400         # 清理间隔（秒）
+
+# 用户界面配置
+ui:
+  default_input_mode: "text"      # 默认输入模式 (text/voice)
+  show_history: false             # 显示历史记录
+  theme: "light"                  # 界面主题 (light/dark)
+  language: "zh-CN"               # 界面语言
+  auto_scroll: true               # 自动滚动
+  compact_mode: false             # 紧凑模式
+
+# 缓存配置
+cache:
+  tts_cache_size: 1000           # TTS 缓存大小
+  tts_cache_ttl: 3600            # TTS 缓存过期时间（秒）
+  chat_cache_size: 500           # 聊天缓存大小
+  chat_cache_ttl: 1800           # 聊天缓存过期时间（秒）
+  enable_audio_cache: true       # 启用音频缓存
+  audio_cache_dir: ".cache/audio"  # 音频缓存目录
+
+# 性能配置
+performance:
+  enable_async_processing: true   # 启用异步处理
+  max_concurrent_requests: 10     # 最大并发请求数
+  request_timeout: 30             # 请求超时时间（秒）
+  retry_attempts: 3               # 重试次数
+  retry_delay: 1.0                # 重试延迟（秒）
+  enable_gpu: false               # 启用 GPU 加速
+
+# 错误处理配置
+error_handling:
+  max_error_logs: 1000           # 最大错误日志数量
+  error_log_retention: 604800    # 错误日志保留时间（秒）
+  enable_user_feedback: true     # 启用用户反馈
+  fallback_responses: true       # 启用备用响应
+
+# 安全配置
+security:
+  max_file_size: 10485760        # 最大文件大小（字节，10MB）
+  allowed_audio_formats:         # 允许的音频格式
+    - "wav"
+    - "mp3"
+    - "flac"
+  rate_limit_requests: 100       # 速率限制（每分钟请求数）
+  enable_content_filter: false   # 启用内容过滤
+
+# 日志配置
+logging:
+  level: "INFO"                  # 日志级别
+  file: "logs/chat_module.log"   # 日志文件
+  max_size: 10485760             # 最大日志文件大小（字节）
+  backup_count: 5                # 日志文件备份数量
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# LLM 配置
+llm:
+  provider: "alibaba"  # alibaba, openai
+  alibaba:
+    model: "qwen-plus"
+    temperature: 0.7
+    top_p: 0.8
+    max_tokens: 2000
+    enable_search: false
+    repetition_penalty: 1.1
+  openai:
+    model: "gpt-3.5-turbo"
+    temperature: 0.7
+    max_tokens: 2000
+
+# 系统提示词配置
+system_prompts:
+  default: |
+    You are Alex, a professional and friendly English conversation coach with 10+ years of experience helping non-native speakers improve their English skills. Your personality is warm, encouraging, and patient.
+    
+    ## Your Role & Responsibilities:
+    1. **Conversation Partner**: Engage in natural, interesting conversations on various topics
+    2. **Language Coach**: Provide gentle corrections and suggestions for improvement
+    3. **Motivator**: Encourage users to practice more and build confidence
+    4. **Cultural Guide**: Share insights about English-speaking cultures when relevant
+    
+    ## Communication Style:
+    - Use clear, natural English appropriate for intermediate learners
+    - Be encouraging and positive in your feedback
+    - Ask follow-up questions to keep conversations flowing
+    - Vary your vocabulary to help users learn new words
+    - Use examples and explanations when correcting mistakes
+    
+    Remember: Your goal is to make English practice enjoyable and confidence-building while providing valuable learning opportunities.
+
+  topic_generation: |
+    Generate engaging conversation topics suitable for English language learners. 
+    Consider the user's proficiency level and interests. 
+    Topics should be culturally appropriate and encourage natural conversation flow.
+
+# 预定义主题库
+default_topics:
+  beginner:
+    daily:
+      - "What did you have for breakfast today?"
+      - "Tell me about your daily routine."
+      - "What's your favorite color and why?"
+      - "Describe your family."
+      - "What time do you usually wake up?"
+    hobby:
+      - "Do you like reading books?"
+      - "What sports do you enjoy?"
+      - "Do you like listening to music?"
+      - "Can you cook? What's your favorite dish to make?"
+      - "Do you enjoy watching movies?"
+  
+  intermediate:
+    daily:
+      - "What's your favorite way to spend a weekend?"
+      - "Describe a memorable meal you've had recently."
+      - "Tell me about a place you'd love to visit."
+      - "What's your favorite season and why?"
+      - "Describe your ideal day off from work or school."
+    hobby:
+      - "What's a hobby you enjoy or would like to try?"
+      - "Tell me about a book or movie that impressed you."
+      - "What's your favorite type of music or artist?"
+      - "Describe a creative project you've worked on."
+      - "What's your favorite way to stay healthy and active?"
+    travel:
+      - "Describe the most interesting place you've visited."
+      - "What's your dream travel destination and why?"
+      - "Tell me about a cultural difference you've experienced."
+      - "What's the best travel advice you've received?"
+      - "Describe a memorable travel experience."
+  
+  advanced:
+    work:
+      - "How do you think remote work has changed professional relationships?"
+      - "What skills do you think will be most important in the future workplace?"
+      - "Describe a challenging project you've worked on and how you overcame obstacles."
+      - "What's your opinion on work-life balance in modern society?"
+      - "How do you stay motivated and productive in your career?"
+    culture:
+      - "How do you think social media has influenced modern communication?"
+      - "What role should tradition play in a rapidly changing world?"
+      - "Discuss the impact of globalization on local cultures."
+      - "How do you think education systems should adapt to modern needs?"
+      - "What are the benefits and challenges of living in a multicultural society?"

@@ -1,4 +1,4 @@
-﻿"""
+"""
 主题生成错误处理功能测试
 测试主题生成的错误处理和备用方案
 """
@@ -35,7 +35,7 @@ class MockLLMForTopic:
 
 
 class TestTopicGeneratorErrorHandling:
-    """测试主题生成器错误处""
+    """测试主题生成器错误处理"""
     
     def setup_method(self):
         """设置测试环境"""
@@ -50,7 +50,7 @@ class TestTopicGeneratorErrorHandling:
         assert "" in topic or any(word in topic.lower() for word in ['tell me', 'describe', 'explain'])
     
     def test_generate_random_topic_invalid_difficulty(self):
-        """测试无效难度级别的处""
+        """测试无效难度级别的处理"""
         # 无效难度应该回退到默认
         topic = self.topic_generator.generate_random_topic("invalid_difficulty")
         assert isinstance(topic, str)
@@ -63,7 +63,7 @@ class TestTopicGeneratorErrorHandling:
         assert len(topic) > 0
     
     def test_generate_random_topic_with_fallback_error(self):
-        """测试备用方案在错误情况下的工""
+        """测试备用方案在错误情况下的工作"""
         # 模拟内部错误
         with patch.object(self.topic_generator, 'generate_random_topic', side_effect=Exception("Internal error")):
             topic = self.topic_generator.generate_random_topic_with_fallback("intermediate")
@@ -80,7 +80,7 @@ class TestTopicGeneratorErrorHandling:
             assert topic in fallback_topics
     
     def test_generate_contextual_topic_no_llm(self):
-        """测试没有LLM时的上下文主题生""
+        """测试没有LLM时的上下文主题生成"""
         topic_generator_no_llm = TopicGenerator(llm=None)
         
         chat_history = [
@@ -99,7 +99,7 @@ class TestTopicGeneratorErrorHandling:
         assert len(topic) > 0
     
     def test_generate_contextual_topic_insufficient_history(self):
-        """测试对话历史不足的处""
+        """测试对话历史不足的处理"""
         short_history = [{"role": "user", "content": "Hi"}]
         topic = self.topic_generator.generate_contextual_topic(short_history)
         assert isinstance(topic, str)
@@ -137,7 +137,7 @@ class TestTopicGeneratorErrorHandling:
         assert self.llm.call_count == 3  # 验证重试
     
     def test_generate_contextual_topic_invalid_response(self):
-        """测试LLM返回无效主题的处""
+        """测试LLM返回无效主题的处理"""
         self.llm.return_invalid_topic = True
         
         chat_history = [
@@ -166,7 +166,7 @@ class TestTopicGeneratorErrorHandling:
         assert not self.topic_generator._validate_topic("What do you think about politics")  # 包含敏感
     
     def test_add_custom_topic(self):
-        """测试添加自定义主""
+        """测试添加自定义主题"""
         # 添加有效主题
         success = self.topic_generator.add_custom_topic(
             "What's your favorite programming language", 
@@ -214,7 +214,7 @@ class TestChatServiceTopicIntegration:
         assert len(topic) > 0
     
     def test_generate_topic_with_session(self):
-        """测试为会话生成主""
+        """测试为会话生成主题"""
         # 创建会话并添加一些对话历
         session_id = self.chat_service.create_session()
         self.chat_service.chat_with_text("I love traveling", session_id)
@@ -252,7 +252,7 @@ class TestChatServiceTopicIntegration:
             assert len(suggestion) > 0
     
     def test_get_topic_suggestions_by_category(self):
-        """测试按分类获取主题建""
+        """测试按分类获取主题建议"""
         suggestions = self.chat_service.get_topic_suggestions(
             difficulty="intermediate",
             category="daily",
@@ -272,13 +272,13 @@ class TestChatServiceTopicIntegration:
         assert success is True
     
     def test_get_topic_statistics_integration(self):
-        """测试获取主题统计信息的集""
+        """测试获取主题统计信息的集成"""
         stats = self.chat_service.get_topic_statistics()
         assert isinstance(stats, dict)
         assert "total_topics" in stats
     
     def test_set_topic_for_session(self):
-        """测试为会话设置主""
+        """测试为会话设置主题"""
         session_id = self.chat_service.create_session()
         
         success = self.chat_service.set_topic_for_session(
@@ -305,7 +305,7 @@ class TestChatServiceTopicIntegration:
         assert current_topic == generated_topic
     
     def test_clear_context_with_topic(self):
-        """测试清除上下文时也清除主""
+        """清上下文时也清除主题"""
         session_id = self.chat_service.create_session()
         
         # 设置主题
@@ -321,7 +321,7 @@ class TestChatServiceTopicIntegration:
 
 
 class TestTopicErrorRecovery:
-    """测试主题生成的错误恢复机""
+    """测试主题生成的错误恢复机制"""
     
     def setup_method(self):
         """设置测试环境"""
@@ -329,7 +329,7 @@ class TestTopicErrorRecovery:
         self.chat_service = ChatService(llm=self.llm)
     
     def test_topic_generation_graceful_degradation(self):
-        """测试主题生成的优雅降""
+        """测试主题生成的优雅降级"""
         # 模拟各种错误情况
         error_scenarios = [
             {"should_fail": True, "fail_count": 10},  # 完全失败
@@ -349,7 +349,7 @@ class TestTopicErrorRecovery:
             assert len(topic) > 0
     
     def test_contextual_topic_fallback_chain(self):
-        """测试上下文主题的备用""
+        """测试上下文主题的备用方案"""
         session_id = self.chat_service.create_session()
         
         # 添加对话历史

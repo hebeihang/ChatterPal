@@ -1,4 +1,4 @@
-﻿"""
+"""
 集成错误处理测试
 测试整个聊天模块的错误处理和恢复机制
 """
@@ -47,7 +47,7 @@ class TestIntegratedErrorHandling:
         # 应该有错误信
         assert len(chat_history) > 0
         error_message = chat_history[0][1]
-        assert any(keyword in error_message for keyword in ["服务", "不可, "网络", "重试", "文本输入"])
+        assert any(keyword in error_message for keyword in ["服务", "不可用", "网络", "重试", "文本输入"])
         
         # 场景2:切换到文本输入,应该正常工
         self.asr.should_fail = False  # 重置ASR
@@ -63,7 +63,7 @@ class TestIntegratedErrorHandling:
         assert "What's your favorite hobby" in str(chat_history)  # LLM响应
     
     def test_multiple_component_failures(self):
-        """测试多个组件同时失败的处""
+        """测试多个组件同时失败的处理"""
         session_id = self.chat_service.create_session()
         
         # 同时让ASR、TTS和主题生成都失败
@@ -140,7 +140,7 @@ class TestIntegratedErrorHandling:
             assert call_count >= 2
     
     def test_user_friendly_error_messages(self):
-        """测试用户友好的错误消""
+        """测试用户友好的错误消息"""
         session_id = self.chat_service.create_session()
         
         # 测试不同类型的错误消
@@ -153,7 +153,7 @@ class TestIntegratedErrorHandling:
             {
                 "setup": lambda: None,
                 "input": {"text_input": "", "use_text_input": True},
-                "expected_keywords": ["输入", ", "重试"]
+                "expected_keywords": ["输入", "重试"]
             }
         ]
         
@@ -174,7 +174,7 @@ class TestIntegratedErrorHandling:
             error_message = chat_history[0][1].lower()
             
             # 检查是否包含预期的关键词或通用错误词汇
-            expected_keywords = scenario["expected_keywords"] + ["服务", "不可, "问题", "重试"]
+            expected_keywords = scenario["expected_keywords"] + ["服务", "不可用", "问题", "重试"]
             has_expected_keyword = any(
                 keyword in error_message 
                 for keyword in expected_keywords
@@ -182,7 +182,7 @@ class TestIntegratedErrorHandling:
             assert has_expected_keyword, f"错误消息 '{error_message}' 不包含预期关键词 {expected_keywords}"
     
     def test_error_logging_integration(self):
-        """测试错误日志记录的集""
+        """测试错误日志记录的集成"""
         with patch('chatterpal.core.errors.error_handler.log_error') as mock_log_error:
             session_id = self.chat_service.create_session()
             
@@ -206,7 +206,7 @@ class TestIntegratedErrorHandling:
                 assert isinstance(error_obj, ChatModuleError)
     
     def test_service_status_with_errors(self):
-        """测试服务状态报告中的错误信""
+        """测试服务状态报告中的错误信息"""
         # 模拟各种服务状
         self.asr.should_fail = True
         self.tts.should_fail = True
@@ -225,7 +225,7 @@ class TestIntegratedErrorHandling:
             assert status["asr_status"] is False
     
     def test_session_isolation_during_errors(self):
-        """测试错误期间的会话隔""
+        """测试错误期间的会话隔离"""
         # 创建两个会话
         session1 = self.chat_service.create_session()
         session2 = self.chat_service.create_session()

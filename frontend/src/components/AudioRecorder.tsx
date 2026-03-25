@@ -146,7 +146,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
             onClick={startRecording}
             className="record-button start"
             disabled={disabled}
-            title="开始录音"
+            title="録音開始"
           >
             🎤
           </button>
@@ -154,7 +154,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
           <button 
             onClick={stopRecording}
             className="record-button stop recording"
-            title="停止录音"
+            title="停止"
           >
             ⏹️
           </button>
@@ -166,7 +166,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
       {isRecording && (
         <div className="recording-indicator">
           <div className="recording-dot"></div>
-          <span>录音中...</span>
+          <span>録音中...</span>
         </div>
       )}
 
