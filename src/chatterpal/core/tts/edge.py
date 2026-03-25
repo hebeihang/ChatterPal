@@ -306,29 +306,36 @@ class EdgeTTS(TTSBase):
             voice = kwargs.get("voice", self.voice)
             rate = kwargs.get("rate", self.rate)
 
-            # 构建命令
+            # 构建命令 (不手动加引号，让 subprocess 处理)
             cmd_parts = [
-                f'"{sys.executable}"',
+                "python",
                 "-m",
                 "edge_tts",
                 "--text",
-                f'"{cleaned_text}"',
+                cleaned_text,
                 "--voice",
                 voice,
                 "--rate",
                 rate,
                 "--write-media",
-                output_path,
+                str(output_path),
             ]
 
-            cmd = " ".join(cmd_parts)
+            self.logger.info(f"正在执行命令行语音合成: {' '.join(cmd_parts)}")
 
             # 执行命令
-            result = os.system(cmd)
+            import subprocess
+            process = subprocess.run(
+                cmd_parts, 
+                capture_output=True, 
+                text=True, 
+                encoding='utf-8',
+                shell=False # Windows下如果exe路径有空格，subprocess.run(list, shell=False) 通常处理得更好
+            )
 
             # 检查结果
             success = (
-                result == 0
+                process.returncode == 0
                 and os.path.exists(output_path)
                 and os.path.getsize(output_path) > 0
             )
@@ -336,7 +343,8 @@ class EdgeTTS(TTSBase):
             if success:
                 self.logger.info(f"命令行语音合成成功: {output_path}")
             else:
-                self.logger.error(f"命令行语音合成失败，返回码: {result}")
+                self.logger.error(f"命令行语音合成失败，返回码: {process.returncode}")
+                self.logger.error(f"错误输出: {process.stderr}")
 
             return success
 
