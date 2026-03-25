@@ -308,7 +308,7 @@ class EdgeTTS(TTSBase):
 
             # 构建命令 (不手动加引号，让 subprocess 处理)
             cmd_parts = [
-                "python",
+                sys.executable,
                 "-m",
                 "edge_tts",
                 "--text",
