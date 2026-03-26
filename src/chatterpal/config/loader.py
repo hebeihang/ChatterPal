@@ -239,9 +239,6 @@ def create_tts(settings: Optional[Settings] = None):
                 "volume": settings.edge_tts_volume,
             }
         )
-    elif settings.tts_provider == "alibaba":
-        from chatterpal.core.tts.alibaba import AlibabaTTS
-        
         return AlibabaTTS(
             {
                 "api_key": settings.alibaba_api_key,
@@ -250,6 +247,14 @@ def create_tts(settings: Optional[Settings] = None):
                 "volume": settings.alibaba_tts_volume,
                 "speech_rate": settings.alibaba_tts_speech_rate,
                 "pitch_rate": settings.alibaba_tts_pitch_rate,
+            }
+        )
+    elif settings.tts_provider == "google":
+        from chatterpal.core.tts.google_tts import GoogleTTS
+        
+        return GoogleTTS(
+            {
+                "lang": settings.target_language.split("-")[0] if "-" in settings.target_language else settings.target_language
             }
         )
     else:

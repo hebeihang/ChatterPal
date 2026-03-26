@@ -81,7 +81,7 @@ class Settings(BaseSettings):
     asr_provider: str = Field(
         default="whisper", description="ASR provider (whisper, alibaba)"
     )
-    tts_provider: str = Field(default="edge", description="TTS provider (edge, alibaba)")
+    tts_provider: str = Field(default="edge", description="TTS provider (edge, alibaba, google)")
     llm_provider: str = Field(
         default="alibaba", description="LLM provider (alibaba, openai)"
     )
